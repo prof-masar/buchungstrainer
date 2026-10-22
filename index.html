@@ -399,12 +399,23 @@ function zoomBeleg(html) {
 }
 
 /* ---------- Zustand ---------- */
-const S = { auswahl: new Set(EINHEITEN.map(e => e.nr)), queue: [], idx: 0, ergebnisse: [], cur: null };
+/* Auswahl der Einheiten: Standard nur Einheit 1; eine gespeicherte Auswahl gilt weiter */
+const AKEY = SKEY + ":auswahl";
+function ladeAuswahl() {
+  try {
+    const v = CONFIG.fortschrittSpeichern ? JSON.parse(localStorage.getItem(AKEY)) : null;
+    if (Array.isArray(v)) { const ok = v.filter(n => EINHEITEN.some(e => e.nr === n)); return new Set(ok); }
+  } catch (e) { }
+  return new Set([EINHEITEN[0].nr]);
+}
+function speichereAuswahl() { if (!CONFIG.fortschrittSpeichern) return; try { localStorage.setItem(AKEY, JSON.stringify([...S.auswahl])); } catch (e) { } }
+const S = { auswahl: ladeAuswahl(), queue: [], idx: 0, ergebnisse: [], cur: null };
 const app = () => $("#app");
 
 /* ---------- Startseite ---------- */
 function renderStart() {
   window.scrollTo(0, 0);
+  speichereAuswahl();
   const anz = S => DATA.aufgaben.filter(a => S.has(a.einheit)).length;
   let h = `<h2>Was möchtest du üben?</h2>`;
   EINHEITEN.forEach(e => {
