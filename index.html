@@ -548,12 +548,10 @@ function openSheet(seite, i, art) {
   const sh = $("#sheet"); sh.innerHTML = h; sh.dataset.seite = seite; sh.dataset.i = i; sh.dataset.art = art;
   sh.classList.add("open"); $("#sheetbg").classList.add("open"); sh.scrollTop = 0;
   sh.querySelectorAll("[data-konto]").forEach(b => b.onclick = () => {
-    r.konto = b.dataset.konto; drawKeepScroll();
-    if (r.betrag == null) openSheet(seite, i, "betrag"); else closeSheet();
+    r.konto = b.dataset.konto; closeSheet(); drawKeepScroll();  // Betrag wählt man separat über das Betragsfeld
   });
   sh.querySelectorAll("[data-betrag]").forEach(b => b.onclick = () => {
-    r.betrag = parseFloat(b.dataset.betrag); drawKeepScroll();
-    if (!r.konto) openSheet(seite, i, "konto"); else closeSheet();
+    r.betrag = parseFloat(b.dataset.betrag); closeSheet(); drawKeepScroll();
   });
   $("#sheetzu").onclick = closeSheet;
 }
