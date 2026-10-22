@@ -161,6 +161,20 @@ details.tipp[open] summary::after{transform:rotate(-135deg)}
 .sticky .btn.tippbtn{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;background:var(--tipp-soft);border-color:#f0d58a;color:var(--tipp);padding:12px 14px}
 .sticky .btn.tippbtn:disabled{opacity:.5}
 
+/* Motivation */
+.serie{display:flex;justify-content:flex-end;align-items:center;gap:5px;min-height:22px;margin-top:6px;font-size:.85rem;font-weight:600;color:#b4690e}
+.serie.leer{min-height:6px}
+.lobzeile{display:flex;align-items:center;gap:10px}
+.msg.ok .pop{color:var(--ok);flex:0 0 auto;animation:pop .45s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes pop{0%{transform:scale(.2);opacity:0}70%{transform:scale(1.15);opacity:1}100%{transform:scale(1)}}
+.msg .mut{font-weight:500;color:var(--text);margin-top:4px}
+.meilenstein{display:flex;align-items:center;gap:8px;margin-top:8px;padding:10px 14px;border-radius:12px;background:#fff4e0;color:#8a4d00;font-weight:700;animation:pop .5s cubic-bezier(.2,1.6,.4,1) both}
+.beste{display:inline-flex;align-items:center;gap:6px;margin:4px 0 8px;padding:4px 12px;border-radius:99px;background:#fff4e0;color:#8a4d00;font-weight:600;font-size:.92rem}
+#konfetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:60}
+#konfetti i{position:absolute;top:-14px;width:8px;height:12px;border-radius:2px;opacity:.9;animation:fall 1.8s ease-in forwards}
+@keyframes fall{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(var(--dx),105vh) rotate(var(--rot));opacity:.7}}
+@media (prefers-reduced-motion:reduce){.msg.ok .pop,.meilenstein{animation:none}#konfetti{display:none}}
+
 .bl{font-family:"Helvetica Neue",Arial,"Segoe UI",sans-serif;color:#222;background:#fff;font-size:13px;line-height:1.4;box-shadow:0 1px 3px rgba(0,0,0,.12),0 6px 20px rgba(0,0,0,.08)}
 .bl table{border-collapse:collapse;width:100%}
 .bl .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -251,6 +265,8 @@ const nbsp = s => s.replace(/(\d) (€|%)/g, "$1\u00a0$2");
 function menge(x) { return Number.isInteger(x) ? String(x) : String(x).replace(".", ","); }
 function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 const KONTO = {}; DATA.konten.forEach(k => KONTO[k.nummer] = k.name);
+const KONTO_POS = {}; DATA.konten.forEach((k, i) => KONTO_POS[k.nummer] = i);
+const kontoSort = (x, y) => (KONTO_POS[x] ?? 1e9) - (KONTO_POS[y] ?? 1e9) || Number(x) - Number(y);
 const AUFG = {}; DATA.aufgaben.forEach(a => AUFG[a.id] = a);
 const EINHEITEN = DATA.einheiten.slice().sort((a, b) => a.nr - b.nr);
 
@@ -276,7 +292,8 @@ function kontenFuer(a) {
   if (rest.length < CONFIG.kontenAuswahl - pflicht.length)
     rest = rest.concat(shuffle(Object.keys(KONTO).filter(k => !pflicht.includes(k) && !rest.includes(k))));
   const n = Math.max(0, CONFIG.kontenAuswahl - pflicht.length);
-  return shuffle(pflicht.concat(rest.slice(0, n)));
+  // Anzeige wie im Kontenplan: Reihenfolge der Konten in inhalte.json (aufsteigend nach Kontonummer)
+  return pflicht.concat(rest.slice(0, n)).sort(kontoSort);
 }
 function betraegeFuer(a) {
   const set = new Map(); const add = v => { if (v > 0) set.set(cents(v), r2(v)); };
@@ -411,7 +428,7 @@ function ladeAuswahl() {
   return new Set([EINHEITEN[0].nr]);
 }
 function speichereAuswahl() { if (!CONFIG.fortschrittSpeichern) return; try { localStorage.setItem(AKEY, JSON.stringify([...S.auswahl])); } catch (e) { } }
-const S = { auswahl: ladeAuswahl(), queue: [], idx: 0, ergebnisse: [], cur: null };
+const S = { auswahl: ladeAuswahl(), queue: [], idx: 0, ergebnisse: [], cur: null, serie: 0, besteSerie: 0 };
 const app = () => $("#app");
 
 /* ---------- Startseite ---------- */
@@ -438,7 +455,7 @@ function renderStart() {
     <div class="card small muted">So geht's: Lies den Geschäftsfall oder Beleg. Tippe dann im <b style="color:var(--soll)">Soll</b> und im <b style="color:var(--haben)">Haben</b> auf die Felder und wähle Konto und Betrag. Mit <b>+ Zeile</b> fügst du weitere Zeilen hinzu.</div>
     <footer class="foot">${esc(CONFIG.titel)}${CONFIG.lehrer ? " · " + esc(CONFIG.lehrer) : ""}<br>Kontenplan: ${esc(DATA.kontenplan.replace(/_/g, " "))} · Keine Anmeldung, keine Datenerfassung${CONFIG.fortschrittSpeichern ? " – Fortschritt bleibt nur auf diesem Gerät" : ""}.</footer>`;
   const n = anz(S.auswahl);
-  h += `<div class="sticky"><div class="inner"><button class="btn primary" id="start" ${n ? "" : "disabled"}>${n ? (S.auswahl.size > 1 ? `Starten – ${n} Aufgaben gemischt` : `Starten – ${n} Aufgaben`) : "Bitte Einheit wählen"}</button></div></div>`;
+  h += `<div class="sticky"><div class="inner"><button class="btn primary" id="start" ${n ? "" : "disabled"}>${n ? (S.auswahl.size > 1 ? `Starten (${n} Aufgaben gemischt)` : `Starten (${n} Aufgaben)`) : "Bitte Einheit wählen"}</button></div></div>`;
   app().innerHTML = h;
   app().querySelectorAll("[data-toggle]").forEach(b => b.onclick = () => { const nr = +b.dataset.toggle; S.auswahl.has(nr) ? S.auswahl.delete(nr) : S.auswahl.add(nr); renderStart(); restoreScroll(); });
   $("#alle").onclick = () => { EINHEITEN.forEach(e => S.auswahl.add(e.nr)); renderStart(); restoreScroll(); };
@@ -451,7 +468,7 @@ function restoreScroll() { window.scrollTo(0, lastY); }
 window.addEventListener("scroll", () => { if ($("#start")) lastY = window.scrollY; }, { passive: true });
 
 function starte(ids) {
-  S.queue = shuffle(ids); S.idx = 0; S.ergebnisse = [];
+  S.queue = shuffle(ids); S.idx = 0; S.ergebnisse = []; S.serie = 0; S.besteSerie = 0;
   renderAufgabe();
 }
 
@@ -469,6 +486,7 @@ function drawAufgabe() {
   let h = `<div class="bar" style="margin-top:4px"><button class="linkbtn" id="ende">✕ Beenden</button>
       <span class="pill">Aufgabe ${S.idx + 1} von ${S.queue.length}</span><span class="pill" id="punkte" title="Punkte">${punkteTxt(punkte)} P.</span></div>
     <div class="progress"><i style="width:${(S.idx / S.queue.length) * 100}%"></i></div>
+    <div class="serie ${S.serie ? "" : "leer"}" id="serie" data-serie="${S.serie}">${S.serie ? `${FLAMME}<span>${S.serie} richtig in Folge</span>` : ""}</div>
     <div class="card" id="aufgabe" data-id="${esc(a.id)}">
       <div class="einheit-tag">Einheit ${a.einheit} · ${esc(e ? e.titel : "")}</div>
       <div class="wir" style="margin-top:8px">Wir sind: <b>${esc(a.wir)}</b></div>
@@ -500,7 +518,7 @@ function seiteHtml(seite) {
       <button class="slot konto ${r.konto ? "filled" : ""}" data-pick="konto" ${c.geprueft ? "disabled" : ""}>${r.konto ? `<span class="nr">${esc(r.konto)}</span><span class="nm">${esc(KONTO[r.konto])}</span>` : `<span class="ph">Konto wählen</span>`}</button>
       <button class="slot betrag ${r.betrag != null ? "filled" : ""}" data-pick="betrag" ${c.geprueft ? "disabled" : ""}>${r.betrag != null ? `<span class="nr">${eur(r.betrag)}</span>` : `<span class="ph">Betrag</span>`}</button>
       ${!c.geprueft && c.rows[seite].length > 1 ? `<button class="rm" data-rm aria-label="Zeile entfernen">×</button>` : ""}
-    </div>${res && res.hint ? `<div class="rowhint ${res.ok ? "ok" : "bad"}">${esc(res.hint)}</div>` : ""}`;
+    </div>${res && res.hint ? `<div class="rowhint ${res.ok ? "ok" : "bad"}" data-art="${esc(res.art)}">${esc(res.hint)}</div>` : ""}`;
   }).join("");
   return `<div class="side ${cls}" data-side="${seite}"><div class="side-h"><span class="lbl"><span class="dot"></span>${seite.toUpperCase()}</span></div>${rows}
     ${c.geprueft ? (c.res && c.res.fehlt[seite] ? `<div class="rowhint bad">Im ${seite} fehlt noch ${c.res.fehlt[seite] === 1 ? "eine Zeile" : c.res.fehlt[seite] + " Zeilen"}.</div>` : "") : `<button class="add" data-add="${seite}">+ Zeile im ${seite}</button>`}</div>`;
@@ -535,15 +553,15 @@ function tippHtml() {
   const c = S.cur, a = c.a, n = c.tipps;
   if (!n && c.geprueft) return "";
   const e = EINHEITEN.find(x => x.nr === a.einheit);
-  const konten = [...new Set(a.loesung.map(l => l.konto))].sort((x, y) => x.localeCompare(y, "de", { numeric: true }));
+  const konten = [...new Set(a.loesung.map(l => l.konto))].sort(kontoSort);
   const st = [
-    ["Tipp 1 · Denkfrage", `<p>${nbsp(esc(a.tipp || "Was passiert hier genau – und wer bekommt oder zahlt Geld?"))}</p>`],
+    ["Tipp 1 · Denkfrage", `<p>${nbsp(esc(a.tipp || "Was passiert hier genau? Wer bekommt oder zahlt Geld?"))}</p>`],
     ["Tipp 2 · Diese Konten brauchst du", `<ul class="tkonten">${konten.map(k => `<li><b>${esc(k)}</b> ${esc(KONTO[k])}</li>`).join("")}</ul><p class="small muted">Auf welche Seite und mit welchem Betrag? Das findest du selbst heraus.</p>`],
     ["Tipp 3 · Theorie", `<ul>${(e ? e.kernsaetze : []).map(k => `<li>${esc(k)}</li>`).join("")}</ul>`]
   ];
   let h = "";
   for (let i = 0; i < n; i++) h += `<details class="tipp" data-stufe="${i + 1}" ${c.tippZu[i + 1] ? "" : "open"}><summary>${BULB}${st[i][0]}</summary><div class="tbody">${st[i][1]}</div></details>`;
-  if (!c.geprueft && n < 3) h += `<button class="tippmore" data-tipp>${BULB}<span>${n === 0 ? "Tipp anzeigen" : `Nächster Tipp (${n + 1} von 3)`}</span><span class="small muted">${n === 0 ? "– richtig mit Tipp = ½ Punkt" : ""}</span></button>`;
+  if (!c.geprueft && n < 3) h += `<button class="tippmore" data-tipp>${BULB}<span>${n === 0 ? "Tipp anzeigen" : `Nächster Tipp (${n + 1} von 3)`}</span><span class="small muted">${n === 0 ? "Richtig mit Tipp = ½ Punkt" : ""}</span></button>`;
   return h;
 }
 
@@ -551,7 +569,7 @@ function tippHtml() {
 function openSheet(seite, i, art) {
   const c = S.cur, r = c.rows[seite][i];
   const sc = seite === "Soll" ? "s" : "h";
-  let h = `<div class="grip"></div><h3><span class="${sc}">${seite}</span> – Zeile ${i + 1}: ${art === "konto" ? "Konto wählen" : "Betrag wählen"}</h3>`;
+  let h = `<div class="grip"></div><h3><span class="${sc}">${seite}</span>, Zeile ${i + 1}: ${art === "konto" ? "Konto wählen" : "Betrag wählen"}</h3>`;
   if (art === "konto") {
     h += `<div class="klist">${c.konten.map(k => `<button class="kchip ${r.konto === k ? "cur" : ""}" data-konto="${k}"><span class="nr">${k}</span><span>${esc(KONTO[k])}</span></button>`).join("")}</div>`;
   } else {
@@ -575,43 +593,102 @@ function pruefen() {
   const c = S.cur, a = c.a;
   // leere Zeilen ignorieren, halbe Zeilen anmahnen
   for (const s of ["Soll", "Haben"]) {
-    if (c.rows[s].some(r => (r.konto == null) !== (r.betrag == null))) { info("Bitte fülle in jeder Zeile Konto und Betrag aus – oder entferne die Zeile mit ×."); return; }
+    if (c.rows[s].some(r => (r.konto == null) !== (r.betrag == null))) { info("Bitte fülle in jeder Zeile Konto und Betrag aus. Oder entferne die Zeile mit ×."); return; }
   }
   for (const s of ["Soll", "Haben"]) {
     c.rows[s] = c.rows[s].filter(r => r.konto != null);
     if (!c.rows[s].length) { c.rows[s].push(neueZeile()); info(`Im ${s} steht noch nichts. Jeder Buchungssatz hat mindestens eine Soll- und eine Haben-Zeile.`); drawKeepScroll(); return; }
   }
-  const res = { Soll: [], Haben: [], fehlt: {} };
+  const res = { Soll: [], Haben: [], fehlt: {}, order: [], gesamt: "", art: "" };
   let alles = true;
-  for (const s of ["Soll", "Haben"]) {
-    const offen = a.loesung.filter(l => l.seite === s).map(l => ({ ...l, used: false }));
-    const eintr = c.rows[s].map(r => ({ r, ok: false, hint: "" }));
-    // exakte Treffer zuerst (Reihenfolge egal)
-    eintr.forEach(e => { const m = offen.find(l => !l.used && l.konto === e.r.konto && cents(l.betrag) === cents(e.r.betrag)); if (m) { m.used = true; e.ok = true; e.match = m; } });
-    eintr.filter(e => !e.ok).forEach(e => {
-      const kontoDa = offen.find(l => !l.used && !l.hint && l.konto === e.r.konto);
-      if (kontoDa) kontoDa.hint = true;
-      const andereSeite = a.loesung.some(l => l.seite !== s && l.konto === e.r.konto);
-      if (kontoDa) e.hint = "Konto stimmt, aber der Betrag nicht.";
-      else if (andereSeite) e.hint = `Dieses Konto gehört auf die ${s === "Soll" ? "Haben" : "Soll"}-Seite.`;
-      else if (a.loesung.some(l => l.seite === s && cents(l.betrag) === cents(e.r.betrag))) e.hint = "Betrag passt, aber das Konto nicht.";
-      else e.hint = "Diese Zeile gehört so nicht in den Buchungssatz.";
+  const SEITEN = ["Soll", "Haben"];
+  const offen = {}, eintr = {};
+  // 1. Exakte Treffer (Konto + Betrag), innerhalb einer Seite reihenfolgeunabhängig
+  for (const s of SEITEN) {
+    offen[s] = a.loesung.filter(l => l.seite === s).map(l => ({ ...l, used: false }));
+    eintr[s] = c.rows[s].map(r => ({ r, ok: false, hint: "", art: "" }));
+    eintr[s].forEach(e => { const m = offen[s].find(l => !l.used && l.konto === e.r.konto && cents(l.betrag) === cents(e.r.betrag)); if (m) { m.used = true; e.ok = true; e.match = m; } });
+  }
+  // 2. Hinweise für die übrigen Zeilen
+  const restBetraege = SEITEN.flatMap(s => offen[s].filter(l => !l.used));   // noch nicht getroffene Lösungszeilen (beide Seiten)
+  for (const s of SEITEN) {
+    const anders = s === "Soll" ? "Haben" : "Soll";
+    eintr[s].filter(e => !e.ok).forEach(e => {
       alles = false;
+      const kontoDa = offen[s].find(l => !l.used && !l.hint && l.konto === e.r.konto);
+      if (kontoDa) {
+        kontoDa.hint = true;
+        const gehoertWoandersHin = restBetraege.some(l => l !== kontoDa && cents(l.betrag) === cents(e.r.betrag));
+        if (gehoertWoandersHin) { e.art = "vertauscht"; e.hint = "Konto stimmt, aber der Betrag gehört zu einem anderen Konto."; }
+        else { e.art = "betrag"; e.hint = "Konto stimmt, aber der Betrag ist falsch. Rechne nach."; }
+      } else if (a.loesung.some(l => l.seite === anders && l.konto === e.r.konto)) {
+        e.art = "seite"; e.hint = "Dieses Konto gehört auf die andere Seite.";
+      } else if (a.loesung.some(l => l.seite === s && l.konto === e.r.konto)) {
+        e.art = "doppelt"; e.hint = "Dieses Konto hast du schon. Es kommt nur einmal vor.";
+      } else if (offen[s].some(l => !l.used && cents(l.betrag) === cents(e.r.betrag))) {
+        e.art = "konto"; e.hint = "Der Betrag passt, aber das Konto nicht.";
+      } else {
+        e.art = "falsch"; e.hint = "Dieses Konto passt hier nicht.";
+      }
     });
-    const rest = offen.filter(l => !l.used).length;
-    const falsch = eintr.filter(e => !e.ok).length;
-    if (rest > falsch) { res.fehlt[s] = rest - falsch; alles = false; }
+    const rest = offen[s].filter(l => !l.used).length;
+    const falsch = eintr[s].filter(e => !e.ok).length;
+    if (rest > falsch) res.fehlt[s] = rest - falsch;
     if (rest > 0) alles = false;
-    res[s] = eintr;
+    res[s] = eintr[s];
     // Lösungsanzeige: richtige Zeilen in der Reihenfolge des Schülers, danach die übrigen
-    res.order = (res.order || []).concat(eintr.filter(e => e.ok).map(e => e.match), offen.filter(l => !l.used));
+    res.order = res.order.concat(eintr[s].filter(e => e.ok).map(e => e.match), offen[s].filter(l => !l.used));
+  }
+  // 3. Gesamtmeldung
+  if (!alles) {
+    const key = l => l.seite + "|" + l.konto;
+    const schueler = SEITEN.flatMap(s => c.rows[s].map(r => ({ seite: s, konto: r.konto, betrag: r.betrag })));
+    const gleich = (x, y) => x.length === y.length && x.every((v, i) => v === y[i]);
+    const kontenOk = gleich(schueler.map(key).sort(), a.loesung.map(key).sort());
+    const betraegeGleich = gleich(schueler.map(l => cents(l.betrag)).sort((p, q) => p - q), a.loesung.map(l => cents(l.betrag)).sort((p, q) => p - q));
+    if (kontenOk && betraegeGleich) { res.art = "vertauscht"; res.gesamt = "Die Konten stimmen, aber die Beträge sind vertauscht. Schau, welcher Betrag zu welchem Konto gehört."; }
+    else if (kontenOk) { res.art = "betraege"; res.gesamt = "Die Konten stimmen, aber die Beträge nicht."; }
+    else { res.art = "falsch"; res.gesamt = "Noch nicht ganz richtig."; }
   }
   c.res = res; c.geprueft = true; c.ok = alles;
+  // Motivation: Serie zählt nur ohne Tipp hoch; richtig mit Tipp hält die Serie, falsch setzt sie auf 0
+  c.meilenstein = 0;
+  if (alles) {
+    c.lob = LOB[Math.floor(Math.random() * LOB.length)];
+    if (!c.tipps) { S.serie++; if ([3, 5, 10].includes(S.serie) || (S.serie > 10 && S.serie % 5 === 0)) c.meilenstein = S.serie; }
+  } else S.serie = 0;
+  S.besteSerie = Math.max(S.besteSerie, S.serie);
   const punkte = alles ? (c.tipps > 0 ? 0.5 : 1) : 0;
   S.ergebnisse.push({ id: a.id, einheit: a.einheit, ok: alles, tipp: c.tipps > 0, tipps: c.tipps, punkte });
   merke(a.id, alles);
   drawAufgabe();
   const fb = $("#fb"); if (fb) fb.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (c.meilenstein) konfetti();
+}
+const LOB = ["Super!", "Richtig gebucht!", "Stark, weiter so!", "Sehr gut!", "Genau so!", "Sauber gebucht!", "Perfekt!", "Gut gemacht!"];
+const FLAMME = `<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 2c1 3.5 5 5.5 5 10.5A5 5 0 0 1 7 12.5c0-2 1-3.5 2-4.5.2 1.6 1 2.6 2 3 0-3.5-.5-6 1-9z" fill="currentColor"/></svg>`;
+const HAKEN = `<svg class="pop" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+function meilensteinText(n) {
+  return n === 3 ? "3 richtig in Folge. Läuft bei dir!" : n === 5 ? "5 richtig in Folge. Richtig stark!" : n === 10 ? "10 richtig in Folge. Beeindruckend!" : `${n} richtig in Folge. Weiter so!`;
+}
+function konfetti() {
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const alt = document.getElementById("konfetti"); if (alt) alt.remove();
+  const box = document.createElement("div"); box.id = "konfetti"; box.setAttribute("aria-hidden", "true");
+  const farben = ["#2f6f73", "#f0b429", "#2f5fb3", "#a4572a", "#1f8a4c", "#d9a3c4"];
+  for (let i = 0; i < 46; i++) {
+    const p = document.createElement("i");
+    p.style.left = Math.random() * 100 + "%";
+    p.style.background = farben[i % farben.length];
+    p.style.animationDelay = Math.random() * 0.35 + "s";
+    p.style.animationDuration = 1.3 + Math.random() * 0.9 + "s";
+    p.style.setProperty("--dx", (Math.random() * 120 - 60) + "px");
+    p.style.setProperty("--rot", (Math.random() * 720 - 360) + "deg");
+    if (i % 3 === 0) p.style.borderRadius = "50%";
+    box.appendChild(p);
+  }
+  document.body.appendChild(box);
+  setTimeout(() => box.remove(), 2600);
 }
 function info(t) { const fb = $("#fb"); if (fb) { fb.innerHTML = `<div class="msg info">${esc(t)}</div>`; } }
 function loesungHtml(a, order) {
@@ -621,7 +698,8 @@ function loesungHtml(a, order) {
 }
 function feedbackHtml() {
   const c = S.cur;
-  return `<div class="msg ${c.ok ? "ok" : "bad"}" id="ergebnis" data-ok="${c.ok}">${c.ok ? (c.tipps ? "Richtig – mit Tipp gelöst: ½ Punkt." : "Richtig! Super gemacht – 1 Punkt.") : "Noch nicht ganz richtig – schau dir die Lösung an."}</div>
+  return `<div class="msg ${c.ok ? "ok" : "bad"}" id="ergebnis" data-ok="${c.ok}" data-art="${c.ok ? "" : esc(c.res.art)}">${c.ok ? `<span class="lobzeile">${HAKEN}<span><b>${esc(c.lob || "Richtig!")}</b> ${c.tipps ? "Mit Tipp gelöst: ½ Punkt." : "1 Punkt."}</span></span>` : `${esc(c.res.gesamt)}<div class="mut">Kein Problem, schau dir die Lösung an.</div>`}</div>
+    ${c.ok && c.meilenstein ? `<div class="meilenstein" id="meilenstein">${FLAMME}<span>${esc(meilensteinText(c.meilenstein))}</span></div>` : ""}
     <div class="loesung"><div style="font-weight:700;margin-bottom:6px">Lösung</div>${loesungHtml(c.a, c.res && c.res.order)}</div>
     <div class="erkl"><b>Erklärung:</b> ${esc(c.a.erklaerung)}</div>`;
 }
@@ -632,7 +710,7 @@ function renderAuswertung() {
   const E = S.ergebnisse, ok = E.filter(r => r.ok).length, pk = E.reduce((s, r) => s + r.punkte, 0), mitT = E.filter(r => r.ok && r.tipp).length;
   const falsche = E.filter(r => !r.ok).map(r => r.id);
   let h = `<div class="card" id="auswertung" style="text-align:center"><div class="muted">Deine Auswertung</div>
-    <div class="big">${punkteTxt(pk)} von ${E.length} Punkten</div><div class="small muted" style="margin:2px 0 6px">${ok} richtig${mitT ? `, davon ${mitT} mit Tipp (je ½ Punkt)` : ""}</div><div class="muted">${E.length ? (pk === E.length ? "Alles richtig, ganz ohne Tipp – ausgezeichnet!" : ok === E.length ? "Alles richtig – nächstes Mal vielleicht ohne Tipp?" : ok / E.length >= .7 ? "Sehr gut, fast alles richtig!" : "Weiter üben – du schaffst das!") : "Noch keine Aufgabe bearbeitet."}</div></div>`;
+    <div class="big">${punkteTxt(pk)} von ${E.length} Punkten</div><div class="small muted" style="margin:2px 0 6px">${ok} richtig${mitT ? `, davon ${mitT} mit Tipp (je ½ Punkt)` : ""}</div>${S.besteSerie >= 2 ? `<div class="beste" id="beste" data-beste="${S.besteSerie}">${FLAMME}<span>Beste Serie: ${S.besteSerie} richtig in Folge</span></div>` : `<div id="beste" data-beste="${S.besteSerie}" hidden></div>`}<div class="muted">${E.length ? (pk === E.length ? "Alles richtig, ganz ohne Tipp. Ausgezeichnet!" : ok === E.length ? "Alles richtig! Nächstes Mal vielleicht ohne Tipp?" : ok / E.length >= .7 ? "Sehr gut, fast alles richtig!" : "Weiter üben. Du schaffst das!") : "Noch keine Aufgabe bearbeitet."}</div></div>`;
   if (E.length) {
     h += `<div class="card"><div style="font-weight:700">Nach Einheiten</div>`;
     EINHEITEN.forEach(e => {
@@ -660,7 +738,7 @@ function init() {
   document.addEventListener("keydown", ev => { if (ev.key === "Escape") { closeSheet(); $("#zoom").classList.remove("open"); } });
   renderStart();
 }
-window.BT = { DATA, S, kontenFuer, betraegeFuer, belegHtml, eur };
+window.BT = { DATA, S, kontenFuer, betraegeFuer, belegHtml, eur, starte };
 init();
 
 </script>
