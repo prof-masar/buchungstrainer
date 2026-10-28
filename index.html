@@ -292,7 +292,7 @@ const kontoSort = (x, y) => (KONTO_POS[x] ?? 1e9) - (KONTO_POS[y] ?? 1e9) || Num
 const AUFG = {}; DATA.aufgaben.forEach(a => AUFG[a.id] = a);
 const EINHEITEN = DATA.einheiten.slice().sort((a, b) => a.nr - b.nr);
 
-/* ---------- Speicher (nur lokal, keine Datenerfassung) ---------- */
+/* ---------- Speicher (nur lokal, kein Tracking) ---------- */
 const SKEY = "buchungstrainer:" + (CONFIG.titel + "|" + CONFIG.klasse).toLowerCase();
 const store = {
   load() { if (!CONFIG.fortschrittSpeichern) return {}; try { return JSON.parse(localStorage.getItem(SKEY)) || {}; } catch (e) { return {}; } },
@@ -482,7 +482,7 @@ function renderStart() {
   h += `<div class="row-btns" style="margin-top:6px"><button class="linkbtn" id="alle">Alle auswählen</button><button class="linkbtn" id="keine">Keine</button>
         ${Object.keys(progress).length ? `<button class="linkbtn" id="reset" style="margin-left:auto;color:var(--muted)">Fortschritt löschen</button>` : ""}</div>
     <div class="card small muted">So geht's: Lies den Geschäftsfall oder Beleg. Tippe dann im <b style="color:var(--soll)">Soll</b> und im <b style="color:var(--haben)">Haben</b> auf die Felder und wähle Konto und Betrag. Mit <b>+ Zeile</b> fügst du weitere Zeilen hinzu.</div>
-    <footer class="foot">${esc(CONFIG.titel)}${CONFIG.lehrer ? " · " + esc(CONFIG.lehrer) : ""}<br>Kontenplan: ${esc(DATA.kontenplan.replace(/_/g, " "))} · Keine Anmeldung, keine Datenerfassung${CONFIG.fortschrittSpeichern ? " – Fortschritt bleibt nur auf diesem Gerät" : ""}.</footer>`;
+    <footer class="foot">${esc(CONFIG.titel)}${CONFIG.lehrer ? " · " + esc(CONFIG.lehrer) : ""}<br>Kontenplan: ${esc(DATA.kontenplan.replace(/_/g, " "))} · Keine Anmeldung, keine Namen, kein Tracking${CONFIG.fortschrittSpeichern ? " – Fortschritt bleibt nur auf diesem Gerät" : ""}.</footer>`;
   const n = anz(S.auswahl);
   h += `<div class="sticky"><div class="inner"><button class="btn primary" id="start" ${n ? "" : "disabled"}>${n ? (S.auswahl.size > 1 ? `Starten (${n} Aufgaben gemischt)` : `Starten (${n} Aufgaben)`) : "Bitte Einheit wählen"}</button></div></div>`;
   app().innerHTML = h;
