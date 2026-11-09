@@ -589,7 +589,8 @@ function renderStart() {
   window.scrollTo(0, 0);
   speichereAuswahl();
   const anz = S => DATA.aufgaben.filter(a => S.has(a.einheit)).length;
-  let h = MOT.startHtml() + `<h2>Was möchtest du üben?</h2>`;
+  let h = MOT.startHtml() + `<h2>Was möchtest du üben?</h2>
+    <div class="row-btns" style="margin:-2px 0 4px"><button type="button" class="linkbtn js-alle">Alle auswählen</button><button type="button" class="linkbtn js-keine">Keine</button></div>`;
   EINHEITEN.forEach(e => {
     const auf = DATA.aufgaben.filter(a => a.einheit === e.nr);
     const bel = auf.filter(a => a.beleg).length;
@@ -604,7 +605,7 @@ function renderStart() {
       <details class="theorie"><summary>Theorie</summary><ul>${e.kernsaetze.map(k => `<li>${esc(k)}</li>`).join("")}</ul></details>
     </div>`;
   });
-  h += `<div class="row-btns" style="margin-top:6px"><button class="linkbtn" id="alle">Alle auswählen</button><button class="linkbtn" id="keine">Keine</button>
+  h += `<div class="row-btns" style="margin-top:6px"><button type="button" class="linkbtn js-alle" id="alle">Alle auswählen</button><button type="button" class="linkbtn js-keine" id="keine">Keine</button>
         ${Object.keys(progress).length ? `<button class="linkbtn" id="reset" style="margin-left:auto;color:var(--muted)">Fortschritt löschen</button>` : ""}</div>
     <div class="card small muted">So geht's: Lies den Geschäftsfall oder Beleg. Tippe dann im <b style="color:var(--soll)">Soll</b> und im <b style="color:var(--haben)">Haben</b> auf die Felder und wähle Konto und Betrag. Mit <b>+ Zeile</b> fügst du weitere Zeilen hinzu.</div>
     <footer class="foot">${esc(CONFIG.titel)}${CONFIG.lehrer ? " · " + esc(CONFIG.lehrer) : ""}<br>Kontenplan: ${esc(CONFIG.kontenplan)} · Keine Anmeldung, keine Namen, kein Tracking${CONFIG.fortschrittSpeichern ? " – Fortschritt bleibt nur auf diesem Gerät" : ""}.${typeof FB === "object" ? FB.footerHtml() : ""}</footer>`;
@@ -612,8 +613,10 @@ function renderStart() {
   h += `<div class="sticky"><div class="inner"><button class="btn primary" id="start" ${n ? "" : "disabled"}>${n ? (S.auswahl.size > 1 ? `Starten (${n} Aufgaben gemischt)` : `Starten (${n} Aufgaben)`) : "Bitte Einheit wählen"}</button></div></div>`;
   app().innerHTML = h;
   app().querySelectorAll("[data-toggle]").forEach(b => b.onclick = () => { const nr = +b.dataset.toggle; S.auswahl.has(nr) ? S.auswahl.delete(nr) : S.auswahl.add(nr); renderStart(); restoreScroll(); });
-  $("#alle").onclick = () => { EINHEITEN.forEach(e => S.auswahl.add(e.nr)); renderStart(); restoreScroll(); };
-  $("#keine").onclick = () => { S.auswahl.clear(); renderStart(); restoreScroll(); };
+  const alleWahl = () => { EINHEITEN.forEach(e => S.auswahl.add(e.nr)); renderStart(); restoreScroll(); };
+  const keineWahl = () => { S.auswahl.clear(); renderStart(); restoreScroll(); };
+  app().querySelectorAll(".js-alle").forEach(b => b.onclick = alleWahl);
+  app().querySelectorAll(".js-keine").forEach(b => b.onclick = keineWahl);
   const rs = $("#reset"); if (rs) rs.onclick = () => { if (confirm("Gespeicherten Fortschritt auf diesem Gerät löschen?")) { store.clear(); MOT.loeschen(); progress = {}; renderStart(); } };
   if (typeof FB === "object") FB.bindFooter();
   MOT.bind();
