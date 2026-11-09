@@ -188,6 +188,8 @@ body.fb-offen{overflow:hidden}
 .fbstern{width:48px;height:48px;border:0;background:none;color:#c5ccd6;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0}
 .fbstern.on{color:#f0b429}
 .fbopts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fbfoot{display:inline-flex;align-items:center;min-height:44px;padding:0 6px;font-size:inherit;font-weight:600}
+span.fbfoot{color:var(--muted);font-weight:500}
 .fbopt{min-height:46px;border:1.5px solid var(--line);background:var(--card);border-radius:12px;font-weight:600;font-size:.95rem;color:var(--text);padding:6px 4px}
 .fbopt.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
 .fbtext textarea{width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-size:1rem;resize:vertical;min-height:84px}
@@ -548,7 +550,7 @@ function renderStart() {
   h += `<div class="row-btns" style="margin-top:6px"><button class="linkbtn" id="alle">Alle auswählen</button><button class="linkbtn" id="keine">Keine</button>
         ${Object.keys(progress).length ? `<button class="linkbtn" id="reset" style="margin-left:auto;color:var(--muted)">Fortschritt löschen</button>` : ""}</div>
     <div class="card small muted">So geht's: Lies den Geschäftsfall oder Beleg. Tippe dann im <b style="color:var(--soll)">Soll</b> und im <b style="color:var(--haben)">Haben</b> auf die Felder und wähle Konto und Betrag. Mit <b>+ Zeile</b> fügst du weitere Zeilen hinzu.</div>
-    <footer class="foot">${esc(CONFIG.titel)}${CONFIG.lehrer ? " · " + esc(CONFIG.lehrer) : ""}<br>Kontenplan: ${esc(CONFIG.kontenplan)} · Keine Anmeldung, keine Namen, kein Tracking${CONFIG.fortschrittSpeichern ? " – Fortschritt bleibt nur auf diesem Gerät" : ""}.</footer>`;
+    <footer class="foot">${esc(CONFIG.titel)}${CONFIG.lehrer ? " · " + esc(CONFIG.lehrer) : ""}<br>Kontenplan: ${esc(CONFIG.kontenplan)} · Keine Anmeldung, keine Namen, kein Tracking${CONFIG.fortschrittSpeichern ? " – Fortschritt bleibt nur auf diesem Gerät" : ""}.${typeof FB === "object" ? FB.footerHtml() : ""}</footer>`;
   const n = anz(S.auswahl);
   h += `<div class="sticky"><div class="inner"><button class="btn primary" id="start" ${n ? "" : "disabled"}>${n ? (S.auswahl.size > 1 ? `Starten (${n} Aufgaben gemischt)` : `Starten (${n} Aufgaben)`) : "Bitte Einheit wählen"}</button></div></div>`;
   app().innerHTML = h;
@@ -556,6 +558,7 @@ function renderStart() {
   $("#alle").onclick = () => { EINHEITEN.forEach(e => S.auswahl.add(e.nr)); renderStart(); restoreScroll(); };
   $("#keine").onclick = () => { S.auswahl.clear(); renderStart(); restoreScroll(); };
   const rs = $("#reset"); if (rs) rs.onclick = () => { if (confirm("Gespeicherten Fortschritt auf diesem Gerät löschen?")) { store.clear(); progress = {}; renderStart(); } };
+  if (typeof FB === "object") FB.bindFooter();
   $("#start").onclick = () => starte(DATA.aufgaben.filter(a => S.auswahl.has(a.einheit)).map(a => a.id));
 }
 let lastY = 0;
@@ -835,112 +838,113 @@ function init() {
   renderStart();
 }
 
-/* ---------- Feedback-Fenster (nur aktiv mit echter Konfig, sendet nur beim Klick auf „Senden“) ---------- */
+/* ---------- Feedback (einmal pro Browser für die ganze App; sendet nur beim Klick auf „Senden“) ---------- */
 /* =====================================================================
-   FEEDBACK-KONFIG – hier die Werte aus dem Google Formular eintragen
-   (Anleitung: feedback_formular_anleitung.md).
-   Solange hier Platzhalter stehen, ist das Feedback-Fenster komplett AUS.
+   FEEDBACK-KONFIG – Stefans Google Formular „Buchungstrainer Feedback“
+   (ausgelesen am 09.11.2026 aus FB_PUBLIC_LOAD_DATA_ der viewform-Seite).
+   Fragen in Wortlaut und Reihenfolge des Formulars; Optionswerte exakt.
+   Ändert Stefan das Formular, hier anpassen (Anleitung: feedback_formular_anleitung.md).
+   Mit Platzhaltern (z. B. formId "FORM_ID_HIER_EINTRAGEN") ist das Feedback komplett AUS.
    ===================================================================== */
 const FEEDBACK_CONFIG = {
-  formId: "FORM_ID_HIER_EINTRAGEN",            // aus .../forms/d/e/<FORM_ID>/viewform
-  entry: {
-    einheit:       "entry.EINHEIT_ID",         // Kurzantwort, z. B. "E3"
-    sterne:        "entry.STERNE_ID",          // 1–5
-    schwierigkeit: "entry.SCHWIERIGKEIT_ID",   // zu leicht / passt / zu schwer
-    belege:        "entry.BELEGE_ID",          // ja / teilweise / nein
-    freitext:      "entry.FREITEXT_ID"         // max. 500 Zeichen
-  }
+  formId: "1FAIpQLScWHIP8l1IhKulFq3VW0BTgMSLzC-VHNYU9OcuIUZli46u57A",
+  nachEinheiten: 3,        // automatisch fragen, sobald so viele Einheiten vollständig gelöst sind (einmal pro Browser)
+  fragen: [                // keine Pflichtfragen im Formular
+    { entry: "entry.168728235",  frage: "Wie gefällt dir die App?",      typ: "text" },
+    { entry: "entry.147127905",  frage: "Wie schwer ist sie?",           typ: "wahl", optionen: ["zu leicht", "passt", "zu schwer"] },
+    { entry: "entry.460634987",  frage: "Ich mag lieber die Beispiele",  typ: "wahl", optionen: ["mit Belegen", "ohne Belege"] },
+    { entry: "entry.1904767247", frage: "Was können wir besser machen?", typ: "text" }
+  ]
 };
 /* ===================================================================== */
 
 const FB = (() => {
   const C = typeof FEEDBACK_CONFIG === "object" ? FEEDBACK_CONFIG : null;
-  const aktiv = !!C && /^[A-Za-z0-9_-]{20,}$/.test(C.formId || "") &&
-    ["einheit", "sterne", "schwierigkeit", "belege", "freitext"].every(k => /^entry\.\d+$/.test((C.entry || {})[k] || ""));
+  const aktiv = !!C && /^[A-Za-z0-9_-]{20,}$/.test(C.formId || "") && Array.isArray(C.fragen) && C.fragen.length > 0 &&
+    C.fragen.every(q => /^entry\.\d+$/.test(q.entry || "") && q.frage && (q.typ === "text" || (q.typ === "wahl" && Array.isArray(q.optionen) && q.optionen.length)));
+  const NACH = (C && C.nachEinheiten) || 3;
   const KEY = SKEY + ":feedback";
-  const lade = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } };
-  const setze = (nr, status) => { const s = lade(); s[nr] = status; try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) { } };
+  const lade = () => { try { return localStorage.getItem(KEY) || ""; } catch (e) { return ""; } };   // "" | gefragt | uebersprungen | gesendet | fehler
+  const setze = st => { try { localStorage.setItem(KEY, st); } catch (e) { } };
+  const fertigeEinheiten = () => EINHEITEN.filter(e => { const auf = DATA.aufgaben.filter(a => a.einheit === e.nr); return auf.length && auf.every(a => progress[a.id]); }).length;
   let offen = null, vorher = null;
-  const fertig = nr => { const auf = DATA.aufgaben.filter(a => a.einheit === nr); return auf.length > 0 && auf.every(a => progress[a.id]); };
-  function pruefen() {
-    if (!aktiv || offen) return;
-    const s = lade();
-    const e = EINHEITEN.find(x => !s[x.nr] && fertig(x.nr));
-    if (e) zeige(e);
+  function pruefen() {   // am Ergebnisbildschirm
+    if (aktiv && !offen && !lade() && fertigeEinheiten() >= NACH) { setze("gefragt"); zeige(); }
   }
-  const STERNE = '<svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="currentColor"/></svg>';
-  const wahl = (name, frage, opts) => `<fieldset class="fbq"><legend>${frage}</legend><div class="fbopts">${opts.map(o => `<button type="button" class="fbopt" data-q="${name}" data-v="${o}" aria-pressed="false">${o}</button>`).join("")}</div></fieldset>`;
-  function zeige(e) {
-    setze(e.nr, "gefragt");
-    const A = { sterne: "", schwierigkeit: "", belege: "", freitext: "" };
+  function footerHtml() {
+    if (!aktiv) return "";
+    return lade() === "gesendet" ? `<br><span class="fbfoot" id="fbdank">Danke für dein Feedback</span>` : `<br><button type="button" class="linkbtn fbfoot" id="fblink">Feedback geben</button>`;
+  }
+  function bindFooter() { const l = document.getElementById("fblink"); if (l) l.onclick = () => zeige(); }
+  function frageHtml(q, i) {
+    const id = "fbq" + i;
+    if (q.typ === "wahl") return `<fieldset class="fbq"><legend>${esc(q.frage)}</legend><div class="fbopts" style="grid-template-columns:repeat(${q.optionen.length},1fr)">${q.optionen.map(o => `<button type="button" class="fbopt" data-i="${i}" data-v="${esc(o)}" aria-pressed="false">${esc(o)}</button>`).join("")}</div></fieldset>`;
+    return `<label class="fbq fbtext" for="${id}"><span class="lg">${esc(q.frage)}</span><textarea id="${id}" data-i="${i}" maxlength="500" rows="2"></textarea>
+      <span class="fbhint"><span>Bitte keine Namen eingeben.</span><span class="fbzahl" id="${id}z">0/500</span></span></label>`;
+  }
+  function zeige() {
+    if (!aktiv || offen) return;
+    const A = C.fragen.map(() => "");
     vorher = document.activeElement;
     const bg = document.createElement("div"); bg.className = "fb-bg"; bg.id = "feedback";
     bg.innerHTML = `<div class="fb-dlg" role="dialog" aria-modal="true" aria-labelledby="fbtitel" aria-describedby="fbunter">
       <button type="button" class="fbx" id="fbx" aria-label="Schließen, jetzt kein Feedback">✕</button>
-      <h2 id="fbtitel">Einheit ${e.nr} geschafft!</h2>
-      <p id="fbunter" class="small muted">Hilf uns mit ein paar Klicks. Alles ist freiwillig.</p>
-      <div id="fbform">
-      <fieldset class="fbq"><legend>Wie gefällt dir diese Einheit?</legend><div class="fbsterne">${[1, 2, 3, 4, 5].map(n => `<button type="button" class="fbstern" data-q="sterne" data-v="${n}" aria-pressed="false" aria-label="${n} von 5 Sternen">${STERNE}</button>`).join("")}</div></fieldset>
-      ${wahl("schwierigkeit", "Wie schwer war die Einheit?", ["zu leicht", "passt", "zu schwer"])}
-      ${wahl("belege", "Waren die Belege verständlich?", ["ja", "teilweise", "nein"])}
-      <label class="fbq fbtext"><span class="lg">Was können wir besser machen? (freiwillig)</span>
-        <textarea id="fbfrei" maxlength="500" rows="3"></textarea>
-        <span class="fbhint"><span>Bitte keine Namen eingeben.</span><span id="fbzahl">0/500</span></span></label>
-      <p class="fbdsgvo">Dein Feedback ist anonym. Gespeichert werden nur Einheit, deine Antworten und das Datum – keine Namen, keine Geräte-Daten. Beim Senden wird es an Google Formulare übertragen (Server von Google).</p>
+      <h2 id="fbtitel">Wie findest du den Buchungstrainer?</h2>
+      <p id="fbunter" class="small muted">Hilf uns mit ein paar Antworten. Alles ist freiwillig.</p>
+      <div id="fbform">${C.fragen.map(frageHtml).join("")}
+      <p class="fbdsgvo">Dein Feedback ist anonym. Gespeichert werden nur deine Antworten und das Datum – keine Namen, keine Geräte-Daten. Beim Senden wird es an Google Formulare übertragen (Server von Google).</p>
       <div class="fbbtns"><button type="button" class="btn ghost" id="fbspaeter">Jetzt nicht</button><button type="button" class="btn primary" id="fbsenden" disabled>Senden</button></div>
       </div></div>`;
     document.body.appendChild(bg); document.body.classList.add("fb-offen");
-    offen = { e, bg };
+    offen = { bg };
     const dlg = bg.querySelector(".fb-dlg");
-    const knopf = () => { $("#fbsenden").disabled = !(A.sterne || A.schwierigkeit || A.belege || A.freitext.trim()); };
-    bg.querySelectorAll("[data-q]").forEach(b => b.onclick = () => {
-      const q = b.dataset.q; A[q] = A[q] === b.dataset.v ? "" : b.dataset.v;
-      bg.querySelectorAll(`[data-q="${q}"]`).forEach(x => {
-        const an = q === "sterne" ? A.sterne && +x.dataset.v <= +A.sterne : x.dataset.v === A[q];
-        x.classList.toggle("on", !!an); x.setAttribute("aria-pressed", String(x.dataset.v === A[q]));
-      });
+    const knopf = () => { $("#fbsenden").disabled = !A.some(v => v.trim()); };
+    bg.querySelectorAll(".fbopt").forEach(b => b.onclick = () => {
+      const i = +b.dataset.i; A[i] = A[i] === b.dataset.v ? "" : b.dataset.v;
+      bg.querySelectorAll(`.fbopt[data-i="${i}"]`).forEach(x => { const an = x.dataset.v === A[i]; x.classList.toggle("on", an); x.setAttribute("aria-pressed", String(an)); });
       knopf();
     });
-    const t = $("#fbfrei"); t.oninput = () => { if (t.value.length > 500) t.value = t.value.slice(0, 500); A.freitext = t.value; $("#fbzahl").textContent = A.freitext.length + "/500"; knopf(); };
-    $("#fbx").onclick = () => schliessen("uebersprungen");
-    $("#fbspaeter").onclick = () => schliessen("uebersprungen");
-    $("#fbsenden").onclick = () => senden(e, A);
+    bg.querySelectorAll("textarea[data-i]").forEach(t => t.oninput = () => {
+      if (t.value.length > 500) t.value = t.value.slice(0, 500);
+      A[+t.dataset.i] = t.value; document.getElementById(t.id + "z").textContent = t.value.length + "/500"; knopf();
+    });
+    const zu = () => schliessen(offen && offen.danach ? null : "uebersprungen");
+    $("#fbx").onclick = zu; $("#fbspaeter").onclick = zu; $("#fbsenden").onclick = () => senden(A);
     bg.addEventListener("keydown", ev => {
-      if (ev.key === "Escape") { ev.stopPropagation(); schliessen(offen && offen.danach ? null : "uebersprungen"); }
+      if (ev.key === "Escape") { ev.stopPropagation(); zu(); }
       if (ev.key === "Tab") {   // Fokus bleibt im Fenster
         const f = [...dlg.querySelectorAll("button:not([disabled]), textarea")]; if (!f.length) return;
         const i = f.indexOf(document.activeElement);
         if (ev.shiftKey && i <= 0) { ev.preventDefault(); f[f.length - 1].focus(); } else if (!ev.shiftKey && i === f.length - 1) { ev.preventDefault(); f[0].focus(); }
       }
     });
-    bg.addEventListener("click", ev => { if (ev.target === bg) schliessen(offen && offen.danach ? null : "uebersprungen"); });
-    setTimeout(() => { const s = bg.querySelector(".fbstern"); if (s) s.focus(); }, 30);
+    bg.addEventListener("click", ev => { if (ev.target === bg) zu(); });
+    setTimeout(() => { const s = dlg.querySelector(".fbq textarea, .fbq button"); if (s) s.focus(); }, 30);
   }
   function danke(text, ok) {
     offen.danach = true;
     $("#fbform").innerHTML = `<div class="msg ${ok ? "ok" : "info"}" id="fbdanke" role="status">${text}</div><div class="fbbtns"><button type="button" class="btn primary" id="fbok">Schließen</button></div>`;
     $("#fbok").onclick = () => schliessen(null); $("#fbok").focus();
   }
-  async function senden(e, A) {
-    const C2 = C.entry, body = new URLSearchParams();
-    body.append(C2.einheit, "E" + e.nr); body.append(C2.sterne, A.sterne); body.append(C2.schwierigkeit, A.schwierigkeit);
-    body.append(C2.belege, A.belege); body.append(C2.freitext, A.freitext.slice(0, 500));
+  async function senden(A) {
+    const body = new URLSearchParams();
+    C.fragen.forEach((q, i) => { const v = (A[i] || "").slice(0, 500); if (v.trim()) body.append(q.entry, v); });   // nur beantwortete Felder (keine Pflichtfragen)
     $("#fbsenden").disabled = true; $("#fbsenden").textContent = "Wird gesendet …";
     try {
       await fetch(`https://docs.google.com/forms/d/e/${encodeURIComponent(C.formId)}/formResponse`, { method: "POST", mode: "no-cors", credentials: "omit", referrerPolicy: "no-referrer", cache: "no-store", body });
-      setze(e.nr, "gesendet"); danke("Danke für dein Feedback!", true);
+      setze("gesendet"); danke("Danke für dein Feedback!", true);
     } catch (err) {
-      setze(e.nr, "fehler"); danke("Das Senden hat leider nicht geklappt, vielleicht gibt es gerade kein Internet. Kein Problem, du kannst einfach weiterüben.", false);
+      setze("fehler"); danke("Das Senden hat leider nicht geklappt, vielleicht gibt es gerade kein Internet. Kein Problem, du kannst einfach weiterüben.", false);
     }
   }
   function schliessen(status) {
     if (!offen) return;
-    if (status) setze(offen.e.nr, status);
+    if (status && lade() !== "gesendet") setze(status);
     offen.bg.remove(); document.body.classList.remove("fb-offen"); offen = null;
+    const f = document.querySelector("footer.foot"); if (f && document.getElementById("start")) { const n = document.querySelector(".fbfoot"); if (n) { n.outerHTML = footerHtml().replace(/^<br>/, ""); bindFooter(); } }
     if (vorher && vorher.focus && document.contains(vorher)) vorher.focus();
-    setTimeout(pruefen, 0);   // ggf. nächste fertige Einheit
   }
-  return { aktiv, pruefen, lade };
+  return { aktiv, pruefen, lade, zeige, footerHtml, bindFooter, NACH };
 })();
 
 window.BT = { DATA, S, kontenFuer, betraegeFuer, belegHtml, eur, starte, FB: typeof FB === "object" ? FB : null };
