@@ -193,8 +193,8 @@ span.fbfoot{color:var(--muted);font-weight:500}
 .fbopt{min-height:46px;border:1.5px solid var(--line);background:var(--card);border-radius:12px;font-weight:600;font-size:.95rem;color:var(--text);padding:6px 4px}
 .fbopt.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
 .fbtext textarea{width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-size:1rem;resize:vertical;min-height:84px}
-.fbhint{display:flex;justify-content:space-between;gap:8px;font-size:.82rem;color:var(--muted);margin-top:4px}
-.fbdsgvo{font-size:.8rem;color:var(--muted);margin:14px 0 0;line-height:1.4}
+.fbhint{display:flex;justify-content:flex-end;gap:8px;font-size:.82rem;color:var(--muted);margin-top:4px}
+.fbdsgvo{font-size:.8rem;color:var(--muted);margin:10px 0 0;line-height:1.4}
 .fbbtns{display:flex;gap:10px;margin-top:14px}
 .fbbtns .btn{flex:1}
 .fb-dlg button:focus-visible,.fb-dlg textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
@@ -1110,7 +1110,7 @@ const FB = (() => {
     const id = "fbq" + i;
     if (q.typ === "wahl") return `<fieldset class="fbq"><legend>${esc(q.frage)}</legend><div class="fbopts" style="grid-template-columns:repeat(${q.optionen.length},1fr)">${q.optionen.map(o => `<button type="button" class="fbopt" data-i="${i}" data-v="${esc(o)}" aria-pressed="false">${esc(o)}</button>`).join("")}</div></fieldset>`;
     return `<label class="fbq fbtext" for="${id}"><span class="lg">${esc(q.frage)}</span><textarea id="${id}" data-i="${i}" maxlength="500" rows="2"></textarea>
-      <span class="fbhint"><span>Bitte keine Namen eingeben.</span><span class="fbzahl" id="${id}z">0/500</span></span></label>`;
+      <span class="fbhint"><span class="fbzahl" id="${id}z">0/500</span></span></label>`;
   }
   function zeige() {
     if (!aktiv || offen) return;
@@ -1120,7 +1120,7 @@ const FB = (() => {
     bg.innerHTML = `<div class="fb-dlg" role="dialog" aria-modal="true" aria-label="Feedback">
       <button type="button" class="fbx" id="fbx" aria-label="Schließen, jetzt kein Feedback">✕</button>
       <div id="fbform">${C.fragen.map(frageHtml).join("")}
-      <p class="fbdsgvo">Dein Feedback ist anonym. Gespeichert werden nur deine Antworten und das Datum – keine Namen, keine Geräte-Daten. Beim Senden wird es an Google Formulare übertragen (Server von Google).</p>
+      <p class="fbdsgvo">Dein Feedback ist anonym.</p>
       <div class="fbbtns"><button type="button" class="btn ghost" id="fbspaeter">Jetzt nicht</button><button type="button" class="btn primary" id="fbsenden" disabled>Senden</button></div>
       </div></div>`;
     document.body.appendChild(bg); document.body.classList.add("fb-offen");
