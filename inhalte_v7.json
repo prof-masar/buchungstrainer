@@ -182,7 +182,7 @@
  "einheiten": [
   {
    "nr": 1,
-   "titel": "Buchungssätze – Handelswaren",
+   "titel": "Einkauf, Rücksendung",
    "kernsaetze": [
     "Beim Wareneinkauf buchst du im Soll Handelswareneinsatz und Vorsteuer.",
     "Kaufst du auf Ziel, steht im Haben das Konto des Lieferanten – jeder Lieferant hat sein eigenes Konto.",
@@ -193,7 +193,7 @@
   },
   {
    "nr": 2,
-   "titel": "Verkauf von Handelswaren",
+   "titel": "Verkauf, Rücksendung",
    "kernsaetze": [
     "Verkauf auf Ziel: Soll Kundenkonto, Haben Handelswarenerlöse und Umsatzsteuer.",
     "Die Umsatzsteuer schulden wir dem Finanzamt – deshalb steht sie im Haben.",
