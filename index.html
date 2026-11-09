@@ -198,6 +198,62 @@ span.fbfoot{color:var(--muted);font-weight:500}
 .fbbtns{display:flex;gap:10px;margin-top:14px}
 .fbbtns .btn{flex:1}
 .fb-dlg button:focus-visible,.fb-dlg textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+/* ---------- v9 Motivation: Tagesziel, Rang-Pfad, Abzeichen, Sterne, Ergebnis-Karte ---------- */
+.motiv{padding:14px 16px}
+.mtop{display:flex;gap:12px;align-items:center}
+.mh{font-weight:700;font-size:.95rem}
+.ring{position:relative;flex:0 0 56px;width:56px;height:56px}
+.ring .rbg{fill:none;stroke:var(--line);stroke-width:6}
+.ring .rfg{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:round;transition:stroke-dasharray .4s}
+.ring.voll .rfg{stroke:var(--ok)}
+.rzahl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem}
+.rzahl small{font-weight:500;color:var(--muted);font-size:.7rem}
+.ring.voll .rzahl{color:var(--ok);font-size:1.2rem}
+.folge{display:flex;align-items:center;gap:5px;margin-top:2px;font-size:.85rem;font-weight:600;color:#b4690e}
+.folge.null{color:var(--muted);font-weight:400}
+.rang{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.pfad{position:relative;list-style:none;margin:10px 0 6px;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
+.pfad::before,.pfad::after{content:"";position:absolute;top:13px;left:10%;height:4px;border-radius:2px;background:var(--line)}
+.pfad::before{right:10%}
+.pfad::after{width:calc(var(--fuell) * .8);background:var(--accent)}
+.stufe{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;min-width:0}
+.stufe .pkt{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;background:var(--card);border:2px solid #c5ccd6;color:var(--muted)}
+.stufe.erreicht .pkt{background:var(--accent);border-color:var(--accent);color:#fff}
+.stufe.aktuell .pkt{box-shadow:0 0 0 4px var(--accent-soft)}
+.stufe .pn{font-size:.72rem;line-height:1.2;color:var(--muted);overflow-wrap:anywhere;hyphens:manual}
+.stufe.erreicht .pn{color:var(--text)}
+.stufe.aktuell .pn{font-weight:700;color:var(--accent)}
+.abz{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.badge{display:flex;gap:6px;align-items:flex-start;padding:7px 8px;border-radius:10px;border:1px dashed #c5ccd6;color:var(--muted);font-size:.8rem;line-height:1.25;min-width:0}
+.badge svg{flex:0 0 18px;margin-top:1px}
+.badge b{display:block;font-size:.82rem}
+.badge small{display:block;font-size:.7rem;overflow-wrap:anywhere}
+.badge.an{border:1px solid #f0c36d;background:#fff4e0;color:#8a4d00}
+.teilbtn{width:100%;margin-top:12px;min-height:46px;border-color:var(--accent);color:var(--accent)}
+.sterne{display:flex;gap:2px;margin-top:6px;color:#d59a12}
+.sterne .stern:not(.an){color:#c5ccd6}
+.neu ul{list-style:none;margin:8px 0 0;padding:0}
+.neu li{display:flex;align-items:center;gap:8px;padding:5px 0;flex-wrap:wrap}
+.neu li .sterne{margin:0}
+.neu li svg{color:#b4690e}
+.meilenstein.ziel{background:var(--ok-soft);color:var(--ok)}
+.tk-bg{position:fixed;inset:0;z-index:60;background:rgba(20,30,50,.45);display:flex;align-items:flex-end;justify-content:center}
+.tk-dlg{position:relative;background:var(--card);width:100%;max-width:520px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px 16px calc(16px + env(safe-area-inset-bottom))}
+@media (min-width:600px){.tk-bg{align-items:center;padding:20px}.tk-dlg{border-radius:18px;padding:22px 24px}}
+.tk-dlg h2{margin:0 48px 10px 0;font-size:1.2rem}
+.tk-karte{border-radius:16px;padding:18px;background:linear-gradient(135deg,#2f6f73,#24575a);color:#fff;text-align:center}
+.tk-app{font-weight:800;font-size:1.35rem;letter-spacing:-.01em}
+.tk-datum{opacity:.85;font-size:.92rem}
+.tk-karte ul{list-style:none;margin:12px 0;padding:0;text-align:left;display:inline-block}
+.tk-karte li{display:flex;gap:8px;align-items:flex-start;margin:6px 0;font-weight:600}
+.tk-karte li svg{flex:0 0 18px;color:#ffd166;margin-top:2px}
+.tk-code{display:inline-block;margin-top:4px;padding:6px 12px;border-radius:8px;background:rgba(255,255,255,.16);font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;letter-spacing:.03em;overflow-wrap:anywhere}
+.tk-text{width:100%;font:inherit;font-size:.85rem;border:1px solid var(--line);border-radius:10px;padding:8px;resize:none;color:var(--text);min-height:44px}
+.tk-dlg .fbbtns .btn{flex:1}
+@media (prefers-reduced-motion:reduce){.ring .rfg{transition:none}}
+/* v9: Feedback-Fenster ohne Überschrift – erste Frage nicht unter dem ✕ */
+#fbform>.fbq:first-child{margin-top:6px}
+#fbform>.fbq:first-child>.lg,#fbform>.fbq:first-child>legend{display:block;padding-right:48px}
 
 .bl{font-family:"Helvetica Neue",Arial,"Segoe UI",sans-serif;color:#222;background:#fff;font-size:13px;line-height:1.4;box-shadow:0 1px 3px rgba(0,0,0,.12),0 6px 20px rgba(0,0,0,.08)}
 .bl table{border-collapse:collapse;width:100%}
@@ -533,7 +589,7 @@ function renderStart() {
   window.scrollTo(0, 0);
   speichereAuswahl();
   const anz = S => DATA.aufgaben.filter(a => S.has(a.einheit)).length;
-  let h = `<h2>Was möchtest du üben?</h2>`;
+  let h = MOT.startHtml() + `<h2>Was möchtest du üben?</h2>`;
   EINHEITEN.forEach(e => {
     const auf = DATA.aufgaben.filter(a => a.einheit === e.nr);
     const bel = auf.filter(a => a.beleg).length;
@@ -543,6 +599,7 @@ function renderStart() {
       <button class="unit-head" data-toggle="${e.nr}" aria-pressed="${S.auswahl.has(e.nr)}"><span class="check"></span>
         <span><div class="unit-title">Einheit ${e.nr}: ${esc(e.titel)}</div>
         <div class="unit-meta">${auf.length} Aufgaben · davon ${bel} mit Beleg</div>
+        ${MOT.sterneHtml(e.nr)}
         ${gemacht.length ? `<span class="stat">zuletzt richtig: ${ok} von ${auf.length}</span>` : ""}</span></button>
       <details class="theorie"><summary>Theorie</summary><ul>${e.kernsaetze.map(k => `<li>${esc(k)}</li>`).join("")}</ul></details>
     </div>`;
@@ -557,8 +614,9 @@ function renderStart() {
   app().querySelectorAll("[data-toggle]").forEach(b => b.onclick = () => { const nr = +b.dataset.toggle; S.auswahl.has(nr) ? S.auswahl.delete(nr) : S.auswahl.add(nr); renderStart(); restoreScroll(); });
   $("#alle").onclick = () => { EINHEITEN.forEach(e => S.auswahl.add(e.nr)); renderStart(); restoreScroll(); };
   $("#keine").onclick = () => { S.auswahl.clear(); renderStart(); restoreScroll(); };
-  const rs = $("#reset"); if (rs) rs.onclick = () => { if (confirm("Gespeicherten Fortschritt auf diesem Gerät löschen?")) { store.clear(); progress = {}; renderStart(); } };
+  const rs = $("#reset"); if (rs) rs.onclick = () => { if (confirm("Gespeicherten Fortschritt auf diesem Gerät löschen?")) { store.clear(); MOT.loeschen(); progress = {}; renderStart(); } };
   if (typeof FB === "object") FB.bindFooter();
+  MOT.bind();
   $("#start").onclick = () => starte(DATA.aufgaben.filter(a => S.auswahl.has(a.einheit)).map(a => a.id));
 }
 let lastY = 0;
@@ -566,7 +624,7 @@ function restoreScroll() { window.scrollTo(0, lastY); }
 window.addEventListener("scroll", () => { if ($("#start")) lastY = window.scrollY; }, { passive: true });
 
 function starte(ids) {
-  S.queue = shuffle(ids); S.idx = 0; S.ergebnisse = []; S.serie = 0; S.besteSerie = 0;
+  S.queue = shuffle(ids); S.idx = 0; S.ergebnisse = []; S.serie = 0; S.besteSerie = 0; S.vorher = MOT.schnappschuss();
   renderAufgabe();
 }
 
@@ -759,9 +817,10 @@ function pruefen() {
   const punkte = alles ? (c.tipps > 0 ? 0.5 : 1) : 0;
   S.ergebnisse.push({ id: a.id, einheit: a.einheit, ok: alles, tipp: c.tipps > 0, tipps: c.tipps, punkte });
   merke(a.id, alles);
+  c.zielNeu = MOT.buchung(a.id, alles, c.tipps, S.serie);   // Sterne, Tagesziel, beste Serie (lokal)
   drawAufgabe();
   const fb = $("#fb"); if (fb) fb.scrollIntoView({ behavior: "smooth", block: "start" });
-  if (c.meilenstein) konfetti();
+  if (c.meilenstein || c.zielNeu) konfetti();
 }
 const LOB = ["Super!", "Richtig gebucht!", "Stark, weiter so!", "Sehr gut!", "Genau so!", "Sauber gebucht!", "Perfekt!", "Gut gemacht!"];
 const FLAMME = `<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 2c1 3.5 5 5.5 5 10.5A5 5 0 0 1 7 12.5c0-2 1-3.5 2-4.5.2 1.6 1 2.6 2 3 0-3.5-.5-6 1-9z" fill="currentColor"/></svg>`;
@@ -798,6 +857,7 @@ function feedbackHtml() {
   const c = S.cur;
   return `<div class="msg ${c.ok ? "ok" : "bad"}" id="ergebnis" data-ok="${c.ok}" data-art="${c.ok ? "" : esc(c.res.art)}">${c.ok ? `<span class="lobzeile">${HAKEN}<span><b>${esc(c.lob || "Richtig!")}</b> ${c.tipps ? "Mit Tipp gelöst: ½ Punkt." : "1 Punkt."}</span></span>` : `${esc(c.res.gesamt)}<div class="mut">Kein Problem, schau dir die Lösung an.</div>`}</div>
     ${c.ok && c.meilenstein ? `<div class="meilenstein" id="meilenstein">${FLAMME}<span>${esc(meilensteinText(c.meilenstein))}</span></div>` : ""}
+    ${c.ok && c.zielNeu ? `<div class="meilenstein ziel" id="zielneu">${FLAMME}<span>Tagesziel geschafft: ${MOT.ZIEL} richtige Buchungen heute!</span></div>` : ""}
     <div class="loesung"><div style="font-weight:700;margin-bottom:6px">Lösung</div>${loesungHtml(c.a, c.res && c.res.order)}</div>
     <div class="erkl"><b>Erklärung:</b> ${esc(c.a.erklaerung)}</div>`;
 }
@@ -809,6 +869,7 @@ function renderAuswertung() {
   const falsche = E.filter(r => !r.ok).map(r => r.id);
   let h = `<div class="card" id="auswertung" style="text-align:center"><div class="muted">Deine Auswertung</div>
     <div class="big">${punkteTxt(pk)} von ${E.length} Punkten</div><div class="small muted" style="margin:2px 0 6px">${ok} richtig${mitT ? `, davon ${mitT} mit Tipp (je ½ Punkt)` : ""}</div>${S.besteSerie >= 2 ? `<div class="beste" id="beste" data-beste="${S.besteSerie}">${FLAMME}<span>Beste Serie: ${S.besteSerie} richtig in Folge</span></div>` : `<div id="beste" data-beste="${S.besteSerie}" hidden></div>`}<div class="muted">${E.length ? (pk === E.length ? "Alles richtig, ganz ohne Tipp. Ausgezeichnet!" : ok === E.length ? "Alles richtig! Nächstes Mal vielleicht ohne Tipp?" : ok / E.length >= .7 ? "Sehr gut, fast alles richtig!" : "Weiter üben. Du schaffst das!") : "Noch keine Aufgabe bearbeitet."}</div></div>`;
+  h += MOT.neuHtml(S.vorher);
   if (E.length) {
     h += `<div class="card"><div style="font-weight:700">Nach Einheiten</div>`;
     EINHEITEN.forEach(e => {
@@ -822,6 +883,7 @@ function renderAuswertung() {
   h += `<div class="sticky"><div class="inner">${falsche.length ? `<button class="btn primary" id="nochmal">Falsche nochmal üben (${falsche.length})</button>` : ""}<button class="btn ${falsche.length ? "" : "primary"}" id="home">Zur Übersicht</button></div></div>`;
   app().innerHTML = h;
   const n = $("#nochmal"); if (n) n.onclick = () => starte(falsche);
+  MOT.bind();
   if (typeof FB === "object") FB.pruefen();
   $("#home").onclick = renderStart;
 }
@@ -837,6 +899,174 @@ function init() {
   document.addEventListener("keydown", ev => { if (ev.key === "Escape") { closeSheet(); $("#zoom").classList.remove("open"); } });
   renderStart();
 }
+/* ---------- Motivation: Sterne, Rang, Abzeichen, Tagesziel, Ergebnis-Karte (nur lokal auf diesem Gerät, kein Tracking) ---------- */
+const MOT = (() => {
+  const KEY = SKEY + ":motivation", TZ = "Europe/Vienna", ZIEL = 10;
+  const tagVon = t => new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(t);   // "2026-11-09"
+  const heute = () => tagVon(Date.now());
+  const tageZwischen = (a, b) => { const u = s => { const [y, m, d] = s.split("-").map(Number); return Date.UTC(y, m - 1, d); }; return Math.round((u(b) - u(a)) / 864e5); };
+  const datumAT = s => { const [y, m, d] = s.split("-"); return `${d}.${m}.${y}`; };
+  const leer = () => ({ v: 1, punkte: {}, einheiten: {}, besteSerie: 0, tag: { datum: "", richtig: 0 }, ziel: { letzter: "", folge: 0, beste: 0 } });
+  function laden() {
+    let m = null;
+    try { m = CONFIG.fortschrittSpeichern ? JSON.parse(localStorage.getItem(KEY)) : null; } catch (e) { m = null; }
+    if (!m || typeof m !== "object") {
+      m = leer();
+      // Übernahme aus dem bisherigen Fortschritt: richtig gelöst zählt als ½ Punkt (ob mit Tipp, wurde früher nicht gespeichert)
+      Object.keys(progress).forEach(id => { if (AUFG[id] && progress[id] && progress[id].ok) m.punkte[id] = 0.5; });
+      M = m; aktualisiereEinheiten(); speichern();
+    }
+    const d = leer(); Object.keys(d).forEach(k => { if (m[k] == null || typeof m[k] !== typeof d[k]) m[k] = d[k]; });
+    return m;
+  }
+  function speichern() { if (!CONFIG.fortschrittSpeichern) return; try { localStorage.setItem(KEY, JSON.stringify(M)); } catch (e) { } }
+  let M = null; M = laden();
+
+  /* Sterne: 60 / 80 / 100 % der Punkte einer Einheit (richtig = 1, mit Tipp = ½), je Aufgabe zählt das beste Ergebnis */
+  function einheit(nr) {
+    const auf = DATA.aufgaben.filter(a => a.einheit === nr);
+    const p = auf.reduce((s, a) => s + (M.punkte[a.id] || 0), 0), n = auf.length;
+    const st = !n ? 0 : p * 100 >= 100 * n ? 3 : p * 100 >= 80 * n ? 2 : p * 100 >= 60 * n ? 1 : 0;
+    const best = M.einheiten[nr] || { sterne: 0, punkte: 0 };
+    return { n, punkte: Math.max(p, best.punkte || 0), prozent: n ? Math.floor(Math.max(p, best.punkte || 0) / n * 100) : 0, sterne: Math.max(st, best.sterne || 0) };
+  }
+  function aktualisiereEinheiten() {
+    EINHEITEN.forEach(e => { const x = einheit(e.nr), b = M.einheiten[e.nr] || {};
+      if (x.sterne > (b.sterne || 0) || x.punkte > (b.punkte || 0)) M.einheiten[e.nr] = { sterne: Math.max(x.sterne, b.sterne || 0), punkte: Math.max(x.punkte, b.punkte || 0) }; });
+  }
+
+  /* Rang (der Reihe nach) und Abzeichen */
+  const SKONTO = EINHEITEN.filter(e => /skonto/i.test(e.titel)).map(e => e.nr);
+  function stand() {
+    const E = EINHEITEN.map(e => einheit(e.nr));
+    return { richtig: Object.values(M.punkte).filter(p => p > 0).length, e1: E.filter(x => x.sterne >= 1).length, e2: E.filter(x => x.sterne >= 2).length, e3: E.filter(x => x.sterne >= 3).length, alle: E.length,
+             skonto: SKONTO.length > 0 && SKONTO.every(nr => einheit(nr).sterne >= 3), serie: M.besteSerie };
+  }
+  const mehr = (n, eins, viele) => n === 1 ? eins : viele;
+  const RAENGE = [
+    { id: "einsteiger", name: "Einsteiger", bed: "1 richtige Buchung", ok: s => s.richtig >= 1, fehlt: s => "Buche eine Aufgabe richtig." },
+    { id: "buchungsprofi", name: "Buchungsprofi", bed: "1 Einheit mit mindestens 1 Stern", ok: s => s.e1 >= 1, fehlt: s => "Hol dir in einer Einheit mindestens 1 Stern." },
+    { id: "belegprofi", name: "Belegprofi", bed: "3 Einheiten mit mindestens 1 Stern", ok: s => s.e1 >= 3, fehlt: s => `Noch ${3 - s.e1} ${mehr(3 - s.e1, "Einheit", "Einheiten")} mit mindestens 1 Stern.` },
+    { id: "kontenmeister", name: "Kontenmeister", bed: "7 Einheiten mit mindestens 2 Sternen", ok: s => s.e2 >= 7, fehlt: s => `Noch ${7 - s.e2} ${mehr(7 - s.e2, "Einheit", "Einheiten")} mit mindestens 2 Sternen.` },
+    { id: "buchungsmeister", name: "Buchungsmeister", bed: "alle Einheiten mit mindestens 1 Stern", ok: s => s.e1 >= s.alle, fehlt: s => `Noch ${s.alle - s.e1} ${mehr(s.alle - s.e1, "Einheit", "Einheiten")} mit mindestens 1 Stern.` }
+  ];
+  const ABZ = [
+    { id: "ohnetipp", name: "Ohne Tipp", bed: "eine Einheit zu 100 % (alles richtig, ohne Tipp)", kurz: "1 Einheit zu 100 %", ok: s => s.e3 >= 1 },
+    { id: "skonto", name: "Skonto-König", bed: `Einheit ${SKONTO.join(" und ")} (Skonto) mit 3 Sternen`, kurz: `E${SKONTO.join(" + E")} mit 3 Sternen`, ok: s => s.skonto },
+    { id: "serienheld", name: "Serienheld", bed: "10 richtig in Folge ohne Tipp", kurz: "10 in Folge ohne Tipp", ok: s => s.serie >= 10 }
+  ];
+  function rangIndex(s) { let i = 0; while (i < RAENGE.length && RAENGE[i].ok(s)) i++; return i - 1; }   // -1 = noch kein Rang
+  function abzeichen(s) { return ABZ.filter(b => b.ok(s)).map(b => b.id); }
+  function tagHeute() { return M.tag.datum === heute() ? M.tag.richtig : 0; }
+  function folge() { const h = heute(); return M.ziel.letzter && (M.ziel.letzter === h || tageZwischen(M.ziel.letzter, h) === 1) ? M.ziel.folge : 0; }
+
+  /* nach jeder geprüften Buchung */
+  function buchung(id, ok, tipps, serie) {
+    let zielNeu = false;
+    const pk = ok ? (tipps ? 0.5 : 1) : 0;
+    if (pk > (M.punkte[id] || 0)) M.punkte[id] = pk;
+    if (ok) {
+      const h = heute();
+      if (M.tag.datum !== h) M.tag = { datum: h, richtig: 0 };
+      M.tag.richtig++;
+      if (M.tag.richtig === ZIEL && M.ziel.letzter !== h) {
+        const f = M.ziel.letzter && tageZwischen(M.ziel.letzter, h) === 1 ? M.ziel.folge + 1 : 1;
+        M.ziel = { letzter: h, folge: f, beste: Math.max(M.ziel.beste || 0, f) }; zielNeu = true;
+      }
+    }
+    M.besteSerie = Math.max(M.besteSerie || 0, serie || 0);
+    aktualisiereEinheiten(); speichern();
+    return zielNeu;
+  }
+  function schnappschuss() { const s = stand(); return { sterne: EINHEITEN.map(e => einheit(e.nr).sterne), rang: rangIndex(s), abz: abzeichen(s), ziel: tagHeute() >= ZIEL }; }
+
+  /* ---------- Anzeige ---------- */
+  const STERN = on => `<svg class="stern ${on ? "an" : ""}" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2 6.4 20.2l1.1-6.3L2.9 9.5l6.3-.9z" fill="${on ? "currentColor" : "none"}" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+  function sterneHtml(nr) { const x = einheit(nr); return `<span class="sterne" data-sterne="${x.sterne}" role="img" aria-label="${x.sterne} von 3 Sternen" title="${x.sterne} von 3 Sternen · 1 Stern ab 60 %, 2 ab 80 %, 3 bei 100 %">${[1, 2, 3].map(i => STERN(i <= x.sterne)).join("")}</span>`; }
+  const ICON = {
+    ohnetipp: `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2 6.4 20.2l1.1-6.3L2.9 9.5l6.3-.9z" fill="currentColor"/></svg>`,
+    skonto: `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 18L18 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="7.5" cy="7.5" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="16.5" cy="16.5" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>`,
+    serienheld: FLAMME.replace('width="16" height="16"', 'width="18" height="18"')
+  };
+  function ringHtml(n) {
+    const r = 21, u = 2 * Math.PI * r, anteil = Math.min(n, ZIEL) / ZIEL;
+    return `<div class="ring ${n >= ZIEL ? "voll" : ""}" id="ring" data-heute="${n}" role="img" aria-label="Tagesziel: ${Math.min(n, ZIEL)} von ${ZIEL} richtigen Buchungen heute">
+      <svg viewBox="0 0 52 52" width="56" height="56" aria-hidden="true"><circle cx="26" cy="26" r="${r}" class="rbg"/>${anteil > 0 ? "" : "<!--"}<circle cx="26" cy="26" r="${r}" class="rfg" stroke-dasharray="${(u * anteil).toFixed(2)} ${u.toFixed(2)}" transform="rotate(-90 26 26)"/>${anteil > 0 ? "" : "-->"}</svg>
+      <span class="rzahl">${n >= ZIEL ? "✓" : `${n}<small>/${ZIEL}</small>`}</span></div>`;
+  }
+  function teilbar() { const s = stand(); return s.e3 >= 1 || tagHeute() >= ZIEL; }
+  function startHtml() {
+    const s = stand(), ri = rangIndex(s), bz = abzeichen(s), n = tagHeute(), f = folge();
+    const nx = RAENGE[ri + 1];
+    const pfad = RAENGE.map((r, i) => `<li class="stufe ${i < ri ? "erreicht" : i === ri ? "erreicht aktuell" : "offen"}" data-rang="${r.id}" title="${esc(r.name)}: ${esc(r.bed)}"${i === ri ? ' aria-current="step"' : ""}>
+        <span class="pkt">${i <= ri ? "✓" : i + 1}</span><span class="pn">${esc(r.name).replace("meister", "&shy;meister").replace("profi", "&shy;profi")}</span></li>`).join("");
+    const fuell = ri < 0 ? 0 : ri / (RAENGE.length - 1) * 100;
+    return `<div class="card motiv" id="motiv">
+      <div class="mtop">${ringHtml(n)}
+        <div class="mtxt"><div class="mh">Tagesziel</div><div class="small">${n >= ZIEL ? `Geschafft: ${n} richtige Buchungen heute!` : `${n} von ${ZIEL} richtigen Buchungen heute`}</div>
+        <div class="folge ${f ? "" : "null"}" id="folge" data-folge="${f}">${f ? `${FLAMME}<span>${f} ${f === 1 ? "Tag" : "Tage"} in Folge</span>` : `<span>Noch keine Tages-Serie</span>`}</div></div></div>
+      <div class="rang" id="rang" data-rang="${ri >= 0 ? RAENGE[ri].id : ""}">
+        <div class="mh">Dein Rang: <b>${ri >= 0 ? esc(RAENGE[ri].name) : "noch keiner"}</b></div>
+        <ol class="pfad" style="--fuell:${fuell}%" aria-label="Rang-Pfad">${pfad}</ol>
+        <div class="small muted" id="naechst">${nx ? `Nächster Rang: <b>${esc(nx.name)}</b> – ${esc(nx.fehlt(s))}` : "Höchster Rang erreicht. Gratuliere!"}</div>
+      </div>
+      <div class="abz" id="abz" aria-label="Abzeichen">${ABZ.map(b => `<span class="badge ${bz.includes(b.id) ? "an" : "aus"}" data-abz="${b.id}" title="${esc(b.bed)}">${ICON[b.id]}<span><b>${esc(b.name)}</b><small>${bz.includes(b.id) ? "erreicht" : esc(b.kurz)}</small></span></span>`).join("")}</div>
+      ${teilbar() ? `<button class="btn teilbtn" id="teilen" type="button">Ergebnis-Karte zeigen</button>` : ""}
+    </div>`;
+  }
+  function neuHtml(vorher) {
+    if (!vorher) return "";
+    const nach = schnappschuss(), z = [];
+    EINHEITEN.forEach((e, i) => { if (nach.sterne[i] > vorher.sterne[i]) z.push(`<li data-neu="sterne" data-einheit="${e.nr}">${sterneHtml(e.nr)} Einheit ${e.nr}: jetzt ${nach.sterne[i]} ${nach.sterne[i] === 1 ? "Stern" : "Sterne"}</li>`); });
+    if (nach.rang > vorher.rang) z.push(`<li data-neu="rang"><b>Neuer Rang: ${esc(RAENGE[nach.rang].name)}</b></li>`);
+    nach.abz.filter(b => !vorher.abz.includes(b)).forEach(b => z.push(`<li data-neu="abz" data-abz="${b}">${ICON[b]} Neues Abzeichen: <b>${esc(ABZ.find(x => x.id === b).name)}</b></li>`));
+    if (nach.ziel && !vorher.ziel) z.push(`<li data-neu="ziel">Tagesziel geschafft: ${ZIEL} richtige Buchungen heute</li>`);
+    return z.length || teilbar() ? `<div class="card neu" id="neu">${z.length ? `<div style="font-weight:700">Neu erreicht</div><ul>${z.join("")}</ul>` : ""}${teilbar() ? `<button class="btn teilbtn" id="teilen" type="button">Ergebnis-Karte zeigen</button>` : ""}</div>` : "";
+  }
+
+  /* ---------- Ergebnis-Karte (kein Name, keine Geräte-ID, nichts wird gesendet) ---------- */
+  function ergebnis() {
+    const h = heute(), voll = EINHEITEN.filter(e => einheit(e.nr).sterne >= 3), ziel = tagHeute() >= ZIEL;
+    const code = "BT-" + h.slice(8, 10) + h.slice(5, 7) + (voll.length ? "-" + voll.map(e => "E" + e.nr).join("-") + "-100" : "") + (ziel ? "-T" + ZIEL : "");
+    const zeilen = voll.map(e => `Einheit ${e.nr} (${e.titel}): 100 % ohne Tipp`).concat(ziel ? [`Tagesziel: ${ZIEL} Buchungen`] : []);
+    return { datum: datumAT(h), code, zeilen, text: `Buchungstrainer – ${datumAT(h)}\n${zeilen.join("\n")}\nCode: ${code}` };
+  }
+  async function kopieren(text) {
+    try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); return true; } } catch (e) { }
+    const t = document.createElement("textarea"); t.value = text; t.setAttribute("readonly", ""); t.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+    document.body.appendChild(t); t.select(); let ok = false; try { ok = document.execCommand("copy"); } catch (e) { } t.remove(); return ok;
+  }
+  let offen = null;
+  function karte() {
+    if (offen || !teilbar()) return;
+    const r = ergebnis(), vorher = document.activeElement;
+    const bg = document.createElement("div"); bg.className = "tk-bg"; bg.id = "teilkarte";
+    bg.innerHTML = `<div class="tk-dlg" role="dialog" aria-modal="true" aria-labelledby="tktitel">
+      <button type="button" class="fbx" id="tkx" aria-label="Schließen">✕</button>
+      <h2 id="tktitel">Deine Ergebnis-Karte</h2>
+      <div class="tk-karte" id="tkkarte"><div class="tk-app">Buchungstrainer</div><div class="tk-datum">${esc(r.datum)}</div>
+        <ul>${r.zeilen.map(z => `<li>${ICON.ohnetipp}<span>${esc(z)}</span></li>`).join("")}</ul><div class="tk-code" id="tkcode">${esc(r.code)}</div></div>
+      <p class="small muted">Mach einen Screenshot oder kopiere den Text und schick ihn per E-Mail oder Teams an deine Lehrkraft. Der Code fasst dein Ergebnis zusammen, er ist kein Beweis.</p>
+      <textarea class="tk-text" id="tktext" readonly rows="4" aria-label="Text zum Kopieren">${esc(r.text)}</textarea>
+      <div class="fbbtns"><button type="button" class="btn ghost" id="tkzu">Schließen</button><button type="button" class="btn primary" id="tkkopie">Text kopieren</button></div>
+    </div>`;
+    document.body.appendChild(bg); document.body.classList.add("fb-offen"); offen = bg;
+    const zu = () => { if (!offen) return; offen.remove(); offen = null; document.body.classList.remove("fb-offen"); if (vorher && vorher.focus && document.contains(vorher)) vorher.focus(); };
+    $("#tkx").onclick = zu; $("#tkzu").onclick = zu; bg.addEventListener("click", ev => { if (ev.target === bg) zu(); });
+    bg.addEventListener("keydown", ev => {
+      if (ev.key === "Escape") { ev.stopPropagation(); zu(); }
+      if (ev.key === "Tab") { const f = [...bg.querySelectorAll("button, textarea")]; const i = f.indexOf(document.activeElement);
+        if (ev.shiftKey && i <= 0) { ev.preventDefault(); f[f.length - 1].focus(); } else if (!ev.shiftKey && i === f.length - 1) { ev.preventDefault(); f[0].focus(); } }
+    });
+    $("#tkkopie").onclick = async () => { const ok = await kopieren(r.text); const b = $("#tkkopie"); if (!b) return;
+      b.textContent = ok ? "Kopiert ✓" : "Bitte Text oben markieren und kopieren"; b.dataset.kopiert = String(ok); if (!ok) { const t = $("#tktext"); t.focus(); t.select(); } };
+    setTimeout(() => { const b = $("#tkkopie"); if (b) b.focus(); }, 30);
+  }
+  function bind() { document.querySelectorAll("#teilen").forEach(b => b.onclick = karte); }
+  function loeschen() { try { localStorage.removeItem(KEY); } catch (e) { } M = leer(); }
+  return { ZIEL, RAENGE, ABZ, SKONTO, heute, einheit, stand, rangIndex, abzeichen, tagHeute, folge, buchung, schnappschuss, sterneHtml, startHtml, neuHtml, ergebnis, teilbar, karte, bind, loeschen, get M() { return M; } };
+})();
+
 
 /* ---------- Feedback (einmal pro Browser für die ganze App; sendet nur beim Klick auf „Senden“) ---------- */
 /* =====================================================================
@@ -887,10 +1117,8 @@ const FB = (() => {
     const A = C.fragen.map(() => "");
     vorher = document.activeElement;
     const bg = document.createElement("div"); bg.className = "fb-bg"; bg.id = "feedback";
-    bg.innerHTML = `<div class="fb-dlg" role="dialog" aria-modal="true" aria-labelledby="fbtitel" aria-describedby="fbunter">
+    bg.innerHTML = `<div class="fb-dlg" role="dialog" aria-modal="true" aria-label="Feedback">
       <button type="button" class="fbx" id="fbx" aria-label="Schließen, jetzt kein Feedback">✕</button>
-      <h2 id="fbtitel">Wie findest du den Buchungstrainer?</h2>
-      <p id="fbunter" class="small muted">Hilf uns mit ein paar Antworten. Alles ist freiwillig.</p>
       <div id="fbform">${C.fragen.map(frageHtml).join("")}
       <p class="fbdsgvo">Dein Feedback ist anonym. Gespeichert werden nur deine Antworten und das Datum – keine Namen, keine Geräte-Daten. Beim Senden wird es an Google Formulare übertragen (Server von Google).</p>
       <div class="fbbtns"><button type="button" class="btn ghost" id="fbspaeter">Jetzt nicht</button><button type="button" class="btn primary" id="fbsenden" disabled>Senden</button></div>
@@ -947,7 +1175,7 @@ const FB = (() => {
   return { aktiv, pruefen, lade, zeige, footerHtml, bindFooter, NACH };
 })();
 
-window.BT = { DATA, S, kontenFuer, betraegeFuer, belegHtml, eur, starte, FB: typeof FB === "object" ? FB : null };
+window.BT = { DATA, S, kontenFuer, betraegeFuer, belegHtml, eur, starte, MOT, FB: typeof FB === "object" ? FB : null };
 init();
 
 </script>
