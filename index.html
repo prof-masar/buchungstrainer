@@ -255,23 +255,7 @@ span.fbfoot{color:var(--muted);font-weight:500}
 #fbform>.fbq:first-child{margin-top:6px}
 #fbform>.fbq:first-child>.lg,#fbform>.fbq:first-child>legend{display:block;padding-right:48px}
 
-/* ===== v10: E16/E17 – Erklärung in 4 Schritten, Rechenzeile, Inventurblatt ===== */
-.erklbtn{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;padding:10px 16px;border:0;border-top:1px solid var(--line);background:var(--accent-soft);color:var(--accent);font-weight:600;font-size:.95rem;text-align:left;cursor:pointer}
-.erklbtn::before{content:"";flex:0 0 auto;width:0;height:0;border-left:9px solid currentColor;border-top:6px solid transparent;border-bottom:6px solid transparent}
-#erklaerung .back{margin:0 0 -4px -4px;font-size:.95rem}
-.ekicker{font-size:.8rem;font-weight:650;color:var(--accent);letter-spacing:.02em;margin-top:2px}
-h2.einheit{margin:0 0 4px;font-size:1.2rem;line-height:1.25}
-.ewir{margin:0 0 2px}
-.step .step-nr{font-size:.82rem;font-weight:650;color:var(--accent);margin:0 0 2px}
-.step h3{margin:0 0 8px;font-size:1.08rem;line-height:1.3}
-.step p{margin:0 0 8px;line-height:1.5}
-.step .eliste{margin:0 0 8px;padding-left:20px;line-height:1.5}
-.step .eliste li{margin:2px 0}
-.step .merk{background:var(--accent-soft);border-radius:10px;padding:9px 11px;margin:8px 0 4px;line-height:1.45}
-.step .merk b{display:block;font-size:.75rem;color:var(--accent);letter-spacing:.03em;text-transform:uppercase;margin-bottom:2px}
-.step .dots{display:flex;gap:7px;justify-content:center;margin:12px 0 2px}
-.step .dots span{width:8px;height:8px;border-radius:99px;background:var(--line)}
-.step .dots span.on{background:var(--accent);width:18px}
+/* ===== v10: E16/E17 – Rechenzeile, Inventurlisten ===== */
 .rz .rz-h{font-weight:700}
 .rz .rz-frage{display:block;font-weight:600;margin:12px 0 6px}
 .rz-eingabe{display:flex;align-items:center;gap:6px}
@@ -305,14 +289,7 @@ h2.einheit{margin:0 0 4px;font-size:1.2rem;line-height:1.25}
 .bl.inv .invsum td{font-size:16.5px;padding:7px 6px}
 .bl.inv .invsum td:first-child{white-space:nowrap;font-size:15.5px}
 /* v10: Erklärvideo */
-.vidbtn{border-top:1px solid var(--line)}
-.vidbtn::before{display:none}
-.vidbtn .playico{flex:0 0 auto}
-.playbtn{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 14px;margin:10px 0 0;border:0;cursor:pointer;min-height:56px;color:var(--text);font:inherit}
-.playbtn .pico{flex:0 0 40px;height:40px;border-radius:99px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center}
-.playbtn .pico svg{width:16px;height:16px;margin-left:2px}
-.playbtn b{display:block;font-size:1rem}
-.vidmodal{position:fixed;inset:0;z-index:60;background:rgba(20,24,30,.92);display:none;align-items:center;justify-content:center;padding:12px}
+.vidmodal{position:fixed;inset:0;z-index:60;background:rgba(20,24,30,.97);display:none;align-items:center;justify-content:center;padding:12px}
 .vidmodal.open{display:flex}
 .vidbox{width:100%;max-width:960px}
 .vidkopf{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#fff;margin-bottom:8px}
@@ -328,6 +305,27 @@ body.vidoffen{overflow:hidden}
 .bl.inv-eb{border-top:7px solid #b45309}.bl.inv-eb .invband{background:#b45309}
 .bl.inv-ab .invsum tr.eb td{color:#1f4e8c}.bl.inv-eb .invsum tr.eb td{color:#8a3f06}
 .bl.inv .invsum td:first-child{white-space:normal}
+
+/* v10: Erklärvideo-Karte vor Einheit 16 + Endbildschirm im Videofenster */
+.vidkarte{display:flex;flex-direction:column;width:100%;padding:0;overflow:hidden;text-align:left;cursor:pointer;color:var(--text);font:inherit;border:0}
+.vidkarte .vkbild{position:relative;display:block;aspect-ratio:16/9;background:#1d2a33}
+.vidkarte img{display:block;width:100%;height:100%;object-fit:cover}
+.vidkarte .vkplay{position:absolute;left:50%;top:50%;width:72px;height:72px;margin:-36px 0 0 -36px;border-radius:99px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 6px rgba(255,255,255,.85),0 6px 18px rgba(0,0,0,.35)}
+.vidkarte .vkplay svg{width:34px;height:34px;margin-left:5px}
+.vidkarte:hover .vkplay,.vidkarte:focus-visible .vkplay{transform:scale(1.06)}
+.vidkarte .vktext{display:block;padding:12px 16px 14px}
+.vidkarte .vktitel{display:block;font-weight:700;font-size:1.05rem;margin-bottom:2px}
+.vidbuehne{position:relative}
+.vidende{position:absolute;inset:0;border-radius:10px;background:rgba(20,24,30,.97);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:14px;text-align:center}
+.vidende[hidden]{display:none}
+.vidende .vetitel{font-weight:700;font-size:1.1rem}
+.vidende .vebtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%}
+.vidende .btn.big{flex:1 1 150px;max-width:260px;min-height:56px;font-size:1.05rem}
+.vidende .venochmal{color:#cfe3e0}
+.vidweiter{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;color:#cfd6dc;font-size:.92rem}
+.vidweiter>span{flex:1 0 100%}
+.vidweiter .btn.klein{flex:1 1 0;min-height:44px;padding:0 14px;background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.45)}
+.vidmodal.fertig .vidweiter{display:none}
 
 .bl{font-family:"Helvetica Neue",Arial,"Segoe UI",sans-serif;color:#222;background:#fff;font-size:13px;line-height:1.4;box-shadow:0 1px 3px rgba(0,0,0,.12),0 6px 20px rgba(0,0,0,.08)}
 .bl table{border-collapse:collapse;width:100%}
@@ -427,7 +425,7 @@ const CONFIG = {
   falschBetraege: 2,                         // Anzahl zusätzlicher plausibler Falschbeträge (1–2)
   kontenplan: "RW FW 3 2024",                // kurze Angabe im Footer
   // v10: selbst gehostetes Erklärvideo (Datei im Repo, kein externer Dienst); einheiten = Einheiten mit Knopf „Erklärvideo ansehen“
-  erklaervideo: { datei: "videos/erklaervideo_sonstiges_material.mp4", vorschaubild: "videos/erklaervideo_sonstiges_material.jpg", titel: "Erklärvideo: Sonstiges Material", einheiten: [16, 17] }
+  erklaervideo: { datei: "videos/erklaervideo_sonstiges_material.mp4", vorschaubild: "videos/erklaervideo_sonstiges_material.jpg", titel: "Erklärvideo: Sonstiges Material", einheiten: [16, 17], vorEinheit: 16, dauer: "4" }
 };
 /* ===================================================================== */
 
@@ -692,6 +690,7 @@ function renderStart() {
   let h = MOT.startHtml() + `<h2>Was möchtest du üben?</h2>
     <div class="row-btns" style="margin:-2px 0 4px"><button type="button" class="linkbtn js-alle">Alle auswählen</button><button type="button" class="linkbtn js-keine">Keine</button></div>`;
   EINHEITEN.forEach(e => {
+    if (videoKarteVor(e.nr)) h += videoKarteHtml();
     const auf = DATA.aufgaben.filter(a => a.einheit === e.nr);
     const bel = auf.filter(a => a.beleg).length;
     const gemacht = auf.filter(a => progress[a.id]);
@@ -702,8 +701,6 @@ function renderStart() {
         <div class="unit-meta">${auf.length} Aufgaben · davon ${bel} mit Beleg</div>
         ${MOT.sterneHtml(e.nr)}
         ${gemacht.length ? `<span class="stat">zuletzt richtig: ${ok} von ${auf.length}</span>` : ""}</span></button>
-      ${e.erklaerschritte ? `<button type="button" class="erklbtn" data-erkl="${e.nr}">Erklärung in ${e.erklaerschritte.length} Schritten</button>` : ""}
-      ${hatVideo(e.nr) ? `<button type="button" class="erklbtn vidbtn" data-video="${e.nr}">${PLAY}Erklärvideo ansehen</button>` : ""}
       <details class="theorie"><summary>Theorie</summary><ul>${e.kernsaetze.map(k => `<li>${esc(k)}</li>`).join("")}</ul></details>
     </div>`;
   });
@@ -719,15 +716,13 @@ function renderStart() {
   const keineWahl = () => { S.auswahl.clear(); renderStart(); restoreScroll(); };
   app().querySelectorAll(".js-alle").forEach(b => b.onclick = alleWahl);
   app().querySelectorAll(".js-keine").forEach(b => b.onclick = keineWahl);
-  const rs = $("#reset"); if (rs) rs.onclick = () => { if (confirm("Gespeicherten Fortschritt auf diesem Gerät löschen?")) { store.clear(); MOT.loeschen(); try { localStorage.removeItem(EKEY); } catch (e) { } progress = {}; renderStart(); } };
+  const rs = $("#reset"); if (rs) rs.onclick = () => { if (confirm("Gespeicherten Fortschritt auf diesem Gerät löschen?")) { store.clear(); MOT.loeschen(); try { localStorage.removeItem(SKEY + ":erklaert"); } catch (e) { } progress = {}; renderStart(); } };
   if (typeof FB === "object") FB.bindFooter();
   MOT.bind();
-  app().querySelectorAll("[data-erkl]").forEach(b => b.onclick = () => renderErklaerung(+b.dataset.erkl, null));
-  app().querySelectorAll("[data-video]").forEach(b => b.onclick = () => oeffneVideo(b));
+  const vk = $("#vidkarte"); if (vk) vk.onclick = () => oeffneVideo(vk);
   $("#start").onclick = () => {
     const ids = DATA.aufgaben.filter(a => S.auswahl.has(a.einheit)).map(a => a.id);
-    const nur = S.auswahl.size === 1 ? EINHEITEN.find(e => S.auswahl.has(e.nr)) : null;
-    if (nur && nur.erklaerschritte && !erklaert().includes(nur.nr)) renderErklaerung(nur.nr, ids); else starte(ids);
+    starte(ids);
   };
 }
 let lastY = 0;
@@ -877,58 +872,48 @@ function rzPruefen() {
   if (ziel) ziel.scrollIntoView({ behavior: "smooth", block: z.fertig ? "start" : "center" });
 }
 
-/* ---------- v10: Erklärung in 4 Schritten vor den Aufgaben (optional: einheiten[].erklaerschritte) ---------- */
-const EKEY = SKEY + ":erklaert";
-const erklaert = () => { try { return CONFIG.fortschrittSpeichern ? JSON.parse(localStorage.getItem(EKEY)) || [] : []; } catch (e) { return []; } };
-function merkeErklaert(nr) { if (!CONFIG.fortschrittSpeichern) return; try { const v = new Set(erklaert()); v.add(nr); localStorage.setItem(EKEY, JSON.stringify([...v])); } catch (e) { } }
-function schrittText(t) {
-  return t.split("\n").map(z => {
-    z = z.trim(); if (!z) return "";
-    if (/^Beispiel:/.test(z)) return `<div class="merk"><b>Beispiel</b>${nbsp(esc(z.replace(/^Beispiel:\s*/, "")))}</div>`;
-    if (z.includes(" · ")) { const [kopf, ...rest] = z.split(" · "); const m = /^(.*?:)\s*(.*)$/.exec(kopf); const teile = (m ? [m[2]] : [kopf]).concat(rest);
-      return `${m ? `<p>${esc(m[1])}</p>` : ""}<ul class="eliste">${teile.map(x => `<li>${nbsp(esc(x))}</li>`).join("")}</ul>`; }
-    return `<p>${nbsp(esc(z))}</p>`;
-  }).join("");
-}
-function renderErklaerung(nr, ids, i = 0) {
-  window.scrollTo(0, 0);
-  const e = EINHEITEN.find(x => x.nr === nr), st = e.erklaerschritte, s = st[i];
-  const wir = (DATA.aufgaben.find(a => a.einheit === nr) || {}).wir;
-  const ueben = () => { merkeErklaert(nr); ids ? starte(ids) : starte(DATA.aufgaben.filter(a => a.einheit === nr).map(a => a.id)); };
-  app().innerHTML = `<div id="erklaerung" data-einheit="${nr}" data-schritt="${i + 1}">
-    <button type="button" class="linkbtn back" id="zurauswahl">← Zur Auswahl</button>
-    <div class="ekicker">Erklärung in ${st.length} Schritten</div>
-    <h2 class="einheit">Einheit ${nr}: ${esc(e.titel)}</h2>
-    ${wir ? `<div class="small muted ewir">Wir sind: ${esc(wir)}</div>` : ""}
-    ${hatVideo(nr) ? `<button type="button" class="card playbtn" id="evideo" data-video="${nr}"><span class="pico" aria-hidden="true">${PLAY}</span><span><b>Erklärvideo ansehen</b><span class="small muted">ca. ${CONFIG.erklaervideo.dauer || "4"} Minuten, mit Untertiteln im Bild</span></span></button>` : ""}
-    <div class="card step"><div class="step-nr">Schritt ${i + 1} von ${st.length}</div><h3>${esc(s.titel)}</h3>${schrittText(s.text)}
-      <div class="dots" aria-hidden="true">${st.map((_, k) => `<span class="${k === i ? "on" : ""}"></span>`).join("")}</div>
-      ${i > 0 ? `<button type="button" class="linkbtn" id="ezurueck">← Schritt ${i}</button>` : ""}</div>
-  </div>
-  <div class="sticky"><div class="inner"><button type="button" class="btn ghost" id="direkt">Direkt üben</button><button type="button" class="btn primary" id="eweiter">${i + 1 < st.length ? "Weiter" : "Jetzt üben"}</button></div></div>`;
-  $("#zurauswahl").onclick = renderStart;
-  const ev = $("#evideo"); if (ev) ev.onclick = () => oeffneVideo(ev);
-  $("#direkt").onclick = ueben;
-  $("#eweiter").onclick = () => i + 1 < st.length ? renderErklaerung(nr, ids, i + 1) : ueben();
-  const zb = $("#ezurueck"); if (zb) zb.onclick = () => renderErklaerung(nr, ids, i - 1);
-}
-
-/* ---------- v10: Video-Fenster (HTML5, preload none, kein Autoplay; beim Schließen wird das Video gestoppt und entfernt) ---------- */
+/* ---------- v10: Erklärvideo als eigene Karte vor Einheit 16; Video-Fenster (HTML5, preload none, kein Autoplay;
+   beim Schließen wird das Video gestoppt und entfernt). Nach dem Ende (ended) zwei große Knöpfe „Einheit n üben“. ---------- */
 const PLAY = `<svg class="playico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>`;
-const hatVideo = nr => !!(CONFIG.erklaervideo && CONFIG.erklaervideo.datei && (CONFIG.erklaervideo.einheiten || []).includes(nr));
+const videoDa = () => !!(CONFIG.erklaervideo && CONFIG.erklaervideo.datei);
+const videoEinheiten = () => (CONFIG.erklaervideo.einheiten || []).filter(nr => EINHEITEN.some(e => e.nr === nr));
+const videoKarteVor = nr => videoDa() && CONFIG.erklaervideo.vorEinheit === nr;
+function videoKarteHtml() {
+  const V = CONFIG.erklaervideo, nrs = videoEinheiten();
+  return `<button type="button" class="card vidkarte" id="vidkarte" aria-label="${esc(V.titel)} abspielen">
+    <span class="vkbild">${V.vorschaubild ? `<img src="${esc(V.vorschaubild)}" alt="" width="640" height="360" loading="lazy" decoding="async">` : ""}<span class="vkplay" aria-hidden="true">${PLAY}</span></span>
+    <span class="vktext"><span class="vktitel">${esc(V.titel)}</span>
+    <span class="unit-meta">ca. ${esc(V.dauer || "4")} Minuten · mit Untertiteln · danach ${nrs.map(n => "Einheit " + n).join(" oder ")} üben</span></span>
+  </button>`;
+}
 let videoVon = null;
+function uebeEinheit(nr) {
+  schliesseVideo(); S.auswahl = new Set([nr]); speichereAuswahl();
+  starte(DATA.aufgaben.filter(a => a.einheit === nr).map(a => a.id));
+}
 function oeffneVideo(btn) {
-  const V = CONFIG.erklaervideo, m = $("#vidmodal"); videoVon = btn || null;
+  const V = CONFIG.erklaervideo, m = $("#vidmodal"), nrs = videoEinheiten(); videoVon = btn || null;
+  const knoepfe = cls => nrs.map(n => `<button type="button" class="btn ${cls}" data-ueben="${n}">Einheit ${n} üben</button>`).join("");
   m.innerHTML = `<div class="vidbox" role="dialog" aria-modal="true" aria-label="${esc(V.titel)}">
     <div class="vidkopf"><b>${esc(V.titel)}</b><button type="button" class="vidzu" id="vidzu" aria-label="Video schließen">Schließen ✕</button></div>
-    <video id="vid" controls preload="none" playsinline${V.vorschaubild ? ` poster="${esc(V.vorschaubild)}"` : ""} src="${esc(V.datei)}">Dein Browser kann dieses Video nicht abspielen.</video></div>`;
+    <div class="vidbuehne"><video id="vid" controls preload="none" playsinline${V.vorschaubild ? ` poster="${esc(V.vorschaubild)}"` : ""} src="${esc(V.datei)}">Dein Browser kann dieses Video nicht abspielen.</video>
+      <div class="vidende" id="vidende" hidden><div class="vetitel">Fertig angeschaut! Was möchtest du üben?</div><div class="vebtns">${knoepfe("primary big")}</div>
+        <button type="button" class="linkbtn venochmal" id="vidnochmal">Video noch einmal ansehen</button></div></div>
+    ${nrs.length ? `<div class="vidweiter" id="vidweiter"><span>Gleich üben:</span>${knoepfe("ghost klein")}</div>` : ""}</div>`;
   m.classList.add("open"); document.body.classList.add("vidoffen");
+  const v = $("#vid"), ende = $("#vidende");
+  v.addEventListener("ended", () => {
+    try { if (document.fullscreenElement) document.exitFullscreen(); else if (v.webkitDisplayingFullscreen && v.webkitExitFullscreen) v.webkitExitFullscreen(); } catch (e) { }
+    ende.hidden = false; m.classList.add("fertig"); const b1 = ende.querySelector("[data-ueben]"); if (b1) b1.focus();
+  });
+  $("#vidnochmal").onclick = () => { ende.hidden = true; m.classList.remove("fertig"); try { v.currentTime = 0; v.play(); } catch (e) { } };
+  m.querySelectorAll("[data-ueben]").forEach(b => b.onclick = () => uebeEinheit(+b.dataset.ueben));
   $("#vidzu").onclick = schliesseVideo; $("#vidzu").focus();
 }
 function schliesseVideo() {
   const m = $("#vidmodal"); if (!m || !m.classList.contains("open")) return;
   const v = $("#vid"); if (v) { try { v.pause(); } catch (e) { } v.removeAttribute("src"); try { v.load(); } catch (e) { } }
-  m.innerHTML = ""; m.classList.remove("open"); document.body.classList.remove("vidoffen");
+  m.innerHTML = ""; m.classList.remove("open", "fertig"); document.body.classList.remove("vidoffen");
   if (videoVon && document.contains(videoVon)) videoVon.focus(); videoVon = null;
 }
 
@@ -1418,7 +1403,7 @@ const FB = (() => {
   return { aktiv, pruefen, lade, zeige, footerHtml, bindFooter, NACH };
 })();
 
-window.BT = { DATA, S, zusatzSymbol, oeffneVideo, schliesseVideo, kontenFuer, betraegeFuer, belegHtml, eur, starte, MOT, rzZahl, renderErklaerung, FB: typeof FB === "object" ? FB : null };
+window.BT = { DATA, S, zusatzSymbol, oeffneVideo, schliesseVideo, kontenFuer, betraegeFuer, belegHtml, eur, starte, MOT, rzZahl, FB: typeof FB === "object" ? FB : null };
 init();
 
 </script>
