@@ -304,6 +304,22 @@ h2.einheit{margin:0 0 4px;font-size:1.2rem;line-height:1.25}
 .bl.inv .invsum{width:100%;margin-top:14px}
 .bl.inv .invsum td{font-size:16.5px;padding:7px 6px}
 .bl.inv .invsum td:first-child{white-space:nowrap;font-size:15.5px}
+/* v10: Erklärvideo */
+.vidbtn{border-top:1px solid var(--line)}
+.vidbtn::before{display:none}
+.vidbtn .playico{flex:0 0 auto}
+.playbtn{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 14px;margin:10px 0 0;border:0;cursor:pointer;min-height:56px;color:var(--text);font:inherit}
+.playbtn .pico{flex:0 0 40px;height:40px;border-radius:99px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center}
+.playbtn .pico svg{width:16px;height:16px;margin-left:2px}
+.playbtn b{display:block;font-size:1rem}
+.vidmodal{position:fixed;inset:0;z-index:60;background:rgba(20,24,30,.92);display:none;align-items:center;justify-content:center;padding:12px}
+.vidmodal.open{display:flex}
+.vidbox{width:100%;max-width:960px}
+.vidkopf{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#fff;margin-bottom:8px}
+.vidkopf b{font-size:1rem}
+.vidzu{min-height:44px;min-width:44px;border-radius:99px;border:0;background:#fff;color:#111;font-weight:700;padding:0 16px;flex:0 0 auto}
+.vidbox video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#000;border-radius:10px}
+body.vidoffen{overflow:hidden}
 
 .bl{font-family:"Helvetica Neue",Arial,"Segoe UI",sans-serif;color:#222;background:#fff;font-size:13px;line-height:1.4;box-shadow:0 1px 3px rgba(0,0,0,.12),0 6px 20px rgba(0,0,0,.08)}
 .bl table{border-collapse:collapse;width:100%}
@@ -387,6 +403,7 @@ h2.einheit{margin:0 0 4px;font-size:1.2rem;line-height:1.25}
 <main class="wrap" id="app"><noscript>Bitte JavaScript aktivieren.</noscript></main>
 <div class="sheet-bg" id="sheetbg"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+<div class="vidmodal" id="vidmodal"></div>
 <div class="zoom" id="zoom"><button class="zclose">Schließen ✕</button><div class="zin"></div></div>
 <script>
 /* =====================================================================
@@ -400,7 +417,9 @@ const CONFIG = {
   fortschrittSpeichern: true,                // Fortschritt nur lokal im Browser (localStorage) merken
   kontenAuswahl: 8,                          // Anzahl Konten-Chips pro Aufgabe (Lösung + Ablenker + weitere)
   falschBetraege: 2,                         // Anzahl zusätzlicher plausibler Falschbeträge (1–2)
-  kontenplan: "RW FW 3 2024"                 // kurze Angabe im Footer
+  kontenplan: "RW FW 3 2024",                // kurze Angabe im Footer
+  // v10: selbst gehostetes Erklärvideo (Datei im Repo, kein externer Dienst); einheiten = Einheiten mit Knopf „Erklärvideo ansehen“
+  erklaervideo: { datei: "videos/erklaervideo_sonstiges_material.mp4", vorschaubild: "videos/erklaervideo_sonstiges_material.jpg", titel: "Erklärvideo: Sonstiges Material", einheiten: [16, 17] }
 };
 /* ===================================================================== */
 
@@ -671,6 +690,7 @@ function renderStart() {
         ${MOT.sterneHtml(e.nr)}
         ${gemacht.length ? `<span class="stat">zuletzt richtig: ${ok} von ${auf.length}</span>` : ""}</span></button>
       ${e.erklaerschritte ? `<button type="button" class="erklbtn" data-erkl="${e.nr}">Erklärung in ${e.erklaerschritte.length} Schritten</button>` : ""}
+      ${hatVideo(e.nr) ? `<button type="button" class="erklbtn vidbtn" data-video="${e.nr}">${PLAY}Erklärvideo ansehen</button>` : ""}
       <details class="theorie"><summary>Theorie</summary><ul>${e.kernsaetze.map(k => `<li>${esc(k)}</li>`).join("")}</ul></details>
     </div>`;
   });
@@ -690,6 +710,7 @@ function renderStart() {
   if (typeof FB === "object") FB.bindFooter();
   MOT.bind();
   app().querySelectorAll("[data-erkl]").forEach(b => b.onclick = () => renderErklaerung(+b.dataset.erkl, null));
+  app().querySelectorAll("[data-video]").forEach(b => b.onclick = () => oeffneVideo(b));
   $("#start").onclick = () => {
     const ids = DATA.aufgaben.filter(a => S.auswahl.has(a.einheit)).map(a => a.id);
     const nur = S.auswahl.size === 1 ? EINHEITEN.find(e => S.auswahl.has(e.nr)) : null;
@@ -864,15 +885,36 @@ function renderErklaerung(nr, ids, i = 0) {
     <div class="ekicker">Erklärung in ${st.length} Schritten</div>
     <h2 class="einheit">Einheit ${nr}: ${esc(e.titel)}</h2>
     ${wir ? `<div class="small muted ewir">Wir sind: ${esc(wir)}</div>` : ""}
+    ${hatVideo(nr) ? `<button type="button" class="card playbtn" id="evideo" data-video="${nr}"><span class="pico" aria-hidden="true">${PLAY}</span><span><b>Erklärvideo ansehen</b><span class="small muted">ca. ${CONFIG.erklaervideo.dauer || "4"} Minuten, mit Untertiteln im Bild</span></span></button>` : ""}
     <div class="card step"><div class="step-nr">Schritt ${i + 1} von ${st.length}</div><h3>${esc(s.titel)}</h3>${schrittText(s.text)}
       <div class="dots" aria-hidden="true">${st.map((_, k) => `<span class="${k === i ? "on" : ""}"></span>`).join("")}</div>
       ${i > 0 ? `<button type="button" class="linkbtn" id="ezurueck">← Schritt ${i}</button>` : ""}</div>
   </div>
   <div class="sticky"><div class="inner"><button type="button" class="btn ghost" id="direkt">Direkt üben</button><button type="button" class="btn primary" id="eweiter">${i + 1 < st.length ? "Weiter" : "Jetzt üben"}</button></div></div>`;
   $("#zurauswahl").onclick = renderStart;
+  const ev = $("#evideo"); if (ev) ev.onclick = () => oeffneVideo(ev);
   $("#direkt").onclick = ueben;
   $("#eweiter").onclick = () => i + 1 < st.length ? renderErklaerung(nr, ids, i + 1) : ueben();
   const zb = $("#ezurueck"); if (zb) zb.onclick = () => renderErklaerung(nr, ids, i - 1);
+}
+
+/* ---------- v10: Video-Fenster (HTML5, preload none, kein Autoplay; beim Schließen wird das Video gestoppt und entfernt) ---------- */
+const PLAY = `<svg class="playico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>`;
+const hatVideo = nr => !!(CONFIG.erklaervideo && CONFIG.erklaervideo.datei && (CONFIG.erklaervideo.einheiten || []).includes(nr));
+let videoVon = null;
+function oeffneVideo(btn) {
+  const V = CONFIG.erklaervideo, m = $("#vidmodal"); videoVon = btn || null;
+  m.innerHTML = `<div class="vidbox" role="dialog" aria-modal="true" aria-label="${esc(V.titel)}">
+    <div class="vidkopf"><b>${esc(V.titel)}</b><button type="button" class="vidzu" id="vidzu" aria-label="Video schließen">Schließen ✕</button></div>
+    <video id="vid" controls preload="none" playsinline${V.vorschaubild ? ` poster="${esc(V.vorschaubild)}"` : ""} src="${esc(V.datei)}">Dein Browser kann dieses Video nicht abspielen.</video></div>`;
+  m.classList.add("open"); document.body.classList.add("vidoffen");
+  $("#vidzu").onclick = schliesseVideo; $("#vidzu").focus();
+}
+function schliesseVideo() {
+  const m = $("#vidmodal"); if (!m || !m.classList.contains("open")) return;
+  const v = $("#vid"); if (v) { try { v.pause(); } catch (e) { } v.removeAttribute("src"); try { v.load(); } catch (e) { } }
+  m.innerHTML = ""; m.classList.remove("open"); document.body.classList.remove("vidoffen");
+  if (videoVon && document.contains(videoVon)) videoVon.focus(); videoVon = null;
 }
 
 /* ---------- Tipps (3 Stufen) ---------- */
@@ -1081,7 +1123,8 @@ function init() {
   $("#untertitel").textContent = sub; $("#untertitel").hidden = !sub;
   $("#sheetbg").onclick = closeSheet;
   $("#zoom").onclick = ev => { if (ev.target.id === "zoom" || ev.target.classList.contains("zclose")) $("#zoom").classList.remove("open"); };
-  document.addEventListener("keydown", ev => { if (ev.key === "Escape") { closeSheet(); $("#zoom").classList.remove("open"); } });
+  document.addEventListener("keydown", ev => { if (ev.key === "Escape") { closeSheet(); $("#zoom").classList.remove("open"); schliesseVideo(); } });
+  $("#vidmodal").onclick = ev => { if (ev.target.id === "vidmodal") schliesseVideo(); };
   renderStart();
 }
 /* ---------- Motivation: Sterne, Rang, Abzeichen, Tagesziel, Ergebnis-Karte (nur lokal auf diesem Gerät, kein Tracking) ---------- */
@@ -1360,7 +1403,7 @@ const FB = (() => {
   return { aktiv, pruefen, lade, zeige, footerHtml, bindFooter, NACH };
 })();
 
-window.BT = { DATA, S, kontenFuer, betraegeFuer, belegHtml, eur, starte, MOT, rzZahl, renderErklaerung, FB: typeof FB === "object" ? FB : null };
+window.BT = { DATA, S, oeffneVideo, schliesseVideo, kontenFuer, betraegeFuer, belegHtml, eur, starte, MOT, rzZahl, renderErklaerung, FB: typeof FB === "object" ? FB : null };
 init();
 
 </script>
