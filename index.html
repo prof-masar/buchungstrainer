@@ -424,8 +424,15 @@ const CONFIG = {
   kontenAuswahl: 8,                          // Anzahl Konten-Chips pro Aufgabe (Lösung + Ablenker + weitere)
   falschBetraege: 2,                         // Anzahl zusätzlicher plausibler Falschbeträge (1–2)
   kontenplan: "RW FW 3 2024",                // kurze Angabe im Footer
-  // v10: selbst gehostetes Erklärvideo (Datei im Repo, kein externer Dienst); einheiten = Einheiten mit Knopf „Erklärvideo ansehen“
-  erklaervideo: { datei: "videos/erklaervideo_sonstiges_material.mp4", vorschaubild: "videos/erklaervideo_sonstiges_material.jpg", titel: "Erklärvideo: Sonstiges Material", einheiten: [16, 17], vorEinheit: 16, dauer: "4" }
+  // v10: selbst gehostete Erklärvideos (Datei im Repo, kein externer Dienst). Karte vor der genannten Einheit, ohne Beschreibungszeile.
+  erklaervideos: [
+    { datei: "videos/erklaervideo_einkauf_handelswaren.mp4", vorschaubild: "videos/erklaervideo_einkauf_handelswaren.jpg", titel: "Erklärvideo: Einkauf von Handelswaren", einheiten: [1], vorEinheit: 1 },
+    { datei: "videos/erklaervideo_verkauf_handelswaren.mp4", vorschaubild: "videos/erklaervideo_verkauf_handelswaren.jpg", titel: "Erklärvideo: Verkauf von Handelswaren", einheiten: [2], vorEinheit: 2 },
+    { datei: "videos/erklaervideo_bezugskosten.mp4", vorschaubild: "videos/erklaervideo_bezugskosten.jpg", titel: "Erklärvideo: Bezugskosten", einheiten: [3], vorEinheit: 3 },
+    { datei: "videos/erklaervideo_versandkosten.mp4", vorschaubild: "videos/erklaervideo_versandkosten.jpg", titel: "Erklärvideo: Versandkosten", einheiten: [4], vorEinheit: 4 },
+    { datei: "videos/erklaervideo_rabatte.mp4", vorschaubild: "videos/erklaervideo_rabatte.jpg", titel: "Erklärvideo: Rabatte", einheiten: [5], vorEinheit: 5 },
+    { datei: "videos/erklaervideo_sonstiges_material.mp4", vorschaubild: "videos/erklaervideo_sonstiges_material.jpg", titel: "Erklärvideo: Sonstiges Material", einheiten: [16, 17], vorEinheit: 16 }
+  ]
 };
 /* ===================================================================== */
 
@@ -690,7 +697,7 @@ function renderStart() {
   let h = MOT.startHtml() + `<h2>Was möchtest du üben?</h2>
     <div class="row-btns" style="margin:-2px 0 4px"><button type="button" class="linkbtn js-alle">Alle auswählen</button><button type="button" class="linkbtn js-keine">Keine</button></div>`;
   EINHEITEN.forEach(e => {
-    if (videoKarteVor(e.nr)) h += videoKarteHtml();
+    if (videoKarteVor(e.nr)) h += videoKarteHtml(videoVor(e.nr));
     const auf = DATA.aufgaben.filter(a => a.einheit === e.nr);
     const bel = auf.filter(a => a.beleg).length;
     const gemacht = auf.filter(a => progress[a.id]);
@@ -719,7 +726,7 @@ function renderStart() {
   const rs = $("#reset"); if (rs) rs.onclick = () => { if (confirm("Gespeicherten Fortschritt auf diesem Gerät löschen?")) { store.clear(); MOT.loeschen(); try { localStorage.removeItem(SKEY + ":erklaert"); } catch (e) { } progress = {}; renderStart(); } };
   if (typeof FB === "object") FB.bindFooter();
   MOT.bind();
-  const vk = $("#vidkarte"); if (vk) vk.onclick = () => oeffneVideo(vk);
+  app().querySelectorAll(".vidkarte").forEach(vk => vk.onclick = () => oeffneVideo(vk));
   $("#start").onclick = () => {
     const ids = DATA.aufgaben.filter(a => S.auswahl.has(a.einheit)).map(a => a.id);
     starte(ids);
@@ -872,18 +879,18 @@ function rzPruefen() {
   if (ziel) ziel.scrollIntoView({ behavior: "smooth", block: z.fertig ? "start" : "center" });
 }
 
-/* ---------- v10: Erklärvideo als eigene Karte vor Einheit 16; Video-Fenster (HTML5, preload none, kein Autoplay;
-   beim Schließen wird das Video gestoppt und entfernt). Nach dem Ende (ended) zwei große Knöpfe „Einheit n üben“. ---------- */
+/* ---------- v10: Erklärvideos als eigene Karten vor den Einheiten; Video-Fenster (HTML5, preload none, kein Autoplay;
+   beim Schließen wird das Video gestoppt und entfernt). Nach dem Ende (ended) große Knöpfe „Einheit n üben“. ---------- */
 const PLAY = `<svg class="playico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>`;
-const videoDa = () => !!(CONFIG.erklaervideo && CONFIG.erklaervideo.datei);
-const videoEinheiten = () => (CONFIG.erklaervideo.einheiten || []).filter(nr => EINHEITEN.some(e => e.nr === nr));
-const videoKarteVor = nr => videoDa() && CONFIG.erklaervideo.vorEinheit === nr;
-function videoKarteHtml() {
-  const V = CONFIG.erklaervideo, nrs = videoEinheiten();
-  return `<button type="button" class="card vidkarte" id="vidkarte" aria-label="${esc(V.titel)} abspielen">
+const videoListe = () => (CONFIG.erklaervideos || (CONFIG.erklaervideo ? [CONFIG.erklaervideo] : [])).filter(v => v && v.datei);
+const videoDa = () => videoListe().length > 0;
+const videoVor = nr => videoListe().find(v => v.vorEinheit === nr);
+const videoKarteVor = nr => !!videoVor(nr);
+const videoEinheitenVon = V => (V.einheiten || []).filter(nr => EINHEITEN.some(e => e.nr === nr));
+function videoKarteHtml(V) {
+  return `<button type="button" class="card vidkarte" id="vidkarte-${V.vorEinheit}" data-vor="${V.vorEinheit}" aria-label="${esc(V.titel)} abspielen">
     <span class="vkbild">${V.vorschaubild ? `<img src="${esc(V.vorschaubild)}" alt="" width="640" height="360" loading="lazy" decoding="async">` : ""}<span class="vkplay" aria-hidden="true">${PLAY}</span></span>
-    <span class="vktext"><span class="vktitel">${esc(V.titel)}</span>
-    <span class="unit-meta">ca. ${esc(V.dauer || "4")} Minuten · mit Untertiteln · danach ${nrs.map(n => "Einheit " + n).join(" oder ")} üben</span></span>
+    <span class="vktext"><span class="vktitel">${esc(V.titel)}</span></span>
   </button>`;
 }
 let videoVon = null;
@@ -892,7 +899,9 @@ function uebeEinheit(nr) {
   starte(DATA.aufgaben.filter(a => a.einheit === nr).map(a => a.id));
 }
 function oeffneVideo(btn) {
-  const V = CONFIG.erklaervideo, m = $("#vidmodal"), nrs = videoEinheiten(); videoVon = btn || null;
+  const liste = videoListe();
+  const V = (btn && videoVor(+btn.dataset.vor)) || liste[0];
+  const m = $("#vidmodal"), nrs = videoEinheitenVon(V); videoVon = btn || null;
   const knoepfe = cls => nrs.map(n => `<button type="button" class="btn ${cls}" data-ueben="${n}">Einheit ${n} üben</button>`).join("");
   m.innerHTML = `<div class="vidbox" role="dialog" aria-modal="true" aria-label="${esc(V.titel)}">
     <div class="vidkopf"><b>${esc(V.titel)}</b><button type="button" class="vidzu" id="vidzu" aria-label="Video schließen">Schließen ✕</button></div>
