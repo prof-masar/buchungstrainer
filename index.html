@@ -31,16 +31,16 @@ h2{font-size:1.1rem;margin:22px 0 10px}
 .small{font-size:.88rem}
 /* Start */
 .unit{display:block;padding:0;overflow:hidden}
-.unit-head{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:none;border:0;padding:16px}
+.unit-head{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:none;border:0;padding:14px 16px 6px;min-height:44px}
 .check{flex:0 0 28px;height:28px;border-radius:8px;border:2px solid #c5ccd6;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:.15s}
 .unit.sel .check{background:var(--accent);border-color:var(--accent)}
 .unit.sel .check::after{content:"";width:8px;height:14px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
 .unit.sel{outline:2px solid var(--accent);outline-offset:-2px}
-.unit-title{font-weight:650;font-size:1.05rem;line-height:1.3}
+.unit-title{flex:1 1 auto;min-width:0;font-weight:650;font-size:1.05rem;line-height:1.3}
 .unit-meta{color:var(--muted);font-size:.88rem;margin-top:3px}
 .stat{display:inline-block;margin-top:6px;font-size:.82rem;background:var(--accent-soft);color:var(--accent);padding:2px 8px;border-radius:99px}
-details.theorie{border-top:1px solid var(--line)}
-details.theorie summary{list-style:none;padding:12px 16px;color:var(--accent);font-weight:600;font-size:.95rem;cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px}
+details.theorie{border-top:0}
+details.theorie summary{list-style:none;padding:8px 16px 12px;color:var(--accent);font-weight:600;font-size:.95rem;cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px}
 details.theorie summary::-webkit-details-marker{display:none}
 details.theorie summary::before{content:"";width:8px;height:8px;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(-45deg);transition:.15s}
 details.theorie[open] summary::before{transform:rotate(45deg)}
@@ -306,15 +306,23 @@ body.vidoffen{overflow:hidden}
 .bl.inv-ab .invsum tr.eb td{color:#1f4e8c}.bl.inv-eb .invsum tr.eb td{color:#8a3f06}
 .bl.inv .invsum td:first-child{white-space:normal}
 
-/* v10: Erklärvideo-Karte vor Einheit 16 + Endbildschirm im Videofenster */
-.vidkarte{display:flex;flex-direction:column;width:100%;padding:0;overflow:hidden;text-align:left;cursor:pointer;color:var(--text);font:inherit;border:0}
-.vidkarte .vkbild{position:relative;display:block;aspect-ratio:16/9;background:#1d2a33}
-.vidkarte img{display:block;width:100%;height:100%;object-fit:cover}
-.vidkarte .vkplay{position:absolute;left:50%;top:50%;width:72px;height:72px;margin:-36px 0 0 -36px;border-radius:99px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 6px rgba(255,255,255,.85),0 6px 18px rgba(0,0,0,.35)}
-.vidkarte .vkplay svg{width:34px;height:34px;margin-left:5px}
-.vidkarte:hover .vkplay,.vidkarte:focus-visible .vkplay{transform:scale(1.06)}
-.vidkarte .vktext{display:block;padding:12px 16px 14px}
-.vidkarte .vktitel{display:block;font-weight:700;font-size:1.05rem;margin-bottom:2px}
+/* v10: Titel und Aufgabenzahl volle Breite, Vorschaubild rechts neben Sternen und Theorie */
+.unit-meta-hit{display:block;width:100%;padding:0 16px 0 56px;text-align:left;cursor:pointer}
+.unit-foot{display:flex;align-items:flex-start;gap:10px;padding:0 12px 6px 0}
+.unit-foot-left{flex:1 1 auto;min-width:0}
+.unit-stars-hit{padding:2px 0 0 56px}
+.vidthumb{flex:0 0 108px;width:108px;margin:0 0 4px 0;padding:0;border:0;background:transparent;border-radius:10px;overflow:hidden;cursor:pointer;color:inherit;font:inherit;line-height:0;align-self:start}
+.vidthumb .vkbild{position:relative;display:block;aspect-ratio:16/9;background:#1d2a33;border-radius:10px;overflow:hidden}
+.vidthumb img{display:block;width:100%;height:100%;object-fit:cover}
+.vidthumb .vkplay{position:absolute;left:50%;top:50%;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:99px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px rgba(255,255,255,.85),0 3px 8px rgba(0,0,0,.28)}
+.vidthumb .vkplay svg{width:16px;height:16px;margin-left:2px}
+.vidthumb:hover .vkplay,.vidthumb:focus-visible .vkplay{transform:scale(1.08)}
+.vidthumb:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (min-width:600px){
+  .vidthumb{flex-basis:120px;width:120px}
+  .vidthumb .vkplay{width:40px;height:40px;margin:-20px 0 0 -20px}
+  .vidthumb .vkplay svg{width:18px;height:18px;margin-left:2px}
+}
 .vidbuehne{position:relative}
 .vidende{position:absolute;inset:0;border-radius:10px;background:rgba(20,24,30,.97);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:14px;text-align:center}
 .vidende[hidden]{display:none}
@@ -424,7 +432,7 @@ const CONFIG = {
   kontenAuswahl: 8,                          // Anzahl Konten-Chips pro Aufgabe (Lösung + Ablenker + weitere)
   falschBetraege: 2,                         // Anzahl zusätzlicher plausibler Falschbeträge (1–2)
   kontenplan: "RW FW 3 2024",                // kurze Angabe im Footer
-  // v10: selbst gehostete Erklärvideos (Datei im Repo, kein externer Dienst). Karte vor der genannten Einheit, ohne Beschreibungszeile.
+  // v10: selbst gehostete Erklärvideos (Datei im Repo, kein externer Dienst). Kleines Vorschaubild in der Einheitenkarte (vorEinheit), ohne Beschreibungszeile.
   erklaervideos: [
     { datei: "videos/erklaervideo_einkauf_handelswaren.mp4", vorschaubild: "videos/erklaervideo_einkauf_handelswaren.jpg", titel: "Erklärvideo: Einkauf von Handelswaren", einheiten: [1], vorEinheit: 1 },
     { datei: "videos/erklaervideo_verkauf_handelswaren.mp4", vorschaubild: "videos/erklaervideo_verkauf_handelswaren.jpg", titel: "Erklärvideo: Verkauf von Handelswaren", einheiten: [2], vorEinheit: 2 },
@@ -697,18 +705,22 @@ function renderStart() {
   let h = MOT.startHtml() + `<h2>Was möchtest du üben?</h2>
     <div class="row-btns" style="margin:-2px 0 4px"><button type="button" class="linkbtn js-alle">Alle auswählen</button><button type="button" class="linkbtn js-keine">Keine</button></div>`;
   EINHEITEN.forEach(e => {
-    if (videoKarteVor(e.nr)) h += videoKarteHtml(videoVor(e.nr));
     const auf = DATA.aufgaben.filter(a => a.einheit === e.nr);
     const bel = auf.filter(a => a.beleg).length;
     const gemacht = auf.filter(a => progress[a.id]);
     const ok = gemacht.filter(a => progress[a.id].ok).length;
+    const V = videoVor(e.nr);
     h += `<div class="card unit ${S.auswahl.has(e.nr) ? "sel" : ""}" data-unit="${e.nr}">
       <button class="unit-head" data-toggle="${e.nr}" aria-pressed="${S.auswahl.has(e.nr)}"><span class="check"></span>
-        <span><div class="unit-title">Einheit ${e.nr}: ${esc(e.titel)}</div>
-        <div class="unit-meta">${auf.length} Aufgaben · davon ${bel} mit Beleg</div>
-        ${MOT.sterneHtml(e.nr)}
-        ${gemacht.length ? `<span class="stat">zuletzt richtig: ${ok} von ${auf.length}</span>` : ""}</span></button>
+        <span class="unit-title">Einheit ${e.nr}: ${esc(e.titel)}</span></button>
+      <div class="unit-meta-hit"><div class="unit-meta">${auf.length} Aufgaben · davon ${bel} mit Beleg</div></div>
+      <div class="unit-foot">
+      <div class="unit-foot-left">
+        <div class="unit-meta-hit unit-stars-hit">${MOT.sterneHtml(e.nr)}
+        ${gemacht.length ? `<span class="stat">zuletzt richtig: ${ok} von ${auf.length}</span>` : ""}</div>
       <details class="theorie"><summary>Theorie</summary><ul>${e.kernsaetze.map(k => `<li>${esc(k)}</li>`).join("")}</ul></details>
+      </div>
+      ${V ? videoThumbHtml(V) : ""}</div>
     </div>`;
   });
   h += `<div class="row-btns" style="margin-top:6px"><button type="button" class="linkbtn js-alle" id="alle">Alle auswählen</button><button type="button" class="linkbtn js-keine" id="keine">Keine</button>
@@ -718,7 +730,9 @@ function renderStart() {
   const n = anz(S.auswahl);
   h += `<div class="sticky"><div class="inner"><button class="btn primary" id="start" ${n ? "" : "disabled"}>${n ? (S.auswahl.size > 1 ? `Starten (${n} Aufgaben gemischt)` : `Starten (${n} Aufgaben)`) : "Bitte Einheit wählen"}</button></div></div>`;
   app().innerHTML = h;
-  app().querySelectorAll("[data-toggle]").forEach(b => b.onclick = () => { const nr = +b.dataset.toggle; S.auswahl.has(nr) ? S.auswahl.delete(nr) : S.auswahl.add(nr); renderStart(); restoreScroll(); });
+  const tog = nr => { S.auswahl.has(nr) ? S.auswahl.delete(nr) : S.auswahl.add(nr); renderStart(); restoreScroll(); };
+  app().querySelectorAll("[data-toggle]").forEach(b => b.onclick = () => tog(+b.dataset.toggle));
+  app().querySelectorAll(".unit-meta-hit").forEach(b => b.onclick = ev => { ev.preventDefault(); tog(+b.closest("[data-unit]").dataset.unit); });
   const alleWahl = () => { EINHEITEN.forEach(e => S.auswahl.add(e.nr)); renderStart(); restoreScroll(); };
   const keineWahl = () => { S.auswahl.clear(); renderStart(); restoreScroll(); };
   app().querySelectorAll(".js-alle").forEach(b => b.onclick = alleWahl);
@@ -726,7 +740,7 @@ function renderStart() {
   const rs = $("#reset"); if (rs) rs.onclick = () => { if (confirm("Gespeicherten Fortschritt auf diesem Gerät löschen?")) { store.clear(); MOT.loeschen(); try { localStorage.removeItem(SKEY + ":erklaert"); } catch (e) { } progress = {}; renderStart(); } };
   if (typeof FB === "object") FB.bindFooter();
   MOT.bind();
-  app().querySelectorAll(".vidkarte").forEach(vk => vk.onclick = () => oeffneVideo(vk));
+  app().querySelectorAll(".vidthumb").forEach(vk => vk.onclick = ev => { ev.preventDefault(); ev.stopPropagation(); oeffneVideo(vk); });
   $("#start").onclick = () => {
     const ids = DATA.aufgaben.filter(a => S.auswahl.has(a.einheit)).map(a => a.id);
     starte(ids);
@@ -879,18 +893,16 @@ function rzPruefen() {
   if (ziel) ziel.scrollIntoView({ behavior: "smooth", block: z.fertig ? "start" : "center" });
 }
 
-/* ---------- v10: Erklärvideos als eigene Karten vor den Einheiten; Video-Fenster (HTML5, preload none, kein Autoplay;
+/* ---------- v10: Erklärvideo als kleines Vorschaubild in der Einheitenkarte; Video-Fenster (HTML5, preload none, kein Autoplay;
    beim Schließen wird das Video gestoppt und entfernt). Nach dem Ende (ended) große Knöpfe „Einheit n üben“. ---------- */
 const PLAY = `<svg class="playico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>`;
 const videoListe = () => (CONFIG.erklaervideos || (CONFIG.erklaervideo ? [CONFIG.erklaervideo] : [])).filter(v => v && v.datei);
 const videoDa = () => videoListe().length > 0;
 const videoVor = nr => videoListe().find(v => v.vorEinheit === nr);
-const videoKarteVor = nr => !!videoVor(nr);
 const videoEinheitenVon = V => (V.einheiten || []).filter(nr => EINHEITEN.some(e => e.nr === nr));
-function videoKarteHtml(V) {
-  return `<button type="button" class="card vidkarte" id="vidkarte-${V.vorEinheit}" data-vor="${V.vorEinheit}" aria-label="${esc(V.titel)} abspielen">
+function videoThumbHtml(V) {
+  return `<button type="button" class="vidthumb" id="vidkarte-${V.vorEinheit}" data-vor="${V.vorEinheit}" aria-label="${esc(V.titel)} abspielen">
     <span class="vkbild">${V.vorschaubild ? `<img src="${esc(V.vorschaubild)}" alt="" width="640" height="360" loading="lazy" decoding="async">` : ""}<span class="vkplay" aria-hidden="true">${PLAY}</span></span>
-    <span class="vktext"><span class="vktitel">${esc(V.titel)}</span></span>
   </button>`;
 }
 let videoVon = null;
@@ -915,7 +927,7 @@ function oeffneVideo(btn) {
     try { if (document.fullscreenElement) document.exitFullscreen(); else if (v.webkitDisplayingFullscreen && v.webkitExitFullscreen) v.webkitExitFullscreen(); } catch (e) { }
     ende.hidden = false; m.classList.add("fertig"); const b1 = ende.querySelector("[data-ueben]"); if (b1) b1.focus();
   });
-  $("#vidnochmal").onclick = () => { ende.hidden = true; m.classList.remove("fertig"); try { v.currentTime = 0; v.play(); } catch (e) { } };
+  $("#vidnochmal").onclick = () => { ende.hidden = true; m.classList.remove("fertig"); try { v.currentTime = 0; const p = v.play(); if (p && p.catch) p.catch(() => {}); } catch (e) { } };
   m.querySelectorAll("[data-ueben]").forEach(b => b.onclick = () => uebeEinheit(+b.dataset.ueben));
   $("#vidzu").onclick = schliesseVideo; $("#vidzu").focus();
 }
