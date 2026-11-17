@@ -3929,7 +3929,7 @@
    "id": "E7-09",
    "einheit": 7,
    "wir": "MediaMarkt Online GmbH, Elektronikhandel",
-   "text": "Buche diesen Beleg (K 7).",
+   "text": "Buche diesen Beleg (S 8).",
    "loesung": [
     {
      "seite": "Soll",
@@ -3997,7 +3997,7 @@
    "id": "E7-10",
    "einheit": 7,
    "wir": "MediaMarkt Online GmbH, Elektronikhandel",
-   "text": "Buche diesen Beleg (K 8).",
+   "text": "Buche diesen Beleg (S 9).",
    "loesung": [
     {
      "seite": "Soll",
@@ -4263,7 +4263,7 @@
    "id": "E7-14",
    "einheit": 7,
    "wir": "MediaMarkt Online GmbH, Elektronikhandel",
-   "text": "Buche diesen Beleg (K 9).",
+   "text": "Buche diesen Beleg (S 10).",
    "loesung": [
     {
      "seite": "Soll",
@@ -4288,7 +4288,7 @@
     "2800"
    ],
    "beleg": {
-    "typ": "Kassabeleg",
+    "typ": "Kartenbeleg",
     "aussteller": {
      "name": "Sonova Consumer Hearing Austria GmbH",
      "adresse": "Gertrude-Fröhlich-Sandner-Straße 2-4, 1100 Wien",
@@ -7614,7 +7614,7 @@
    "id": "E14-09",
    "einheit": 14,
    "wir": "UNBND Sports Equipment e.U., Outdoor-Sporthandel",
-   "text": "Buche diesen Beleg (K 10). Wir haben den Firmen-Pkw (Benziner) betankt.",
+   "text": "Buche diesen Beleg (S 11). Wir haben den Firmen-Pkw (Benziner) betankt.",
    "loesung": [
     {
      "seite": "Soll",
@@ -7634,7 +7634,7 @@
     "2800"
    ],
    "beleg": {
-    "typ": "Kassabeleg",
+    "typ": "Kartenbeleg",
     "aussteller": {
      "name": "OMV Downstream GmbH",
      "adresse": "Trabrennstraße 6-8, 1020 Wien",
@@ -7676,7 +7676,7 @@
    "id": "E14-10",
    "einheit": 14,
    "wir": "UNBND Sports Equipment e.U., Outdoor-Sporthandel",
-   "text": "Buche diesen Beleg (K 11). Wir haben den Lkw betankt.",
+   "text": "Buche diesen Beleg (S 12). Wir haben den Lkw betankt.",
    "loesung": [
     {
      "seite": "Soll",
@@ -7701,7 +7701,7 @@
     "3500"
    ],
    "beleg": {
-    "typ": "Kassabeleg",
+    "typ": "Kartenbeleg",
     "aussteller": {
      "name": "OMV Downstream GmbH",
      "adresse": "Trabrennstraße 6-8, 1020 Wien",
@@ -7743,7 +7743,7 @@
    "id": "E14-11",
    "einheit": 14,
    "wir": "UNBND Sports Equipment e.U., Outdoor-Sporthandel",
-   "text": "Buche diesen Beleg (K 12).",
+   "text": "Buche diesen Beleg (S 13).",
    "loesung": [
     {
      "seite": "Soll",
@@ -7816,7 +7816,7 @@
    "id": "E14-12",
    "einheit": 14,
    "wir": "UNBND Sports Equipment e.U., Outdoor-Sporthandel",
-   "text": "Buche diesen Beleg (K 13).",
+   "text": "Buche diesen Beleg (S 14).",
    "loesung": [
     {
      "seite": "Soll",
