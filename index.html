@@ -312,6 +312,8 @@ body.vidoffen{overflow:hidden}
 .unit-foot-left{flex:1 1 auto;min-width:0}
 .unit-stars-hit{padding:2px 0 0 56px}
 .vidthumb{flex:0 0 108px;width:108px;margin:0 0 4px 0;padding:0;border:0;background:transparent;border-radius:10px;overflow:hidden;cursor:pointer;color:inherit;font:inherit;line-height:0;align-self:start}
+.vidthumbs{display:flex;flex-direction:column;gap:6px;flex:0 0 108px;width:108px;align-self:start}
+.vidthumbs .vidthumb{flex:0 0 auto;margin:0}
 .vidthumb .vkbild{position:relative;display:block;aspect-ratio:16/9;background:#1d2a33;border-radius:10px;overflow:hidden}
 .vidthumb img{display:block;width:100%;height:100%;object-fit:cover}
 .vidthumb .vkplay{position:absolute;left:50%;top:50%;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:99px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px rgba(255,255,255,.85),0 3px 8px rgba(0,0,0,.28)}
@@ -320,6 +322,7 @@ body.vidoffen{overflow:hidden}
 .vidthumb:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 @media (min-width:600px){
   .vidthumb{flex-basis:120px;width:120px}
+  .vidthumbs{flex-basis:120px;width:120px}
   .vidthumb .vkplay{width:40px;height:40px;margin:-20px 0 0 -20px}
   .vidthumb .vkplay svg{width:18px;height:18px;margin-left:2px}
 }
@@ -439,9 +442,13 @@ const CONFIG = {
     { datei: "videos/erklaervideo_bezugskosten.mp4", vorschaubild: "videos/erklaervideo_bezugskosten.jpg", titel: "Erklärvideo: Bezugskosten", einheiten: [3], vorEinheit: 3 },
     { datei: "videos/erklaervideo_versandkosten.mp4", vorschaubild: "videos/erklaervideo_versandkosten.jpg", titel: "Erklärvideo: Versandkosten", einheiten: [4], vorEinheit: 4 },
     { datei: "videos/erklaervideo_rabatte.mp4", vorschaubild: "videos/erklaervideo_rabatte.jpg", titel: "Erklärvideo: Rabatte", einheiten: [5], vorEinheit: 5 },
+    { datei: "videos/erklaervideo_bankueberweisung.mp4", vorschaubild: "videos/erklaervideo_bankueberweisung.jpg", titel: "Zahlung per Banküberweisung", einheiten: [6], vorEinheit: 6 },
     { datei: "videos/erklaervideo_skonto.mp4", vorschaubild: "videos/erklaervideo_skonto.jpg", titel: "Erklärvideo: Skonto", einheiten: [8, 9], vorEinheit: 8 },
     { datei: "videos/erklaervideo_skonto.mp4", vorschaubild: "videos/erklaervideo_skonto.jpg", titel: "Erklärvideo: Skonto", einheiten: [8, 9], vorEinheit: 9 },
+    { datei: "videos/erklaervideo_verzugszinsen_mahnspesen.mp4", vorschaubild: "videos/erklaervideo_verzugszinsen_mahnspesen.jpg", titel: "Verzugszinsen und Mahnspesen", einheiten: [10], vorEinheit: 10 },
     { datei: "videos/erklaervideo_barverkehr_banken.mp4", vorschaubild: "videos/erklaervideo_barverkehr_banken.jpg", titel: "Erklärvideo: Barverkehr mit Banken", einheiten: [11], vorEinheit: 11 },
+    { datei: "videos/erklaervideo_bankabschluss_habenzinsen_kest.mp4", vorschaubild: "videos/erklaervideo_bankabschluss_habenzinsen_kest.jpg", titel: "Bankabschluss 1: Habenzinsen und KESt", einheiten: [12], vorEinheit: 12 },
+    { datei: "videos/erklaervideo_bankabschluss_sollzinsen_spesen.mp4", vorschaubild: "videos/erklaervideo_bankabschluss_sollzinsen_spesen.jpg", titel: "Bankabschluss 2: Sollzinsen und Spesen", einheiten: [12], vorEinheit: 12 },
     { datei: "videos/erklaervideo_steuern.mp4", vorschaubild: "videos/erklaervideo_steuern.jpg", titel: "Erklärvideo: Steuern", einheiten: [13], vorEinheit: 13 },
     { datei: "videos/erklaervideo_kfz_betriebskosten.mp4", vorschaubild: "videos/erklaervideo_kfz_betriebskosten.jpg", titel: "Kfz-Betriebskosten", einheiten: [14], vorEinheit: 14 },
     { datei: "videos/erklaervideo_kfz_kauf.mp4", vorschaubild: "videos/erklaervideo_kfz_kauf.jpg", titel: "Kfz-Kauf", einheiten: [15], vorEinheit: 15 },
@@ -735,7 +742,6 @@ function renderStart() {
     const bel = auf.filter(a => a.beleg).length;
     const gemacht = auf.filter(a => progress[a.id]);
     const ok = gemacht.filter(a => progress[a.id].ok).length;
-    const V = videoVor(e.nr);
     h += `<div class="card unit ${S.auswahl.has(e.nr) ? "sel" : ""}" data-unit="${e.nr}">
       <button class="unit-head" data-toggle="${e.nr}" aria-pressed="${S.auswahl.has(e.nr)}"><span class="check"></span>
         <span class="unit-title">Einheit ${e.nr}: ${esc(e.titel)}</span></button>
@@ -746,7 +752,7 @@ function renderStart() {
         ${gemacht.length ? `<span class="stat">zuletzt richtig: ${ok} von ${auf.length}</span>` : ""}</div>
       <details class="theorie"><summary>Theorie</summary><ul>${e.kernsaetze.map(k => `<li>${esc(k)}</li>`).join("")}</ul></details>
       </div>
-      ${V ? videoThumbHtml(V) : ""}</div>
+      ${videoThumbsHtml(e.nr)}</div>
     </div>`;
   });
   h += `<div class="row-btns" style="margin-top:6px"><button type="button" class="linkbtn js-alle" id="alle">Alle auswählen</button><button type="button" class="linkbtn js-keine" id="keine">Keine</button>
@@ -924,12 +930,20 @@ function rzPruefen() {
 const PLAY = `<svg class="playico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>`;
 const videoListe = () => (CONFIG.erklaervideos || (CONFIG.erklaervideo ? [CONFIG.erklaervideo] : [])).filter(v => v && v.datei);
 const videoDa = () => videoListe().length > 0;
-const videoVor = nr => videoListe().find(v => v.vorEinheit === nr);
+const videosVor = nr => videoListe().filter(v => v.vorEinheit === nr);
+const videoVor = nr => videosVor(nr)[0];
 const videoEinheitenVon = V => (V.einheiten || []).filter(nr => EINHEITEN.some(e => e.nr === nr));
-function videoThumbHtml(V) {
-  return `<button type="button" class="vidthumb" id="vidkarte-${V.vorEinheit}" data-vor="${V.vorEinheit}" aria-label="${esc(V.titel)} abspielen">
+function videoThumbId(V, i) { return i ? `vidkarte-${V.vorEinheit}-${i + 1}` : `vidkarte-${V.vorEinheit}`; }
+function videoThumbHtml(V, i) {
+  return `<button type="button" class="vidthumb" id="${videoThumbId(V, i)}" data-vor="${V.vorEinheit}" data-datei="${esc(V.datei)}" aria-label="${esc(V.titel)} abspielen">
     <span class="vkbild">${V.vorschaubild ? `<img src="${esc(V.vorschaubild)}" alt="" width="640" height="360" loading="lazy" decoding="async">` : ""}<span class="vkplay" aria-hidden="true">${PLAY}</span></span>
   </button>`;
+}
+function videoThumbsHtml(nr) {
+  const vs = videosVor(nr);
+  if (!vs.length) return "";
+  const inner = vs.map((V, i) => videoThumbHtml(V, i)).join("");
+  return vs.length > 1 ? `<div class="vidthumbs">${inner}</div>` : inner;
 }
 let videoVon = null;
 function uebeEinheit(nr) {
@@ -938,7 +952,7 @@ function uebeEinheit(nr) {
 }
 function oeffneVideo(btn) {
   const liste = videoListe();
-  const V = (btn && videoVor(+btn.dataset.vor)) || liste[0];
+  const V = (btn && liste.find(v => v.datei === btn.dataset.datei && v.vorEinheit === +btn.dataset.vor)) || (btn && videoVor(+btn.dataset.vor)) || liste[0];
   const m = $("#vidmodal"), nrs = videoEinheitenVon(V); videoVon = btn || null;
   const knoepfe = cls => nrs.map(n => `<button type="button" class="btn ${cls}" data-ueben="${n}">Einheit ${n} üben</button>`).join("");
   m.innerHTML = `<div class="vidbox" role="dialog" aria-modal="true" aria-label="${esc(V.titel)}">
