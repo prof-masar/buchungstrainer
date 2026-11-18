@@ -413,6 +413,25 @@ body.vidoffen{overflow:hidden}
 .bl.bon .karte{margin-top:6px}
 .bl.bon .wm{font-size:17px;max-width:240px;text-align:center;line-height:1.2;margin-top:24px}
 
+/* ===== Lizenz-Feld (nur sichtbar mit CONFIG.lizenz.aktiv = true) ===== */
+.lz label{display:block;font-weight:600;margin:0 0 6px}
+.lz .lzrow{display:flex;gap:8px;flex-wrap:wrap}
+.lz input{flex:1 1 260px;min-width:0;min-height:44px;font:inherit;font-size:1.05rem;letter-spacing:.04em;padding:8px 12px;border:1px solid #cfd5dc;border-radius:10px;background:#fff;color:inherit;text-transform:uppercase}
+.lz input::placeholder{text-transform:none;letter-spacing:normal;color:#98a1ad}
+.lz .btn{min-height:44px;flex:0 0 auto}
+.lz .lzmsg{margin:8px 0 0;min-height:0}
+.lz .lzmsg:empty{display:none}
+.lz .lzmsg.ok{color:#17663a;font-weight:600}
+.lz .lzmsg.err{color:#b3261e;font-weight:600}
+.lz .lzinfo{margin:6px 0 0}
+.lz .linkbtn{margin-top:4px;padding-left:0}
+.lz{display:block}
+.lz .lzmsg.ok + .linkbtn{display:block;margin-top:6px}
+.lz .lzlinks{display:flex;gap:14px;flex-wrap:wrap}
+.lzhinweis{position:fixed;left:50%;bottom:90px;transform:translate(-50%,20px);max-width:min(92vw,520px);background:#1d232b;color:#fff;padding:12px 16px;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:9999;font-weight:600}
+.lzhinweis.zeigen{opacity:1;transform:translate(-50%,0)}
+.lz .lzmsg.info{color:#5b6472;font-weight:600}
+
 </style>
 </head>
 <body>
@@ -435,6 +454,7 @@ const CONFIG = {
   kontenAuswahl: 8,                          // Anzahl Konten-Chips pro Aufgabe (Lösung + Ablenker + weitere)
   falschBetraege: 2,                         // Anzahl zusätzlicher plausibler Falschbeträge (1–2)
   kontenplan: "RW FW 3 2024",                // kurze Angabe im Footer
+  lizenz: {"aktiv":  true, "pflicht":  false, "server":  "https://lizenz.profmasar.at", "schluessel":  ""}, // LIZENZ-CONFIG: aktiv:false = App wie bisher, kein Netzwerk. pflicht:true = Buchen nur mit Schlüssel. schluessel = öffentlicher Ed25519-Schlüssel vom Lizenzserver
   // v10: selbst gehostete Erklärvideos (Datei im Repo, kein externer Dienst). Kleines Vorschaubild in der Einheitenkarte (vorEinheit), ohne Beschreibungszeile.
   erklaervideos: [
     { datei: "videos/erklaervideo_einkauf_handelswaren.mp4", vorschaubild: "videos/erklaervideo_einkauf_handelswaren.jpg", titel: "Erklärvideo: Einkauf von Handelswaren", einheiten: [1], vorEinheit: 1 },
@@ -469,6 +489,237 @@ const QR = {"W10-2026-08812":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHYA
 /* ---------- Hilfsfunktionen ---------- */
 const $ = (s, el = document) => el.querySelector(s);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+/* ===== Lizenz-Modul Buchungstrainer v2 (Schlüssel + Demo-Zähler) =====
+   Schalter in CONFIG.lizenz: { aktiv, pflicht, server, schluessel }
+   - aktiv:false  -> Modul tut nichts: kein Feld, kein Netzwerk, kein localStorage, nichts gesperrt.
+   - aktiv:true   -> Feld „Schlüssel eingeben“ auf der Startseite. Netzwerk nur beim Einlösen, beim Erneuern
+                     (höchstens 1x pro Tag, ab Tag 7 bzw. kurz vor Ablauf) und beim Abmelden.
+   - pflicht:true -> ohne gültige Freischaltung kann nicht gebucht (geprüft) werden.
+   Gesendet werden nur der Schlüssel und eine zufällige Gerätekennung (in diesem Browser erzeugt). Keine Namen, kein Tracking.
+   Das Token ist mit Ed25519 signiert; die App prüft es lokal mit dem öffentlichen Schlüssel und läuft damit offline.
+   Demo: Das Token enthält lim (z. B. 10). Gezählt wird jeder gebuchte (geprüfte) Beleg einmal, nur lokal in diesem Browser.
+   Haken für die App: LZ.html(), LZ.bind(), LZ.darfBuchen(id), LZ.gebucht(id), LZ.hinweis(). */
+const LZ = (() => {
+  const C = (typeof CONFIG === "object" && CONFIG.lizenz) || {};
+  if (!C.aktiv) return { aktiv: false, html: () => "", bind() {}, status: () => null, darfBuchen: () => true, gebucht() {}, hinweis() {} };
+  const P_ = "buchungstrainer:lizenz:";
+  const K_GER = P_ + "geraet", K_TOK = P_ + "token", K_CHK = P_ + "check", K_DEMO = P_ + "demo:";
+  const ZEICHEN = "23456789ABCDEFGHJKMNPQRSTUVWXYZ", LAENGE = 16;
+  const TAG = 86400;
+  const ls = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+               set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) { } },
+               del: k => { try { localStorage.removeItem(k); } catch (e) { } } };
+  const escH = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const TEXT = {
+    ok: bis => `Schlüssel richtig. Dieses Gerät ist freigeschaltet bis ${bis}.`,
+    frei: bis => `Dieses Gerät ist freigeschaltet bis ${bis}.`,
+    demo: (n, lim, bis) => `Demo: ${n} von ${lim} Belegen gebucht · bis ${bis}.`,
+    demo_voll: lim => `Die Demo ist aufgebraucht: ${lim} von ${lim} Belegen gebucht. Für mehr brauchst du einen Schlüssel deiner Lehrkraft.`,
+    pflicht: "Zum Buchen brauchst du einen Schlüssel. Gib ihn unten auf der Startseite ein.",
+    ungueltig: "Diesen Schlüssel gibt es nicht. Bitte prüfe die Schreibweise.",
+    format: "Der Schlüssel sieht so aus: BT-XXXX-XXXX-XXXX-XXXX.",
+    abgelaufen: "Dieser Schlüssel ist abgelaufen.",
+    noch_nicht_gueltig: "Dieser Schlüssel gilt noch nicht.",
+    voll: "Für diesen Schlüssel sind gerade alle Plätze belegt.",
+    geraetegrenze: "Mit diesem Schlüssel wurden schon zu viele Geräte freigeschaltet.",
+    inaktiv: "Dieser Schlüssel ist deaktiviert. Frag deine Lehrkraft.",
+    freigegeben: "Dieses Gerät ist nicht mehr freigeschaltet. Gib den Schlüssel noch einmal ein.",
+    token_ungueltig: "Die Freischaltung ist ungültig. Gib den Schlüssel noch einmal ein.",
+    zu_viele_versuche: "Zu viele Versuche. Bitte warte 15 Minuten.",
+    abgemeldet: "Dieses Gerät ist abgemeldet. Der Platz ist wieder frei.",
+    nicht_verfuegbar: "Schlüsselprüfung derzeit nicht verfügbar. Bitte später noch einmal versuchen.",
+    fehler: "Das hat nicht geklappt. Bitte später noch einmal versuchen."
+  };
+  let zustand = null;     // {cid, typ, lim, bis, exp, iat} wenn gültig freigeschaltet
+  let meldung = null;     // {art:"ok"|"err", text}
+
+  /* --- Hilfen --- */
+  const b64u = s => { s = s.replace(/-/g, "+").replace(/_/g, "/"); while (s.length % 4) s += "="; const b = atob(s); return Uint8Array.from(b, c => c.charCodeAt(0)); };
+  const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const datumAT = ymd => { const [y, m, d] = String(ymd).split("-"); return `${d}.${m}.${y}`; };
+  function norm(eingabe) {
+    let s = String(eingabe).toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (s.length === LAENGE + 2 && s.startsWith("BT")) s = s.slice(2);
+    if (s.length !== LAENGE || [...s].some(c => !ZEICHEN.includes(c))) return null;
+    return "BT-" + s.match(/.{4}/g).join("-");
+  }
+  function geraet() {
+    let g = ls.get(K_GER);
+    if (!g || !/^[A-Za-z0-9-]{16,64}$/.test(g)) {
+      g = crypto.randomUUID ? crypto.randomUUID()
+        : [...crypto.getRandomValues(new Uint8Array(16))].map(b => b.toString(16).padStart(2, "0")).join("");
+      ls.set(K_GER, g);
+    }
+    return g;
+  }
+
+  /* --- Ed25519-Prüfung: zuerst WebCrypto, sonst kleine BigInt-Implementierung (RFC 8032) --- */
+  const P = 2n ** 255n - 19n, L = 2n ** 252n + 27742317777372353535851937790883648493n;
+  const md = (a, m = P) => { const r = a % m; return r >= 0n ? r : r + m; };
+  const pw = (b, e) => { let r = 1n; b = md(b); while (e > 0n) { if (e & 1n) r = r * b % P; b = b * b % P; e >>= 1n; } return r; };
+  const inv = a => pw(a, P - 2n);
+  const D = md(-121665n * inv(121666n)), D2 = md(2n * D), SQ = pw(2n, (P - 1n) / 4n);
+  const leInt = u => { let n = 0n; for (let i = u.length - 1; i >= 0; i--) n = (n << 8n) | BigInt(u[i]); return n; };
+  function add(p, q) {
+    const [X1, Y1, Z1, T1] = p, [X2, Y2, Z2, T2] = q;
+    const A = md((Y1 - X1) * (Y2 - X2)), B = md((Y1 + X1) * (Y2 + X2)), Cc = md(T1 * D2 * T2), Dd = md(2n * Z1 * Z2);
+    const E = B - A, F = Dd - Cc, G = Dd + Cc, H = B + A;
+    return [md(E * F), md(G * H), md(F * G), md(E * H)];
+  }
+  function mul(p, n) { let r = [0n, 1n, 1n, 0n]; while (n > 0n) { if (n & 1n) r = add(r, p); p = add(p, p); n >>= 1n; } return r; }
+  function enc(p) { const zi = inv(p[2]), x = md(p[0] * zi), y = md(p[1] * zi); let n = y | ((x & 1n) << 255n); const o = new Uint8Array(32); for (let i = 0; i < 32; i++) { o[i] = Number(n & 255n); n >>= 8n; } return o; }
+  function dec(u) {
+    let y = leInt(u); const sign = y >> 255n; y &= (1n << 255n) - 1n; if (y >= P) return null;
+    const y2 = y * y % P, uu = md(y2 - 1n), v = md(D * y2 + 1n);
+    let x = md(uu * pw(v, 3n) % P * pw(uu * pw(v, 7n) % P, (P - 5n) / 8n));
+    const vx2 = md(v * x * x);
+    if (vx2 !== uu) { if (vx2 === md(-uu)) x = md(x * SQ); else return null; }
+    if (x === 0n && sign) return null;
+    if ((x & 1n) !== sign) x = md(-x);
+    return [x, y, 1n, md(x * y)];
+  }
+  const BX = 15112221349535400772501151409588531511454012693041857206046113283949847762202n, BY = 46316835694926478169428394003475163141307993866256225615783033603165251855960n;
+  const BASIS = [BX, BY, 1n, md(BX * BY)];
+  async function verifyJS(pk, msg, sig) {
+    if (sig.length !== 64 || pk.length !== 32) return false;
+    const A = dec(pk), R = dec(sig.slice(0, 32)); if (!A || !R) return false;
+    const S = leInt(sig.slice(32)); if (S >= L) return false;
+    const hb = new Uint8Array(await crypto.subtle.digest("SHA-512", new Uint8Array([...sig.slice(0, 32), ...pk, ...msg])));
+    const h = md(leInt(hb), L);
+    const l = enc(mul(BASIS, S)), r = enc(add(R, mul(A, h)));
+    return l.every((b, i) => b === r[i]);
+  }
+  async function verify(pk, msg, sig) {
+    try {
+      const key = await crypto.subtle.importKey("raw", pk, { name: "Ed25519" }, false, ["verify"]);
+      return await crypto.subtle.verify({ name: "Ed25519" }, key, sig, msg);
+    } catch (e) { return verifyJS(pk, msg, sig); }   // Browser ohne Ed25519 in WebCrypto
+  }
+  async function tokenLesen(t) {
+    try {
+      const [a, b] = String(t).split("."); if (!a || !b) return null;
+      const msg = b64u(a), sig = b64u(b);
+      if (!C.schluessel || !(await verify(b64(C.schluessel), msg, sig))) return null;
+      const p = JSON.parse(new TextDecoder().decode(msg));
+      return p && p.v === 2 && Number.isInteger(p.cid) ? p : null;
+    } catch (e) { return null; }
+  }
+
+  /* --- Demo-Zähler (nur lokal, je Schlüssel) --- */
+  function demoListe() { if (!zustand) return []; try { const a = JSON.parse(ls.get(K_DEMO + zustand.cid) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+  const istDemo = () => !!(zustand && zustand.typ === "demo" && zustand.lim > 0);
+  /** Darf dieser Beleg gebucht (geprüft) werden? Ein schon gezählter Beleg darf immer erneut geprüft werden. */
+  function darfBuchen(id) {
+    if (!zustand) return !C.pflicht;
+    if (!istDemo()) return true;
+    const l = demoListe(); return l.includes(String(id)) || l.length < zustand.lim;
+  }
+  /** Nach dem Prüfen eines Belegs aufrufen: zählt ihn (Demo) einmal. */
+  function gebucht(id) {
+    if (!istDemo()) return;
+    const l = demoListe(); if (l.includes(String(id))) return;
+    l.push(String(id)); ls.set(K_DEMO + zustand.cid, JSON.stringify(l));
+  }
+  /** Kurzer Hinweis, wenn Buchen gesperrt ist (eigenes Element, unabhängig vom App-Layout). */
+  function hinweis() {
+    let el = document.getElementById("lzhinweis");
+    if (!el) { el = document.createElement("div"); el.id = "lzhinweis"; el.className = "lzhinweis"; el.setAttribute("role", "alert"); document.body.appendChild(el); }
+    el.textContent = istDemo() ? TEXT.demo_voll(zustand.lim) : TEXT.pflicht;
+    el.classList.add("zeigen"); clearTimeout(hinweis._t); hinweis._t = setTimeout(() => el.classList.remove("zeigen"), 6000);
+  }
+
+  /* --- Server --- */
+  async function post(pfad, daten) {
+    const ac = new AbortController(); const to = setTimeout(() => ac.abort(), 10000);
+    try {
+      const r = await fetch(C.server.replace(/\/$/, "") + pfad, { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(daten), mode: "cors", credentials: "omit", referrerPolicy: "no-referrer", cache: "no-store", signal: ac.signal });
+      let j = null; try { j = await r.json(); } catch (e) { }
+      // keine JSON-Antwort (Server noch nicht eingerichtet, 404/500-Seite) = Prüfung nicht verfügbar
+      return j && typeof j === "object" ? j : { ok: false, fehler: "nicht_verfuegbar" };
+    } catch (e) { return { ok: false, fehler: "nicht_verfuegbar" }; }   // offline, DNS, CORS, Zeitüberschreitung
+    finally { clearTimeout(to); }
+  }
+  const ausToken = p => ({ cid: p.cid, typ: p.typ, lim: p.lim || 0, bis: p.cb, exp: p.exp, iat: p.iat });
+  async function annehmen(token) {
+    const p = await tokenLesen(token);
+    if (!p) return false;
+    ls.set(K_TOK, token); zustand = ausToken(p); return true;
+  }
+  // Antworten, die nur bedeuten „Server (noch) nicht bereit“ – nie als Fehler des Schlüssels anzeigen
+  const NICHT_BEREIT = ["nicht_verfuegbar", "nicht_eingerichtet", "https_noetig", "herkunft", "methode", "anfrage"];
+  const fehlerMeldung = f => NICHT_BEREIT.includes(f) || !f ? { art: "info", text: TEXT.nicht_verfuegbar }
+    : { art: "err", text: typeof TEXT[f] === "string" ? TEXT[f] : TEXT.fehler };
+  async function einloesen(eingabe) {
+    const schluessel = norm(eingabe);
+    if (!schluessel) { meldung = { art: "err", text: TEXT.format }; return; }
+    const j = await post("/api/activate.php", { schluessel, geraet: geraet() });
+    if (j.ok && await annehmen(j.token)) { meldung = { art: "ok", text: TEXT.ok(datumAT(j.gueltig_bis)) }; return; }
+    meldung = j.ok ? { art: "info", text: TEXT.nicht_verfuegbar } : fehlerMeldung(j.fehler);   // ok ohne gültiges Token = falscher öffentlicher Schlüssel
+  }
+  async function abmelden() {
+    const t = ls.get(K_TOK);
+    const j = t ? await post("/api/release.php", { token: t, geraet: geraet() }) : { ok: true };
+    if (j.ok || ["freigegeben", "token_ungueltig", "ungueltig"].includes(j.fehler)) { ls.del(K_TOK); zustand = null; meldung = { art: "ok", text: TEXT.abgemeldet }; }
+    else meldung = fehlerMeldung(j.fehler);
+  }
+  // Beim Start: vorhandenes Token lokal prüfen (offline). Online erneuern höchstens 1x pro Tag,
+  // wenn das Token älter als 7 Tage ist oder in weniger als 7 Tagen abläuft (Demo: ab 2 Tagen).
+  async function pruefen() {
+    const t = ls.get(K_TOK); if (!t) return;
+    const p = await tokenLesen(t);
+    if (!p) { ls.del(K_TOK); return; }
+    const jetzt = Date.now() / 1000;
+    zustand = p.exp > jetzt ? ausToken(p) : null;
+    const heute = new Date().toISOString().slice(0, 10);
+    const alt = p.typ === "demo" ? 2 * TAG : 7 * TAG;
+    if ((jetzt - p.iat > alt || p.exp - jetzt < alt) && ls.get(K_CHK) !== heute) {
+      ls.set(K_CHK, heute);
+      const j = await post("/api/refresh.php", { token: t, geraet: geraet() });
+      if (j.ok) await annehmen(j.token);
+      else if (["inaktiv", "abgelaufen", "freigegeben", "ungueltig", "token_ungueltig", "voll", "noch_nicht_gueltig"].includes(j.fehler)) {
+        ls.del(K_TOK); zustand = null; meldung = { art: "err", text: TEXT[j.fehler] };
+      }   // Server nicht erreichbar: Token behalten, App läuft offline weiter, keine Meldung
+    }
+  }
+
+  /* --- Anzeige --- */
+  function statusText() {
+    if (istDemo()) return TEXT.demo(Math.min(demoListe().length, zustand.lim), zustand.lim, datumAT(zustand.bis));
+    return TEXT.frei(datumAT(zustand.bis));
+  }
+  function html() {
+    const m = meldung ? `<p class="lzmsg ${meldung.art}" role="status">${escH(meldung.text)}</p>` : `<p class="lzmsg" role="status"></p>`;
+    if (zustand && (!meldung || meldung.art !== "err")) {
+      return `<div class="card lz" id="lz">${meldung ? m : ""}<p class="lzmsg ok" id="lzstatus">${escH(statusText())}</p>
+        <div class="lzlinks"><button type="button" class="linkbtn" id="lzneu">Anderen Schlüssel eingeben</button>${istDemo() ? "" : `<button type="button" class="linkbtn" id="lzab">Gerät abmelden</button>`}</div></div>`;
+    }
+    return `<div class="card lz" id="lz"><form id="lzform" novalidate>
+      <label for="lzcode">Schlüssel eingeben</label>
+      <div class="lzrow"><input id="lzcode" name="schluessel" placeholder="BT-XXXX-XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="30">
+      <button class="btn primary" id="lzok" type="submit">Freischalten</button></div>
+      ${m}<p class="small muted lzinfo">${C.pflicht ? "Den Schlüssel bekommst du von deiner Lehrkraft." : "Du kannst auch ohne Schlüssel alles üben."}</p></form></div>`;
+  }
+  function neuZeichnen() { const el = document.getElementById("lz"); if (el) { el.outerHTML = html(); bind(); } }
+  function bind() {
+    const f = document.getElementById("lzform");
+    if (f) f.onsubmit = async ev => {
+      ev.preventDefault();
+      const b = document.getElementById("lzok"); b.disabled = true; b.textContent = "Prüfe …";
+      await einloesen(document.getElementById("lzcode").value);
+      const alt = meldung && meldung.art !== "ok" ? document.getElementById("lzcode").value : "";
+      neuZeichnen();
+      if (alt) { const i = document.getElementById("lzcode"); if (i) i.value = alt; }
+    };
+    const n = document.getElementById("lzneu");
+    if (n) n.onclick = () => { zustand = null; meldung = null; neuZeichnen(); const i = document.getElementById("lzcode"); if (i) i.focus(); };
+    const a = document.getElementById("lzab");
+    if (a) a.onclick = async () => { if (!confirm("Dieses Gerät abmelden? Der Platz wird für andere frei.")) return; a.disabled = true; await abmelden(); neuZeichnen(); };
+  }
+  const bereit = pruefen().then(() => { if (meldung || zustand) neuZeichnen(); });
+  window.BT_LZ = { bereit, status: () => zustand, demoGezaehlt: () => demoListe().length, _verifyJS: verifyJS, _tokenLesen: tokenLesen };
+  return { aktiv: true, pflicht: !!C.pflicht, html, bind, status: () => zustand, darfBuchen, gebucht, hinweis };
+})();
 const r2 = x => Math.round(x * 100) / 100;
 const cents = x => Math.round(x * 100);
 function eur(x, mitZeichen = true) {
@@ -760,7 +1011,7 @@ function renderStart() {
   h += `<div class="row-btns" style="margin-top:6px"><button type="button" class="linkbtn js-alle" id="alle">Alle auswählen</button><button type="button" class="linkbtn js-keine" id="keine">Keine</button>
         ${Object.keys(progress).length ? `<button class="linkbtn" id="reset" style="margin-left:auto;color:var(--muted)">Fortschritt löschen</button>` : ""}</div>
     <div class="card small muted">So geht's: Lies den Geschäftsfall oder Beleg. Tippe dann im <b style="color:var(--soll)">Soll</b> und im <b style="color:var(--haben)">Haben</b> auf die Felder und wähle Konto und Betrag. Mit <b>+ Zeile</b> fügst du weitere Zeilen hinzu.</div>
-    <footer class="foot">${esc(CONFIG.titel)}${CONFIG.lehrer ? " · " + esc(CONFIG.lehrer) : ""}<br>Kontenplan: ${esc(CONFIG.kontenplan)} · Keine Anmeldung, keine Namen, kein Tracking${CONFIG.fortschrittSpeichern ? " – Fortschritt bleibt nur auf diesem Gerät" : ""}.${typeof FB === "object" ? FB.footerHtml() : ""}</footer>`;
+    ${typeof LZ === "object" ? LZ.html() : ""}<footer class="foot">${esc(CONFIG.titel)}${CONFIG.lehrer ? " · " + esc(CONFIG.lehrer) : ""}<br>Kontenplan: ${esc(CONFIG.kontenplan)} · Keine Anmeldung, keine Namen, kein Tracking${CONFIG.fortschrittSpeichern ? " – Fortschritt bleibt nur auf diesem Gerät" : ""}.${typeof FB === "object" ? FB.footerHtml() : ""}</footer>`;
   const { n, text } = startKnopfZustand();
   h += `<div class="sticky"><div class="inner"><button class="btn primary" id="start" ${n ? "" : "disabled"}>${text}</button></div></div>`;
   app().innerHTML = h;
@@ -774,6 +1025,7 @@ function renderStart() {
   const rs = $("#reset"); if (rs) rs.onclick = () => { if (confirm("Gespeicherten Fortschritt auf diesem Gerät löschen?")) { store.clear(); MOT.loeschen(); try { localStorage.removeItem(SKEY + ":erklaert"); } catch (e) { } progress = {}; renderStart(); } };
   if (typeof FB === "object") FB.bindFooter();
   MOT.bind();
+  if (typeof LZ === "object") LZ.bind();
   app().querySelectorAll(".vidthumb").forEach(vk => vk.onclick = ev => { ev.preventDefault(); ev.stopPropagation(); oeffneVideo(vk); });
   $("#start").onclick = () => {
     const ids = DATA.aufgaben.filter(a => S.auswahl.has(a.einheit)).map(a => a.id);
@@ -1036,6 +1288,7 @@ function closeSheet() { $("#sheet").classList.remove("open"); $("#sheetbg").clas
 /* ---------- Prüfen ---------- */
 function pruefen() {
   const c = S.cur, a = c.a;
+  if (typeof LZ === "object" && !LZ.darfBuchen(a.id)) { LZ.hinweis(); return; }   // Lizenz: Demo aufgebraucht / Pflicht ohne Schlüssel
   // leere Zeilen ignorieren, halbe Zeilen anmahnen
   for (const s of ["Soll", "Haben"]) {
     if (c.rows[s].some(r => (r.konto == null) !== (r.betrag == null))) { info("Bitte fülle in jeder Zeile Konto und Betrag aus. Oder entferne die Zeile mit ×."); return; }
@@ -1106,6 +1359,7 @@ function pruefen() {
   S.besteSerie = Math.max(S.besteSerie, S.serie);
   const punkte = alles ? (tp > 0 ? 0.5 : 1) : 0;
   S.ergebnisse.push({ id: a.id, einheit: a.einheit, ok: alles, tipp: tp > 0, tipps: tp, punkte });
+  if (typeof LZ === "object") LZ.gebucht(a.id);   // Lizenz: ein gebuchter Beleg (Demo-Zähler)
   merke(a.id, alles);
   c.zielNeu = MOT.buchung(a.id, alles, tp, S.serie);   // Sterne, Tagesziel, beste Serie (lokal)
   drawAufgabe();
