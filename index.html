@@ -504,8 +504,10 @@ const LZ = (() => {
   if (!C.aktiv) return { aktiv: false, html: () => "", bind() {}, status: () => null, darfBuchen: () => true, gebucht() {}, hinweis() {} };
   const P_ = "buchungstrainer:lizenz:";
   const K_GER = P_ + "geraet", K_TOK = P_ + "token", K_CHK = P_ + "check", K_DEMO = P_ + "demo:";
+  const K_ZEIT = P_ + "zeit", K_SKEW = P_ + "uhrabweichung";   // Offline-Frist: höchste gesehene Zeit + Abweichung Geräteuhr/Server
+  const ZURUECK_TOLERANZ = 3600 * 1000;    // Uhr mehr als 1 h zurückgestellt -> Check-in nötig
+  const CHECKIN_AB = 6 * 3600;             // online: Check-in, wenn der letzte älter als 6 h ist
   const ZEICHEN = "23456789ABCDEFGHJKMNPQRSTUVWXYZ", LAENGE = 16;
-  const TAG = 86400;
   const ls = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
                set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) { } },
                del: k => { try { localStorage.removeItem(k); } catch (e) { } } };
@@ -516,6 +518,8 @@ const LZ = (() => {
     demo: (n, lim, bis) => `Demo: ${n} von ${lim} Belegen gebucht · bis ${bis}.`,
     demo_voll: lim => `Die Demo ist aufgebraucht: ${lim} von ${lim} Belegen gebucht. Für mehr brauchst du einen Schlüssel deiner Lehrkraft.`,
     pflicht: "Zum Buchen brauchst du einen Schlüssel. Gib ihn unten auf der Startseite ein.",
+    frist: "Die Offline-Frist (72 Stunden) ist abgelaufen. Bitte verbinde dich kurz mit dem Internet, dann geht es sofort weiter.",
+    uhr: "Die Uhr dieses Geräts wurde zurückgestellt. Bitte verbinde dich kurz mit dem Internet, damit der Schlüssel neu geprüft wird.",
     ungueltig: "Diesen Schlüssel gibt es nicht. Bitte prüfe die Schreibweise.",
     format: "Der Schlüssel sieht so aus: BT-XXXX-XXXX-XXXX-XXXX.",
     abgelaufen: "Dieser Schlüssel ist abgelaufen.",
@@ -608,9 +612,45 @@ const LZ = (() => {
   /* --- Demo-Zähler (nur lokal, je Schlüssel) --- */
   function demoListe() { if (!zustand) return []; try { const a = JSON.parse(ls.get(K_DEMO + zustand.cid) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
   const istDemo = () => !!(zustand && zustand.typ === "demo" && zustand.lim > 0);
-  /** Darf dieser Beleg gebucht (geprüft) werden? Ein schon gezählter Beleg darf immer erneut geprüft werden. */
+  /* --- Offline-Frist (72 h ab dem letzten Check-in, Server-Zeit) ---
+     Maßgeblich ist exp im signierten Token (= Server-iat + 72 h). Die Geräteuhr wird mit der beim Check-in gemessenen
+     Abweichung korrigiert und darf nicht rückwärts laufen: die höchste je gesehene Zeit wird gemerkt. */
+  function uhr() {
+    const korr = Date.now() - (+ls.get(K_SKEW) || 0), max = +ls.get(K_ZEIT) || 0;
+    if (max && korr < max - ZURUECK_TOLERANZ) return { t: max / 1000, zurueck: true };
+    const t = Math.max(korr, max); ls.set(K_ZEIT, String(Math.round(t)));
+    return { t: t / 1000, zurueck: false };
+  }
+  function checkinMerken(p) { ls.set(K_SKEW, String(Date.now() - p.iat * 1000)); ls.set(K_ZEIT, String(p.iat * 1000)); }
+  function bewerten() {
+    if (!zustand) return;
+    const u = uhr();
+    zustand.gesperrt = u.zurueck ? "uhr" : (u.t >= zustand.exp ? "frist" : false);
+  }
+  let laeuft = null;
+  /** Check-in beim Server (refresh). gezielt = nach Sperre/Knopf: höchstens 1x pro Minute, sonst 1x pro 30 Min. */
+  function checkin(gezielt) {
+    if (laeuft) return laeuft;
+    const t = ls.get(K_TOK); if (!t) return Promise.resolve(false);
+    const letzte = +ls.get(K_CHK) || 0;
+    if (Math.abs(Date.now() - letzte) < (gezielt ? 60e3 : 30 * 60e3)) return Promise.resolve(false);
+    ls.set(K_CHK, String(Date.now()));
+    laeuft = (async () => {
+      const j = await post("/api/refresh.php", { token: t, geraet: geraet() });
+      if (j.ok && await annehmen(j.token)) { meldung = null; return true; }
+      if (["inaktiv", "abgelaufen", "freigegeben", "ungueltig", "token_ungueltig", "voll", "noch_nicht_gueltig"].includes(j.fehler)) {
+        ls.del(K_TOK); zustand = null; meldung = { art: "err", text: TEXT[j.fehler] };
+      }   // Server nicht erreichbar: Token behalten, Frist läuft weiter, keine Fehlermeldung
+      return false;
+    })().finally(() => { laeuft = null; });
+    return laeuft;
+  }
+  /** Darf dieser Beleg gebucht (geprüft) werden? Ein schon gezählter Beleg darf immer erneut geprüft werden.
+      Ohne Schlüssel: frei (außer pflicht). Mit Schlüssel: gesperrt, wenn die Offline-Frist abgelaufen ist. */
   function darfBuchen(id) {
     if (!zustand) return !C.pflicht;
+    bewerten();
+    if (zustand.gesperrt) { checkin(true).then(ok => { if (ok) neuZeichnen(); }); return false; }
     if (!istDemo()) return true;
     const l = demoListe(); return l.includes(String(id)) || l.length < zustand.lim;
   }
@@ -624,7 +664,7 @@ const LZ = (() => {
   function hinweis() {
     let el = document.getElementById("lzhinweis");
     if (!el) { el = document.createElement("div"); el.id = "lzhinweis"; el.className = "lzhinweis"; el.setAttribute("role", "alert"); document.body.appendChild(el); }
-    el.textContent = istDemo() ? TEXT.demo_voll(zustand.lim) : TEXT.pflicht;
+    el.textContent = zustand && zustand.gesperrt ? TEXT[zustand.gesperrt] : istDemo() ? TEXT.demo_voll(zustand.lim) : TEXT.pflicht;
     el.classList.add("zeigen"); clearTimeout(hinweis._t); hinweis._t = setTimeout(() => el.classList.remove("zeigen"), 6000);
   }
 
@@ -640,11 +680,12 @@ const LZ = (() => {
     } catch (e) { return { ok: false, fehler: "nicht_verfuegbar" }; }   // offline, DNS, CORS, Zeitüberschreitung
     finally { clearTimeout(to); }
   }
-  const ausToken = p => ({ cid: p.cid, typ: p.typ, lim: p.lim || 0, bis: p.cb, exp: p.exp, iat: p.iat });
+  const ausToken = p => ({ cid: p.cid, typ: p.typ, lim: p.lim || 0, bis: p.cb, exp: p.exp, iat: p.iat, gesperrt: false });
+  /** Neues Token vom Server (= erfolgreicher Check-in): speichern, Server-Zeit merken. */
   async function annehmen(token) {
     const p = await tokenLesen(token);
     if (!p) return false;
-    ls.set(K_TOK, token); zustand = ausToken(p); return true;
+    ls.set(K_TOK, token); checkinMerken(p); zustand = ausToken(p); bewerten(); return true;
   }
   // Antworten, die nur bedeuten „Server (noch) nicht bereit“ – nie als Fehler des Schlüssels anzeigen
   const NICHT_BEREIT = ["nicht_verfuegbar", "nicht_eingerichtet", "https_noetig", "herkunft", "methode", "anfrage"];
@@ -663,34 +704,28 @@ const LZ = (() => {
     if (j.ok || ["freigegeben", "token_ungueltig", "ungueltig"].includes(j.fehler)) { ls.del(K_TOK); zustand = null; meldung = { art: "ok", text: TEXT.abgemeldet }; }
     else meldung = fehlerMeldung(j.fehler);
   }
-  // Beim Start: vorhandenes Token lokal prüfen (offline). Online erneuern höchstens 1x pro Tag,
-  // wenn das Token älter als 7 Tage ist oder in weniger als 7 Tagen abläuft (Demo: ab 2 Tagen).
+  // Beim Start: vorhandenes Token lokal prüfen (offline, Signatur + Frist). Online Check-in, wenn der letzte
+  // älter als 6 h ist oder die Frist abgelaufen ist. Ohne Netz läuft die App bis exp (72 h nach dem letzten Check-in).
   async function pruefen() {
     const t = ls.get(K_TOK); if (!t) return;
     const p = await tokenLesen(t);
     if (!p) { ls.del(K_TOK); return; }
-    const jetzt = Date.now() / 1000;
-    zustand = p.exp > jetzt ? ausToken(p) : null;
-    const heute = new Date().toISOString().slice(0, 10);
-    const alt = p.typ === "demo" ? 2 * TAG : 7 * TAG;
-    if ((jetzt - p.iat > alt || p.exp - jetzt < alt) && ls.get(K_CHK) !== heute) {
-      ls.set(K_CHK, heute);
-      const j = await post("/api/refresh.php", { token: t, geraet: geraet() });
-      if (j.ok) await annehmen(j.token);
-      else if (["inaktiv", "abgelaufen", "freigegeben", "ungueltig", "token_ungueltig", "voll", "noch_nicht_gueltig"].includes(j.fehler)) {
-        ls.del(K_TOK); zustand = null; meldung = { art: "err", text: TEXT[j.fehler] };
-      }   // Server nicht erreichbar: Token behalten, App läuft offline weiter, keine Meldung
-    }
+    zustand = ausToken(p); bewerten();
+    if (zustand.gesperrt || uhr().t - p.iat > CHECKIN_AB) await checkin(!!zustand.gesperrt);
   }
 
   /* --- Anzeige --- */
   function statusText() {
+    if (zustand.gesperrt) return TEXT[zustand.gesperrt];
     if (istDemo()) return TEXT.demo(Math.min(demoListe().length, zustand.lim), zustand.lim, datumAT(zustand.bis));
     return TEXT.frei(datumAT(zustand.bis));
   }
   function html() {
     const m = meldung ? `<p class="lzmsg ${meldung.art}" role="status">${escH(meldung.text)}</p>` : `<p class="lzmsg" role="status"></p>`;
     if (zustand && (!meldung || meldung.art !== "err")) {
+      bewerten();
+      if (zustand.gesperrt) return `<div class="card lz" id="lz"><p class="lzmsg err" id="lzstatus">${escH(statusText())}</p>
+        <div class="lzlinks"><button type="button" class="linkbtn" id="lzcheck">Jetzt prüfen</button></div></div>`;
       return `<div class="card lz" id="lz">${meldung ? m : ""}<p class="lzmsg ok" id="lzstatus">${escH(statusText())}</p>
         <div class="lzlinks"><button type="button" class="linkbtn" id="lzneu">Anderen Schlüssel eingeben</button>${istDemo() ? "" : `<button type="button" class="linkbtn" id="lzab">Gerät abmelden</button>`}</div></div>`;
     }
@@ -713,11 +748,13 @@ const LZ = (() => {
     };
     const n = document.getElementById("lzneu");
     if (n) n.onclick = () => { zustand = null; meldung = null; neuZeichnen(); const i = document.getElementById("lzcode"); if (i) i.focus(); };
+    const c = document.getElementById("lzcheck");
+    if (c) c.onclick = async () => { c.disabled = true; c.textContent = "Prüfe …"; ls.del(K_CHK); const ok = await checkin(true); if (!ok && zustand) meldung = null; neuZeichnen(); };
     const a = document.getElementById("lzab");
     if (a) a.onclick = async () => { if (!confirm("Dieses Gerät abmelden? Der Platz wird für andere frei.")) return; a.disabled = true; await abmelden(); neuZeichnen(); };
   }
   const bereit = pruefen().then(() => { if (meldung || zustand) neuZeichnen(); });
-  window.BT_LZ = { bereit, status: () => zustand, demoGezaehlt: () => demoListe().length, _verifyJS: verifyJS, _tokenLesen: tokenLesen };
+  window.BT_LZ = { bereit, status: () => (bewerten(), zustand), demoGezaehlt: () => demoListe().length, _verifyJS: verifyJS, _tokenLesen: tokenLesen };
   return { aktiv: true, pflicht: !!C.pflicht, html, bind, status: () => zustand, darfBuchen, gebucht, hinweis };
 })();
 const r2 = x => Math.round(x * 100) / 100;
