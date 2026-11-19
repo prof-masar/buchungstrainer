@@ -518,7 +518,7 @@ const LZ = (() => {
     demo: (n, lim, bis) => `Demo: ${n} von ${lim} Belegen gebucht · bis ${bis}.`,
     demo_voll: lim => `Die Demo ist aufgebraucht: ${lim} von ${lim} Belegen gebucht. Für mehr brauchst du einen Schlüssel deiner Lehrkraft.`,
     pflicht: "Zum Buchen brauchst du einen Schlüssel. Gib ihn unten auf der Startseite ein.",
-    frist: "Die Offline-Frist (72 Stunden) ist abgelaufen. Bitte verbinde dich kurz mit dem Internet, dann geht es sofort weiter.",
+    frist: d => `Die Offline-Frist (${d}) ist abgelaufen. Bitte verbinde dich kurz mit dem Internet, dann geht es sofort weiter.`,
     uhr: "Die Uhr dieses Geräts wurde zurückgestellt. Bitte verbinde dich kurz mit dem Internet, damit der Schlüssel neu geprüft wird.",
     ungueltig: "Diesen Schlüssel gibt es nicht. Bitte prüfe die Schreibweise.",
     format: "Der Schlüssel sieht so aus: BT-XXXX-XXXX-XXXX-XXXX.",
@@ -612,8 +612,8 @@ const LZ = (() => {
   /* --- Demo-Zähler (nur lokal, je Schlüssel) --- */
   function demoListe() { if (!zustand) return []; try { const a = JSON.parse(ls.get(K_DEMO + zustand.cid) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
   const istDemo = () => !!(zustand && zustand.typ === "demo" && zustand.lim > 0);
-  /* --- Offline-Frist (72 h ab dem letzten Check-in, Server-Zeit) ---
-     Maßgeblich ist exp im signierten Token (= Server-iat + 72 h). Die Geräteuhr wird mit der beim Check-in gemessenen
+  /* --- Offline-Frist (Standard 168 h = 1 Woche ab dem letzten Check-in, Server-Zeit; Server-Config offline_stunden) ---
+     Maßgeblich ist exp im signierten Token (= Server-iat + offline_stunden). Die Geräteuhr wird mit der beim Check-in gemessenen
      Abweichung korrigiert und darf nicht rückwärts laufen: die höchste je gesehene Zeit wird gemerkt. */
   function uhr() {
     const korr = Date.now() - (+ls.get(K_SKEW) || 0), max = +ls.get(K_ZEIT) || 0;
@@ -622,6 +622,11 @@ const LZ = (() => {
     return { t: t / 1000, zurueck: false };
   }
   function checkinMerken(p) { ls.set(K_SKEW, String(Date.now() - p.iat * 1000)); ls.set(K_ZEIT, String(p.iat * 1000)); }
+  function fristDauer() {   // aus dem signierten Token, damit der Text zur Server-Einstellung passt
+    const h = Math.round((zustand.exp - zustand.iat) / 3600);
+    return h === 168 ? "1 Woche" : h % 24 === 0 && h > 24 ? `${h / 24} Tage` : `${h} Stunden`;
+  }
+  const sperrText = () => zustand.gesperrt === "frist" ? TEXT.frist(fristDauer()) : TEXT.uhr;
   function bewerten() {
     if (!zustand) return;
     const u = uhr();
@@ -664,7 +669,7 @@ const LZ = (() => {
   function hinweis() {
     let el = document.getElementById("lzhinweis");
     if (!el) { el = document.createElement("div"); el.id = "lzhinweis"; el.className = "lzhinweis"; el.setAttribute("role", "alert"); document.body.appendChild(el); }
-    el.textContent = zustand && zustand.gesperrt ? TEXT[zustand.gesperrt] : istDemo() ? TEXT.demo_voll(zustand.lim) : TEXT.pflicht;
+    el.textContent = zustand && zustand.gesperrt ? sperrText() : istDemo() ? TEXT.demo_voll(zustand.lim) : TEXT.pflicht;
     el.classList.add("zeigen"); clearTimeout(hinweis._t); hinweis._t = setTimeout(() => el.classList.remove("zeigen"), 6000);
   }
 
@@ -705,7 +710,7 @@ const LZ = (() => {
     else meldung = fehlerMeldung(j.fehler);
   }
   // Beim Start: vorhandenes Token lokal prüfen (offline, Signatur + Frist). Online Check-in, wenn der letzte
-  // älter als 6 h ist oder die Frist abgelaufen ist. Ohne Netz läuft die App bis exp (72 h nach dem letzten Check-in).
+  // älter als 6 h ist oder die Frist abgelaufen ist. Ohne Netz läuft die App bis exp (offline_stunden, Standard 1 Woche, nach dem letzten Check-in).
   async function pruefen() {
     const t = ls.get(K_TOK); if (!t) return;
     const p = await tokenLesen(t);
@@ -716,7 +721,7 @@ const LZ = (() => {
 
   /* --- Anzeige --- */
   function statusText() {
-    if (zustand.gesperrt) return TEXT[zustand.gesperrt];
+    if (zustand.gesperrt) return sperrText();
     if (istDemo()) return TEXT.demo(Math.min(demoListe().length, zustand.lim), zustand.lim, datumAT(zustand.bis));
     return TEXT.frei(datumAT(zustand.bis));
   }
