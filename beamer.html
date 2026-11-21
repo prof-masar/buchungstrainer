@@ -931,7 +931,7 @@ body.beamer .rm { font-size: max(18px, 1.25rem) !important; }.bm-fall-gross { fo
 .bema-blatt .saldo{font-weight:700}
 .bema-dlg{position:fixed;inset:0;z-index:80;background:rgba(20,28,40,.45);display:flex;align-items:center;justify-content:center;padding:24px}
 .bema-dlg[hidden]{display:none}
-.bema-dlg .box{background:#fff;border-radius:12px;max-width:820px;width:100%;max-height:90vh;overflow:auto;padding:20px 22px 16px;box-shadow:0 8px 40px rgba(0,0,0,.18)}
+.bema-dlg .box{background:#fff;border-radius:12px;max-width:560px;width:100%;max-height:90vh;overflow:auto;padding:22px 24px 18px;box-shadow:0 8px 40px rgba(0,0,0,.18)}
 .bema-dlg h2{margin:0 0 10px;font-size:22px}
 .bema-dlg h3{margin:12px 0 6px;font-size:18px}
 .bema-dlg p,.bema-dlg label,.bema-dlg li{font-size:18px;line-height:1.4}
@@ -962,6 +962,19 @@ body.beamer .rm { font-size: max(18px, 1.25rem) !important; }.bm-fall-gross { fo
 .bema-dlg input.bema-ns{width:5em;font-size:18px;padding:2px 6px}
 
 .bema-dlg #bema-dl-status{min-height:1.4em;color:#1F4E79;font-weight:600;margin:8px 0 0}
+
+.bema-dlg .bema-feld{display:grid;grid-template-columns:8.2em 1fr;gap:8px 16px;align-items:center;margin:12px 0}
+.bema-dlg .bema-feld-lab{font-weight:600;color:#16325c;font-size:17px}
+.bema-dlg .bema-feld-val{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.bema-dlg .bema-hinweis{color:#6a7380;font-size:15px;font-weight:400;margin:0 0 10px;line-height:1.35}
+.bema-dlg .bema-mehr{margin:14px 0 4px;border-top:1px solid #e6eaee;padding-top:8px}
+.bema-dlg .bema-mehr summary{cursor:pointer;font-size:16px;color:#16325c;font-weight:600;list-style:none}
+.bema-dlg .bema-mehr summary::-webkit-details-marker{display:none}
+.bema-dlg .bema-mehr summary::before{content:"▸ ";}
+.bema-dlg .bema-mehr[open] summary::before{content:"▾ ";}
+.bema-dlg .bema-mehr-box{padding:10px 0 0}
+.bema-dlg .bema-mehr-box .row{margin:8px 0}
+.bema-dlg #bema-dl-status{min-height:1.2em;color:#1F4E79;font-weight:600;margin:10px 0 0;font-size:16px}
 
 </style>
 </head>
@@ -6508,7 +6521,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
   }
   function cm(c) { return Math.round(c * 567); }
   const TEXTW = cm(TEXT_CM);
-  const BOOK_COLS = [0.9, 6.4, 1.8, 6.9, 1.8].map(cm);
+  const BOOK_COLS = [0.8, 6.0, 2.3, 0.9, 6.0, 2.3].map(cm);
   const NAME_COLS = [cm(5.93), cm(5.93), TEXTW - 2 * cm(5.93)];
 
   function rPr(o) {
@@ -6553,18 +6566,37 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
   function num(n) {
     return String(euro(n)).replace(/\s*€/g, "").trim();
   }
+  const KTO_PERSON = {
+    "20010": "AFE Fitness Express",
+    "20020": "mut4u",
+    "20030": "TEAM 7",
+    "33010": "Sony Europe",
+    "33020": "Sonova",
+    "33030": "Gebrüder Weiss",
+    "33040": "LKW WALTER",
+    "33050": "METRO"
+  };
   function ktoKurz(nr, bezeichnung) {
+    const key = (nr != null && nr !== "") ? String(nr) : "";
+    if (KTO_PERSON[key]) return key + " " + KTO_PERSON[key];
     let name = String(bezeichnung || ((global.BEMA && BEMA.kontoName) ? BEMA.kontoName(nr) : "") || "").trim();
     name = name
+      .replace(/^Handelswarenerlöse/, "HW-Erlöse")
+      .replace(/^Handelswareneinsatz/, "HW-Einsatz")
       .replace(/\s*\(Guthaben bei Kreditinstituten\)/i, "")
       .replace(/\s+Gesellschaft m\.b\.H\./gi, "")
       .replace(/\s+GmbH/g, "")
       .replace(/\s+e\.U\./g, "")
       .replace(/,?\s*Zweigniederlassung( Austria)?/gi, "")
+      .replace(/\s*\(Büroaufwand, Bürobedarf\)/, "")
+      .replace(/\s*\(Transporte durch Dritte\)/, "")
+      .replace(/^Abschreibungen von Sachanlagen \(Absetzung für Abnutzung, AfA\)/, "Abschreibungen (AfA)")
+      .replace(/^Lieferantenskonti auf Wareneinkauf \(Materialaufwand\)/, "Lieferantenskonti")
+      .replace(/^Pkw- und Kombi-Betriebsaufwand/, "Pkw-Betriebsaufwand")
       .replace(/\s+/g, " ")
       .trim();
-    if (name.length > 40) name = name.slice(0, 38).replace(/\s+\S*$/, "") + "…";
-    return (nr != null && nr !== "" ? (nr + " ") : "") + name;
+    if (name.length > 36) name = name.slice(0, 34).replace(/\s+\S*$/, "") + "…";
+    return (key ? (key + " ") : "") + name;
   }
 
   function borderEl(side, b) {
@@ -6617,7 +6649,10 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
         if (inner == null) {
           inner = P(c.text || "\u00a0", {
             size: c.size, color: c.color, bold: c.bold, italic: c.italic,
-            align: c.align, after: 0, before: 0, keepNext: keep
+            align: c.align,
+            after: c.after != null ? c.after : (opt.paraAfter != null ? opt.paraAfter : 0),
+            before: c.before != null ? c.before : (opt.paraBefore != null ? opt.paraBefore : 0),
+            keepNext: keep
           });
         }
         tr += "<w:tc>" + tcPr + inner + "</w:tc>";
@@ -6761,34 +6796,53 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     return P(left, { bold: true, size: 11, color: C_ACC, before: before, after: AFTER_H, keepNext: true, keepLines: true });
   }
 
-  function bookingTable(loesung, opts) {
-    opts = opts || {};
+  function zeilenDerLoesung(loesung) {
     const soll = (loesung || []).filter(function (l) { return l.seite !== "Haben"; });
     const haben = (loesung || []).filter(function (l) { return l.seite === "Haben"; });
-    let n = Math.max(soll.length, haben.length, 1);
-    if (opts.leerExtra) n += 1;
-    const color = opts.fuellen ? C_SOL : "000000";
+    return Math.max(soll.length, haben.length, 1);
+  }
+  /* RW: free_space() in build_wh3_v3.py – leerer Absatz mit fixem space_after, ohne Linien. */
+  function freeSpace(cmH) {
+    const after = Math.round(cmH * 28.346 * 20);
+    return P("\u00a0", { size: 2, color: "FFFFFF", before: 40, after: after, line: 240, keepNext: false, keepLines: false });
+  }
+  function schreibplatz(loesung) {
+    const h = Math.max((zeilenDerLoesung(loesung) + 1) * 0.9, 2.7);
+    return freeSpace(h);
+  }
+  /* RW-Vorgabe 21.11.2026: 6 Spalten ohne Linien, „an“ eigene Spalte; Basis booking() in build_wh3_v3.py ohne tcBorders/left. */
+  function bookingTable(loesung, opts) {
+    opts = opts || {};
+    if (!opts.fuellen) return schreibplatz(loesung);
+    const soll = (loesung || []).filter(function (l) { return l.seite !== "Haben"; });
+    const haben = (loesung || []).filter(function (l) { return l.seite === "Haben"; });
+    const n = Math.max(soll.length, haben.length, 1);
+    const color = C_SOL;
+    const sp = { size: 10, color: color, before: 60, after: 60 };
     const rows = [];
     for (let i = 0; i < n; i++) {
-      const sk = opts.fuellen && soll[i] ? ktoKurz(soll[i].konto, soll[i].bezeichnung) : "";
-      const sa = opts.fuellen && soll[i] && soll[i].betrag != null ? num(soll[i].betrag) : "";
-      const hk = opts.fuellen && haben[i] ? ktoKurz(haben[i].konto, haben[i].bezeichnung) : "";
-      const ha = opts.fuellen && haben[i] && haben[i].betrag != null ? num(haben[i].betrag) : "";
-      const nr = (opts.fuellen && i === 0 && opts.nr) ? opts.nr : "";
+      const sk = soll[i] ? ktoKurz(soll[i].konto, soll[i].bezeichnung) : "";
+      const sa = soll[i] && soll[i].betrag != null ? num(soll[i].betrag) : "";
+      const hk = haben[i] ? ktoKurz(haben[i].konto, haben[i].bezeichnung) : "";
+      const ha = haben[i] && haben[i].betrag != null ? num(haben[i].betrag) : "";
+      const nr = (i === 0 && opts.nr) ? opts.nr : "";
+      const an = (i === 0) ? "an" : "";
       rows.push([
-        { text: nr, size: 9.5, bold: !!nr, color: color },
-        { text: sk, size: 9.5, color: color },
-        { text: sa, size: 9.5, color: color, align: "right", leftLine: true },
-        { text: hk, size: 9.5, color: color },
-        { text: ha, size: 9.5, color: color, align: "right", leftLine: true }
+        Object.assign({ text: nr }, sp),
+        Object.assign({ text: sk }, sp),
+        Object.assign({ text: sa, align: "right" }, sp),
+        Object.assign({ text: an, align: "center" }, sp),
+        Object.assign({ text: hk }, sp),
+        Object.assign({ text: ha, align: "right" }, sp)
       ]);
     }
     return tableFixed(BOOK_COLS, rows, {
       noOuter: true,
-      rowH: ROW_H,
       keep: true,
       cellMargins: [20, 20, 30, 30],
-      vAlign: "center"
+      vAlign: "center",
+      paraBefore: 60,
+      paraAfter: 60
     }) + spacer(80);
   }
 
@@ -6871,7 +6925,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     if (!text) return "";
     let t = String(text).replace(/\s+/g, " ").trim();
     if (t.length > 160) t = t.slice(0, 157) + "…";
-    return P(t, { size: 10, color: C_SOL, after: 80, before: 20 });
+    return P(t, { size: 9, italic: true, color: C_SOL, after: 80, before: 20 });
   }
 
   function punkteDes(a, i, pack) {
@@ -6910,7 +6964,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     const txt = a.text || "";
     if (txt) s += P(txt, { size: 10.5, after: 80, keepNext: true, keepLines: true });
     if (mitBeleg && a.beleg) s += belegRahmen(belegAlsText(a.beleg, "000000", 10));
-    s += bookingTable(a.loesung, { fuellen: loesung, nr: "1.", leerExtra: !loesung });
+    s += bookingTable(a.loesung, { fuellen: loesung, nr: "1." });
     if (loesung) s += begruendungZeile((a.gedankengang && a.gedankengang.begruendung) || "");
     s += leerzeile();
     return s;
@@ -6932,8 +6986,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     } else if (loesung) {
       s += P(f.erwartung || f.antwort || f.loesung || "", { size: 10, color: C_SOL, after: 80 });
     } else {
-      s += P("", { size: 10, after: 0, keepNext: true });
-      s += P(" ", { size: 10, after: 320, before: 0, keepNext: true });
+      s += schreibplatz([]);
     }
     s += leerzeile();
     return s;
@@ -7048,7 +7101,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
         const kurz = belegKurz(e);
         if (kurz) s += P(kurz, { size: 10.5, after: 80, keepNext: true, keepLines: true });
         const n = normFall(e);
-        s += bookingTable(n.loesung, { fuellen: istLoesung, nr: "1.", leerExtra: !istLoesung });
+        s += bookingTable(n.loesung, { fuellen: istLoesung, nr: "1." });
         if (istLoesung) s += begruendungZeile((n.gedankengang && n.gedankengang.begruendung) || "");
         s += leerzeile();
       });
@@ -7195,11 +7248,32 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     for (let i = von; i <= bis; i++) s += "<option value=\"" + i + "\"" + (i === gewaehlt ? " selected" : "") + ">" + i + "</option>";
     return s;
   }
+  function feldHtml(label, inner) {
+    return "<div class=\"bema-feld\"><span class=\"bema-feld-lab\">" + label + "</span><div class=\"bema-feld-val\">" + inner + "</div></div>";
+  }
+  function punkteWahlHtml() {
+    return feldHtml("Punkte",
+      "<label><input type=\"radio\" name=\"bema-pkt\" value=\"vorschlag\"> automatisch</label>" +
+      "<label><input type=\"radio\" name=\"bema-pkt\" value=\"frei\" checked> frei lassen</label>");
+  }
   function exportWahlHtml() {
-    return "<div class=\"row\"><span>Export</span>" +
-      "<label><input type=\"radio\" name=\"bema-export\" value=\"zwei\" checked> zwei Dateien (Angabe, dann Lösung)</label>" +
-      "<label><input type=\"radio\" name=\"bema-export\" value=\"eins\"> beides in einem Dokument (Lösung ab neuer Seite)</label></div>" +
-      "<p id=\"bema-dl-status\" class=\"bema-hinweis\" aria-live=\"polite\"></p>";
+    return feldHtml("Ausgabe",
+      "<label><input type=\"radio\" name=\"bema-export\" value=\"zwei\" checked> getrennt</label>" +
+      "<label><input type=\"radio\" name=\"bema-export\" value=\"eins\"> in einem Dokument</label>");
+  }
+  function weitereHtml(inner) {
+    return "<details class=\"bema-mehr\"><summary>Weitere Optionen</summary><div class=\"bema-mehr-box\">" + inner + "</div></details>";
+  }
+  function statusHtml() {
+    return "<p id=\"bema-dl-status\" class=\"bema-hinweis\" aria-live=\"polite\"></p>";
+  }
+  function aktionenHtml(goLabel, goDisabled) {
+    return "<div class=\"actions\"><button type=\"button\" id=\"bema-go\"" + (goDisabled ? " disabled" : "") + ">" + (goLabel || "Word erstellen") + "</button>" +
+      "<button type=\"button\" class=\"sec\" id=\"bema-cancel\">Abbrechen</button></div>";
+  }
+  function pktModusIn(box) {
+    if (box.querySelector("#bema-pkt-selbst") && box.querySelector("#bema-pkt-selbst").checked) return "gesetzt";
+    return ((box.querySelector("[name=\"bema-pkt\"]:checked") || {}).value) || "frei";
   }
   function starteExport(docs, box) {
     const status = box.querySelector("#bema-dl-status");
@@ -7428,10 +7502,10 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     if (!journal().length) { dlg("<h2>Mitschrift</h2><p>Noch keine gebuchten Fälle.</p><div class=\"actions\"><button type=\"button\" class=\"sec\" id=\"bema-cancel\">Schließen</button></div>").querySelector("#bema-cancel").onclick = schliesseDlg; return; }
     const box = dlg(
       "<h2>Mitschrift</h2>" +
-      "<p>Handout mit Belegkurzbeschreibung und Buchungsraster. Die Lösung enthält den ausgefüllten Satz in Dunkelblau und eine kurze Begründung.</p>" +
+      "<p class=\"bema-hinweis\">Belegkurzbeschreibung und Buchungsraster der übernommenen Fälle.</p>" +
       exportWahlHtml() +
-      "<div class=\"actions\"><button type=\"button\" id=\"bema-go\">DOCX erzeugen</button>" +
-      "<button type=\"button\" class=\"sec\" id=\"bema-cancel\">Abbrechen</button></div>"
+      statusHtml() +
+      aktionenHtml()
     );
     box.querySelector("#bema-cancel").onclick = schliesseDlg;
     box.querySelector("#bema-go").onclick = function () {
@@ -7486,27 +7560,24 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     const typId = typ && typ.typId;
     const box = dlg(
       "<h2>Hausübung</h2>" +
-      "<p>1–10 ähnliche Fälle (Standard: 3), gleiche Kontenlogik. Maximal ein Zahlungsweg-Twist in der ganzen Hausübung.</p>" +
-      (typId ? "<p>Geschäftstyp: <b>" + typId + "</b>" + (typ.hinweis ? " · " + typ.hinweis : "") + "</p>" : "<p class=\"bema-luecke\">Kein Geschäftstyp zur aktuellen Aufgabe. Bitte zuerst eine passende Aufgabe öffnen.</p>") +
+      (typId ? "<p class=\"bema-hinweis\">Geschäftstyp " + typId + (typ.hinweis ? " · " + typ.hinweis : "") + "</p>" : "<p class=\"bema-luecke\">Kein Geschäftstyp zur aktuellen Aufgabe. Bitte zuerst eine passende Aufgabe öffnen.</p>") +
       (typ && typ.verboten ? "<p class=\"bema-luecke\">" + typ.grund + "</p>" : "") +
-      "<div class=\"row\"><label>Anzahl <select id=\"bema-n\">" + optionenZahl(1, 10, 3) + "</select></label>" +
-      "<label><input type=\"radio\" name=\"bema-bel\" value=\"mit\" checked> mit Belegen</label>" +
-      "<label><input type=\"radio\" name=\"bema-bel\" value=\"text\"> nur Text</label>" +
-      "<label><input type=\"checkbox\" id=\"bema-tw\"> ein Twist in einem Fall</label></div>" +
-      "<div class=\"row\"><span>Punkte</span>" +
-      "<label><input type=\"radio\" name=\"bema-pkt\" value=\"frei\" checked> freilassen (Standard)</label>" +
-      "<label><input type=\"radio\" name=\"bema-pkt\" value=\"gesetzt\"> je Aufgabe festlegen</label></div>" +
-      "<div id=\"bema-pkt-felder\" hidden></div>" +
-      "<p id=\"bema-pkt-summe\" class=\"bema-hinweis\" hidden></p>" +
+      feldHtml("Anzahl Fälle", "<select id=\"bema-n\">" + optionenZahl(1, 10, 3) + "</select>") +
+      punkteWahlHtml() +
       exportWahlHtml() +
-      "<div class=\"actions\"><button type=\"button\" id=\"bema-go\" " + (!typId || typ.verboten || typ.luecke ? "disabled" : "") + ">DOCX erzeugen</button>" +
-      "<button type=\"button\" class=\"sec\" id=\"bema-cancel\">Abbrechen</button></div>"
+      weitereHtml(
+        "<div class=\"row\"><label><input type=\"radio\" name=\"bema-bel\" value=\"mit\" checked> mit Belegen</label>" +
+        "<label><input type=\"radio\" name=\"bema-bel\" value=\"text\"> nur Text</label>" +
+        "<label><input type=\"checkbox\" id=\"bema-tw\"> ein Twist in einem Fall</label></div>" +
+        "<div class=\"row\"><label><input type=\"checkbox\" id=\"bema-pkt-selbst\"> Punkte selbst festlegen</label></div>" +
+        "<div id=\"bema-pkt-felder\" hidden></div>" +
+        "<p id=\"bema-pkt-summe\" class=\"bema-hinweis\" hidden></p>"
+      ) +
+      statusHtml() +
+      aktionenHtml("Word erstellen", !typId || typ.verboten || typ.luecke)
     );
     box.querySelector("#bema-cancel").onclick = schliesseDlg;
-    function hausPktModus() {
-      const r = box.querySelector("[name=\"bema-pkt\"]:checked");
-      return (r && r.value) || "frei";
-    }
+    function hausPktModus() { return pktModusIn(box); }
     function renderHausPunkte() {
       const felder = box.querySelector("#bema-pkt-felder");
       const sumEl = box.querySelector("#bema-pkt-summe");
@@ -7531,7 +7602,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       felder.querySelectorAll("input").forEach(function (inp) { inp.addEventListener("input", summe); });
       summe();
     }
-    box.querySelectorAll("[name=\"bema-pkt\"], #bema-n").forEach(function (el) {
+    box.querySelectorAll("[name=\"bema-pkt\"], #bema-n, #bema-pkt-selbst").forEach(function (el) {
       el.addEventListener("change", renderHausPunkte);
     });
     renderHausPunkte();
@@ -7556,7 +7627,10 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       if (!packH.ok) { box.querySelector(".box").insertAdjacentHTML("beforeend", "<p class=\"bema-luecke\">" + packH.fehler + "</p>"); return; }
       packH.punkteModus = modus;
       packH.punkteJeAufgabe = liste;
-      if (liste) packH.punkteSumme = liste.reduce(function (s, v) { return s + Math.round(v); }, 0);
+      if (modus === "vorschlag" && BEMA.punkteDesFalls) {
+        packH.punkteJeAufgabe = packH.faelle.map(function (f) { return BEMA.punkteDesFalls(f.fall).summe; });
+      }
+      if (packH.punkteJeAufgabe) packH.punkteSumme = packH.punkteJeAufgabe.reduce(function (s, v) { return s + Math.round(v); }, 0);
       const docs = BEMA_DOCX.hausuebungDocs(packH);
       starteExport(docs, box);
     };
@@ -7564,39 +7638,36 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
 
   function dialogWH() {
     const e = (S.cur && S.cur.a && S.cur.a.einheit) || 5;
+    const einheitOpts = Array.from({ length: 17 }, function (_, i) { return "<option value=\"" + (i + 1) + "\"" + (i + 1 === e ? " selected" : "") + ">E " + (i + 1) + "</option>"; }).join("");
     const box = dlg(
       "<h2>Schriftliche Wiederholung</h2>" +
-      "<p>1–10 Buchungsfälle (Standard: 3, historisches 15-Punkte-Profil). 0 Verständnisfragen: Profil A bzw. C (wenn E 8 oder E 9 dabei ist). 2 Fragen: Profil D, 3 Fragen: Profil B – nur wenn genug Zweizeiler in den gewählten Einheiten sind, nichts aus Nachbareinheiten. Punkte: freilassen, Vorschlag (2 P Konten/Seiten + 1 P je Betrag, Verständnis/MC 1) oder selbst festlegen (überschreibt den Vorschlag, nur ganze Punkte).</p>" +
       "<p id=\"bema-wh-verf\" class=\"bema-hinweis\"></p>" +
-      "<div class=\"row\"><label>Aktuelle / neueste Einheit <select id=\"bema-e\">" +
-      Array.from({ length: 17 }, function (_, i) { return "<option value=\"" + (i + 1) + "\"" + (i + 1 === e ? " selected" : "") + ">E " + (i + 1) + "</option>"; }).join("") +
-      "</select></label>" +
-      "<label>Fälle <select id=\"bema-faelle\">" + optionenZahl(1, 10, 3) + "</select></label></div>" +
-      "<div class=\"row\"><label>Einheiten mischen <select id=\"bema-mix\"><option value=\"1\">nur diese Einheit</option><option value=\"2\">letzte 2</option><option value=\"3\">letzte 3</option></select></label>" +
-      "<label>Verständnis / MC <select id=\"bema-v\"><option value=\"0\">0</option><option value=\"2\">2</option><option value=\"3\">3</option></select></label>" +
-      "<label>Gruppen <select id=\"bema-g\"><option value=\"1\">1</option><option value=\"2\">2</option></select></label></div>" +
-      "<div class=\"row\"><span>Punkte</span>" +
-      "<label><input type=\"radio\" name=\"bema-pkt\" value=\"frei\" checked> freilassen (Standard)</label>" +
-      "<label><input type=\"radio\" name=\"bema-pkt\" value=\"vorschlag\"> Vorschlag</label>" +
-      "<label><input type=\"radio\" name=\"bema-pkt\" value=\"gesetzt\"> je Aufgabe festlegen</label></div>" +
-      "<div id=\"bema-pkt-felder\" hidden></div>" +
-      "<p id=\"bema-pkt-summe\" class=\"bema-hinweis\" hidden></p>" +
-      "<div class=\"row\"><label><input type=\"checkbox\" id=\"bema-dauer\"> Dauer-Feld im Kopf</label>" +
-      "<label><input type=\"checkbox\" id=\"bema-ns\"> Notenschlüssel</label></div>" +
-      "<div id=\"bema-ns-felder\" hidden>" +
-      "<label>Sehr gut ab <input type=\"number\" class=\"bema-ns\" id=\"bema-ns-sg\" min=\"0\" max=\"100\" step=\"0.1\" value=\"87.6\"> %</label> " +
-      "<label>Gut ab <input type=\"number\" class=\"bema-ns\" id=\"bema-ns-g\" min=\"0\" max=\"100\" step=\"0.1\" value=\"75.1\"> %</label> " +
-      "<label>Befriedigend ab <input type=\"number\" class=\"bema-ns\" id=\"bema-ns-b\" min=\"0\" max=\"100\" step=\"0.1\" value=\"62.6\"> %</label> " +
-      "<label>Genügend ab <input type=\"number\" class=\"bema-ns\" id=\"bema-ns-n\" min=\"0\" max=\"100\" step=\"0.1\" value=\"50.1\"> %</label>" +
-      "</div>" +
+      feldHtml("Anzahl Fälle", "<select id=\"bema-faelle\">" + optionenZahl(1, 10, 3) + "</select>") +
+      punkteWahlHtml() +
       exportWahlHtml() +
-      "<div class=\"actions\"><button type=\"button\" id=\"bema-go\">DOCX erzeugen</button><button type=\"button\" class=\"sec\" id=\"bema-cancel\">Abbrechen</button></div>"
+      weitereHtml(
+        "<div class=\"row\"><label>Aktuelle / neueste Einheit <select id=\"bema-e\">" + einheitOpts + "</select></label></div>" +
+        "<div class=\"row\"><label>Einheiten mischen <select id=\"bema-mix\"><option value=\"1\">nur diese Einheit</option><option value=\"2\">letzte 2</option><option value=\"3\">letzte 3</option></select></label></div>" +
+        "<div class=\"row\"><label>Verständnis / MC <select id=\"bema-v\"><option value=\"0\">0</option><option value=\"2\">2</option><option value=\"3\">3</option></select></label>" +
+        "<label>Gruppen <select id=\"bema-g\"><option value=\"1\">1</option><option value=\"2\">2</option></select></label></div>" +
+        "<div class=\"row\"><label><input type=\"checkbox\" id=\"bema-dauer\"> Dauer-Feld im Kopf</label>" +
+        "<label><input type=\"checkbox\" id=\"bema-ns\"> Notenschlüssel</label></div>" +
+        "<div id=\"bema-ns-felder\" hidden>" +
+        "<label>Sehr gut ab <input type=\"number\" class=\"bema-ns\" id=\"bema-ns-sg\" min=\"0\" max=\"100\" step=\"0.1\" value=\"87.6\"> %</label> " +
+        "<label>Gut ab <input type=\"number\" class=\"bema-ns\" id=\"bema-ns-g\" min=\"0\" max=\"100\" step=\"0.1\" value=\"75.1\"> %</label> " +
+        "<label>Befriedigend ab <input type=\"number\" class=\"bema-ns\" id=\"bema-ns-b\" min=\"0\" max=\"100\" step=\"0.1\" value=\"62.6\"> %</label> " +
+        "<label>Genügend ab <input type=\"number\" class=\"bema-ns\" id=\"bema-ns-n\" min=\"0\" max=\"100\" step=\"0.1\" value=\"50.1\"> %</label>" +
+        "</div>" +
+        "<div class=\"row\"><label><input type=\"checkbox\" id=\"bema-pkt-selbst\"> Punkte selbst festlegen</label></div>" +
+        "<div id=\"bema-pkt-felder\" hidden></div>" +
+        "<p id=\"bema-pkt-summe\" class=\"bema-hinweis\" hidden></p>"
+      ) +
+      statusHtml() +
+      aktionenHtml()
     );
     box.querySelector("#bema-cancel").onclick = schliesseDlg;
-    function pktModus() {
-      return (box.querySelector("[name=\"bema-pkt\"]:checked") || {}).value || "frei";
-    }
-    function liesNotenschluessel() {
+    function pktModus() { return pktModusIn(box); }
+        function liesNotenschluessel() {
       if (!box.querySelector("#bema-ns").checked) return null;
       return {
         sehrGut: Number(box.querySelector("#bema-ns-sg").value),
@@ -7677,18 +7748,14 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       const profil = fragen === 3 ? "B" : (fragen === 2 ? "D" : (v.C ? "C" : "A"));
       const ok = v[profil];
       const el = box.querySelector("#bema-wh-verf");
-      const teile = ["Verfügbar: A" + (v.A ? "" : " (nein)")];
-      if (v.C) teile.push("C");
-      if (v.B) teile.push("B");
-      if (v.D) teile.push("D");
-      el.textContent = teile.join(" · ") + ". Gewählt würde Profil " + profil + (ok ? "." : " – in diesen Einheiten nicht anbieten.");
+      el.textContent = ok ? ("Profil " + profil + ".") : ("Profil " + profil + " in diesen Einheiten nicht anbieten.");
       el.style.color = ok ? "" : "#8a1f1f";
       box.querySelector("#bema-go").disabled = !ok;
     }
     ["#bema-e", "#bema-mix", "#bema-v", "#bema-faelle"].forEach(function (sel) {
       box.querySelector(sel).addEventListener("change", function () { updateVerf(); renderWhPunkte(); });
     });
-    box.querySelectorAll("[name=\"bema-pkt\"]").forEach(function (el) {
+    box.querySelectorAll("[name=\"bema-pkt\"], #bema-pkt-selbst").forEach(function (el) {
       el.addEventListener("change", renderWhPunkte);
     });
     box.querySelector("#bema-ns").addEventListener("change", renderNs);
