@@ -851,6 +851,58 @@ body.beamer .rm { font-size: max(18px, 1.25rem) !important; }.bm-fall-gross { fo
 .bm-wahl-sec h3{margin:0 0 4px;}
 .bm-wahl-grid{flex:1 1 auto;}
 
+/* ===== v5c: Buchungssatz rechts oder darunter, großer Beleg links ===== */
+.bm-satzlage{
+  display:flex;align-items:center;gap:8px;flex:0 0 auto;
+  padding:6px 24px 0;font-size:18px;
+  background:transparent;border:0;box-shadow:none;
+}
+.bm-satzlage-lab{font-weight:700;font-size:18px;color:var(--text);margin-right:4px;}
+.bm-satzlage button{
+  min-height:40px;padding:6px 16px;border-radius:10px;border:2px solid var(--line);
+  background:#fff;font-size:18px;font-weight:700;cursor:pointer;color:var(--text);
+}
+.bm-satzlage button.an{border-color:var(--accent);background:var(--accent-soft);}
+.bm-satzlage button:hover{border-color:var(--accent);}
+
+.bm-einspalt .bm-flow.bm-flow-neben,
+.bm-neben .bm-flow-neben,
+.bm-flow-neben{ flex-direction:row !important;
+  display:flex;flex-direction:row;align-items:stretch;gap:20px;
+  min-height:0;overflow:visible;flex:1 1 auto;height:100%;
+  padding:8px 24px 12px;background:transparent;border:0;box-shadow:none;
+}
+.bm-neben-beleg,
+.bm-neben-satz{
+  background:transparent;border:0;box-shadow:none;outline:none;
+}
+.bm-neben-beleg{
+  flex:0 0 auto;min-width:0;min-height:0;height:100%;
+  display:flex;align-items:center;justify-content:flex-start;
+}
+.bm-neben-beleg .bm-belegflaeche{
+  flex:0 0 auto;max-width:none;width:auto;height:auto;margin:0;
+  background:transparent;box-shadow:none;padding:0;border-radius:0;
+  display:flex;align-items:center;justify-content:flex-start;gap:12px;
+}
+.bm-neben-beleg .beleg-frame{
+  flex:0 0 auto;margin:0;overflow:hidden;cursor:zoom-in;
+  background:transparent;box-shadow:none;border:0;border-radius:0;
+  display:block;position:relative;
+}
+.bm-neben-beleg .beleg-frame .scaler{transform-origin:0 0;}
+.bm-neben-satz{
+  flex:1 1 480px;min-width:420px;min-height:0;
+  display:flex;flex-direction:column;gap:8px;overflow:visible;
+}
+.bm-neben-satz #buchung{
+  position:relative;overflow:visible;flex:0 0 auto;
+}
+.bm-neben-satz .bm-erklaer-leiste{max-width:none;width:100%;margin:0;flex:0 0 auto;}
+.bm-neben-satz .bm-actions{display:flex;gap:10px;flex:0 0 auto;}
+.bm-neben-satz .bm-actions .btn{flex:1;}
+.bm-neben .bm-klapp{z-index:40;position:relative;}
+
 </style>
 </head>
 <body class="beamer">
@@ -3272,6 +3324,31 @@ function sternListenSichtbar() {
 
 /* ===== v5: Auswahl mit/ohne Beleg, einspaltiges Layout, Kontoliste ===== */
 S.bmModus = S.bmModus || "mit";
+const BM_LS_SATZ = "bt_beamer_satzlage_v5";
+function ladeSatzLage() {
+  try {
+    const v = localStorage.getItem(BM_LS_SATZ);
+    if (v === "darunter" || v === "rechts") S.bmSatzLage = v;
+  } catch (e) {}
+  if (S.bmSatzLage !== "darunter") S.bmSatzLage = "rechts";
+  return S.bmSatzLage;
+}
+function satzLage() {
+  return S.bmSatzLage === "darunter" ? "darunter" : "rechts";
+}
+function setzeSatzLage(v, zeichnen) {
+  S.bmSatzLage = v === "darunter" ? "darunter" : "rechts";
+  try { localStorage.setItem(BM_LS_SATZ, S.bmSatzLage); } catch (e) {}
+  if (zeichnen !== false && S.cur) drawAufgabe();
+}
+function belegSkalierung() {
+  const scales = [...document.querySelectorAll(".beleg-frame .scaler")].map(sc => {
+    const m = /scale\(([-0-9.]+)\)/.exec(sc.style.transform || "");
+    return m ? parseFloat(m[1]) : 1;
+  });
+  return scales.length ? Math.max(...scales) : 0;
+}
+ladeSatzLage();
 S.bmCounts = S.bmCounts || {};
 S.bmUnsicher = S.bmUnsicher || [];
 
@@ -3658,6 +3735,56 @@ bindSternHover = function () {};
 oeffneStern = function (modus) { if (modus) bmSternModus = modus; oeffneKontoListe(); };
 schliesseStern = function () { schliesseKontoListe(); };
 
+
+function layoutBelegNeben() {
+  const flow = document.querySelector(".bm-flow-neben");
+  if (!flow) return false;
+  const left = flow.querySelector(".bm-neben-beleg");
+  if (!left) return false;
+  const frames = [...left.querySelectorAll(".beleg-frame")];
+  frames.forEach(fr => {
+    const sc = fr.querySelector(".scaler");
+    if (sc) { sc.style.transform = "none"; sc.style.margin = "0"; }
+    fr.style.width = "auto";
+    fr.style.height = "auto";
+  });
+  const gap = 16;
+  const minRight = 480;
+  const availH = Math.max(0, left.clientHeight || flow.clientHeight);
+  const maxW = Math.max(160, (flow.clientWidth || 0) - minRight - 20);
+  if (!availH) return false;
+  const nats = frames.map(fr => {
+    const sc = fr.querySelector(".scaler");
+    return { fr, sc, w: sc ? sc.scrollWidth : 0, h: sc ? sc.scrollHeight : 0 };
+  }).filter(x => x.sc && x.w && x.h);
+  if (!nats.length) return false;
+  const maxH = Math.max(...nats.map(x => x.h));
+  const sumW = nats.reduce((s, x) => s + x.w, 0) + gap * Math.max(0, nats.length - 1);
+  let s = Math.min(availH / maxH, maxW / sumW);
+  if (!(s > 0) || !isFinite(s)) return false;
+  nats.forEach(({ fr, sc, w, h }) => {
+    fr.style.height = (h * s) + "px";
+    fr.style.width = (w * s) + "px";
+    sc.style.transformOrigin = "0 0";
+    sc.style.transform = "scale(" + s + ")";
+    sc.style.margin = "0";
+  });
+  return true;
+}
+const _fitBelegeV5c = (typeof fitBelege === "function") ? fitBelege : function () {};
+fitBelege = function () {
+  if (document.querySelector(".bm-flow-neben")) {
+    if (!layoutBelegNeben()) _fitBelegeV5c();
+    requestAnimationFrame(() => { layoutBelegNeben(); });
+  } else {
+    document.querySelectorAll(".beleg-frame").forEach(fr => {
+      fr.style.width = "";
+      fr.style.height = "";
+    });
+    _fitBelegeV5c();
+  }
+};
+
 drawAufgabe = function () {
   const c = S.cur, a = c.a, e = EINHEITEN.find(x => x.nr === a.einheit);
   const punkte = S.ergebnisse.reduce((s, r) => s + r.punkte, 0);
@@ -3684,7 +3811,8 @@ drawAufgabe = function () {
   const vids = videosDerEinheit(a.einheit);
   const videoBtns = vids.map((V, i) => `<button type="button" class="btn btn-video" data-video="${esc(V.datei)}" data-vor="${V.vorEinheit}">${vids.length > 1 ? "Video " + (i + 1) : "Video"}</button>`).join("");
 
-  app().innerHTML = `<div class="bm bm-einspalt" id="aufgabe" data-id="${esc(a.id)}" data-modus="${esc(S.bmModus)}">
+  const neben = !!(mit && satzLage() === "rechts");
+  app().innerHTML = `<div class="bm bm-einspalt${neben ? " bm-neben" : ""}" id="aufgabe" data-id="${esc(a.id)}" data-modus="${esc(S.bmModus)}" data-satz="${mit ? satzLage() : "ohne"}">
     <div class="bm-bar">
       <span class="bm-entwurf">Beamer</span>
       <span class="bm-titel">Einheit ${a.einheit} · ${esc(e ? e.titel : "")}</span>
@@ -3698,7 +3826,29 @@ drawAufgabe = function () {
       </div>
       <button class="linkbtn" id="ende">Beenden</button>
     </div>
-    <div class="bm-flow">
+    ${mit ? `<div class="bm-satzlage" role="radiogroup" aria-label="Buchungssatz rechts oder darunter">
+      <span class="bm-satzlage-lab">Buchungssatz</span>
+      <button type="button" role="radio" data-satz="rechts" aria-checked="${satzLage() === "rechts"}" class="${satzLage() === "rechts" ? "an" : ""}">rechts</button>
+      <button type="button" role="radio" data-satz="darunter" aria-checked="${satzLage() === "darunter"}" class="${satzLage() === "darunter" ? "an" : ""}">darunter</button>
+    </div>` : ""}
+    ${neben
+      ? `<div class="bm-flow bm-flow-neben">
+      <div class="bm-neben-beleg">${belegTeil}</div>
+      <div class="bm-neben-satz">
+        <div class="bm-wirzeile">Wir sind: <b>${esc(a.wir)}</b> <span class="bm-fallmini">${fall}</span></div>
+        ${leisteHtml(a)}
+        ${c.rz ? rechenzeileHtml() : ""}
+        ${c.rz && !c.rz.fertig ? "" : `<div class="card" id="buchung">
+          <div class="bm-satz-h">Dein Buchungssatz</div>
+          ${seiteHtml("Soll")}${seiteHtml("Haben")}
+          ${pickHtml}
+          <div id="fb">${c.geprueft ? feedbackHtml() : ""}</div>
+        </div>`}
+        <div id="tipps" class="bm-tipps">${tippHtml()}</div>
+        <div class="bm-actions">${actions}</div>
+      </div>
+    </div>`
+      : `<div class="bm-flow">
       <div class="bm-oben ${mit ? "mit" : "ohne"}">
         <div class="bm-wirzeile">Wir sind: <b>${esc(a.wir)}</b>${mit ? ` <span class="bm-fallmini">${fall}</span>` : ""}</div>
         ${belegTeil}
@@ -3715,13 +3865,16 @@ drawAufgabe = function () {
         <div id="tipps" class="bm-tipps">${tippHtml()}</div>
         <div class="bm-actions">${actions}</div>
       </div>
-    </div>
+    </div>`}
   </div>`;
   bindAufgabe();
   if (pick && !c.geprueft && pick.art === "betrag") bindBeamerPick();
   bindErklaer();
   bindBelegKlicks();
   bindKontoListe();
+  app().querySelectorAll(".bm-satzlage [data-satz]").forEach(b => {
+    b.onclick = () => setzeSatzLage(b.dataset.satz, true);
+  });
   $("#zurueck") && ($("#zurueck").onclick = () => geheZu(S.idx - 1));
   $("#vor") && ($("#vor").onclick = () => geheZu(S.idx + 1));
   app().querySelectorAll("[data-video]").forEach(b => b.onclick = ev => {
@@ -3743,6 +3896,7 @@ const _initV4 = init;
 init = function () {
   S.bmModus = S.bmModus || "mit";
   S.bmCounts = S.bmCounts || {};
+  ladeSatzLage();
   _initV4();
 };
 
@@ -3758,6 +3912,7 @@ document.addEventListener("keydown", ev => {
 window.BT_BEAMER = Object.assign(window.BT_BEAMER || {}, {
   angabeText, angabeAusBeleg, baueQueue, starteFest, bmKategorien, bmPool, bmVerfuegbar, zeigtBeleg, istPlatzhalterText,
   kontoListenHtml, oeffneKontoListe, schliesseKontoListe, kontoListeOffen,
+  satzLage, setzeSatzLage, ladeSatzLage, belegSkalierung, layoutBelegNeben,
   setzeModus(m) { S.bmModus = m === "ohne" ? "ohne" : "mit"; },
   setzeCount,
   unsichereAngaben() { return (S.bmUnsicher || []).slice(); },
