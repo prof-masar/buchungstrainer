@@ -961,6 +961,8 @@ body.beamer .rm { font-size: max(18px, 1.25rem) !important; }.bm-fall-gross { fo
 .bema-dlg #bema-ns-felder[hidden]{display:none}
 .bema-dlg input.bema-ns{width:5em;font-size:18px;padding:2px 6px}
 
+.bema-dlg #bema-dl-status{min-height:1.4em;color:#1F4E79;font-weight:600;margin:8px 0 0}
+
 </style>
 </head>
 <body class="beamer">
@@ -5992,7 +5994,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
 
   function hausuebungErzeugen(typId, opts) {
     opts = opts || {};
-    const n = opts.anzahl === 4 ? 4 : 3;
+    const n = Math.min(10, Math.max(1, parseInt(opts.anzahl, 10) || 3));
     const mitBelegen = opts.mitBelegen !== false;
     const basis = opts.basisAufgabe || null;
     const map = typIdFuerAufgabe(basis || {}) || {};
@@ -6107,7 +6109,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     if (profil === "A" && !verf.A)
       return { ok: false, fehler: "Keine Steuerfälle in den gewählten Einheiten für Profil A.", profil: "A" };
 
-    const faelleN = (opts.faelle === 2 || opts.faelle === 4) ? opts.faelle : 3;
+    const faelleN = Math.min(10, Math.max(1, parseInt(opts.faelle, 10) || 3));
     let typen = typenFuerEinheiten(einheiten).filter(t => t.id !== "E15_lkw_kauf" || newest === 15);
     function typenArt(pred, forceEinheit) {
       let list = typen.filter(t => pred(t.id));
@@ -6139,16 +6141,20 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       const sk = nimm(istSkonto, true) || nimm(istSkonto, false);
       const st = nimm(istSteuerfall, true) || nimm(istSteuerfall, false);
       if (!sk || !st) return { ok: false, fehler: "Profil C braucht mindestens Skonto- und Steuerfall in den gewählten Einheiten.", profil: "C" };
-      buchungen.push(sk, st);
-      if (faelleN >= 3) {
-        const za = nimm(istZahlung, true) || nimm(istZahlung, false);
-        if (!za) return { ok: false, fehler: "Profil C braucht Skonto-, Steuer- und Zahlungsfall in den gewählten Einheiten.", profil: "C" };
-        buchungen.push(za);
-      }
-      if (faelleN === 4) {
-        const extra = nimm(istSteuerfall, true) || nimm(istZahlung, true) || nimm(istSteuerfall, false) || nimm(istZahlung, false);
-        if (!extra) return { ok: false, fehler: "Profil C: Für 4 Fälle fehlt ein weiterer Steuer- oder Zahlungsfall (keine Lücke, keine Ausleihe).", profil: "C" };
-        buchungen.push(extra);
+      if (faelleN === 1) {
+        buchungen.push(sk);
+      } else {
+        buchungen.push(sk, st);
+        if (faelleN >= 3) {
+          const za = nimm(istZahlung, true) || nimm(istZahlung, false);
+          if (!za) return { ok: false, fehler: "Profil C braucht Skonto-, Steuer- und Zahlungsfall in den gewählten Einheiten.", profil: "C" };
+          buchungen.push(za);
+        }
+        while (buchungen.length < faelleN) {
+          const extra = nimm(istSteuerfall, true) || nimm(istZahlung, true) || nimm(istSteuerfall, false) || nimm(istZahlung, false);
+          if (!extra) return { ok: false, fehler: "Profil C: Für " + faelleN + " Fälle fehlt ein weiterer Steuer- oder Zahlungsfall (keine Lücke, keine Ausleihe).", profil: "C" };
+          buchungen.push(extra);
+        }
       }
     } else if (profil === "B") {
       for (let i = 0; i < faelleN; i++) {
@@ -6484,243 +6490,164 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
   };
 })(typeof window !== "undefined" ? window : globalThis);
 
+/* BEMA DOCX – Schriftliche Wiederholung, Hausübung, Mitschrift.
+   Layout verbindlich nach RW build_wh3_v3.py (booking, name_table, keep_table). */
 (function (global) {
-  "use strict";
+  const C_ACC = "1F4E79";
   const C_SOL = "002060";
+  const C_GREY = "555555";
+  const C_LGREY = "808080";
+  const TEXT_CM = 17.8;
+  const ROW_H = 510;   /* 0,9 cm */
+  const LQ_H = 454;    /* 0,8 cm */
+  const BEFORE_H = 567; /* 1 cm vor weiterer Überschrift */
+  const AFTER_H = 284;  /* ca. 0,5 cm nach der Überschrift */
+
   function esc(s) {
-    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
   function cm(c) { return Math.round(c * 567); }
+  const TEXTW = cm(TEXT_CM);
+  const BOOK_COLS = [0.9, 6.4, 1.8, 6.9, 1.8].map(cm);
+  const NAME_COLS = [cm(5.93), cm(5.93), TEXTW - 2 * cm(5.93)];
+  const LQ_COLS = [cm(5.5), cm(12.3)];
+
   function rPr(o) {
     o = o || {};
-    let s = "<w:rPr><w:rFonts w:ascii=\"Calibri\" w:hAnsi=\"Calibri\" w:cs=\"Calibri\"/>";
+    const sz = Math.round((o.size != null ? o.size : 10) * 2);
+    let s = "<w:rFonts w:ascii=\"Calibri\" w:hAnsi=\"Calibri\" w:cs=\"Calibri\" w:eastAsia=\"Calibri\"/>";
+    s += "<w:sz w:val=\"" + sz + "\"/><w:szCs w:val=\"" + sz + "\"/>";
     if (o.bold) s += "<w:b/><w:bCs/>";
     if (o.italic) s += "<w:i/><w:iCs/>";
-    const sz = Math.round((o.size || 11) * 2);
-    s += "<w:sz w:val=\"" + sz + "\"/><w:szCs w:val=\"" + sz + "\"/>";
     if (o.color) s += "<w:color w:val=\"" + o.color + "\"/>";
-    s += "</w:rPr>";
     return s;
-  }
-  function run(text, o) {
-    return "<w:r>" + rPr(o) + "<w:t xml:space=\"preserve\">" + esc(text) + "</w:t></w:r>";
   }
   function pStyle(o) {
     o = o || {};
     let s = "<w:pPr>";
-    if (o.align === "center") s += "<w:jc w:val=\"center\"/>";
-    if (o.align === "right") s += "<w:jc w:val=\"right\"/>";
-    if (o.keepNext) s += "<w:keepNext/>";
-    if (o.keepLines) s += "<w:keepLines/>";
+    if (o.align) s += "<w:jc w:val=\"" + o.align + "\"/>";
+    if (o.rightTab != null) s += "<w:tabs><w:tab w:val=\"right\" w:pos=\"" + o.rightTab + "\"/></w:tabs>";
     const before = o.before != null ? o.before : 0;
-    const after = o.after != null ? o.after : 80;
-    s += "<w:spacing w:before=\"" + before + "\" w:after=\"" + after + "\" w:line=\"240\" w:lineRule=\"auto\"/>";
+    const after = o.after != null ? o.after : 40;
+    const line = o.line != null ? o.line : 259;
+    s += "<w:spacing w:before=\"" + before + "\" w:after=\"" + after + "\" w:line=\"" + line + "\" w:lineRule=\"auto\"/>";
+    if (o.keepNext) s += "<w:keepNext/>";
+    if (o.keepLines !== false) s += "<w:keepLines/>";
     if (o.pageBreak) s += "<w:pageBreakBefore/>";
     s += "</w:pPr>";
     return s;
   }
-  function P(text, o) { return "<w:p>" + pStyle(o) + run(text, o) + "</w:p>"; }
+  function T(s) { return "<w:t xml:space=\"preserve\">" + esc(s) + "</w:t>"; }
+  function R(text, o) { return "<w:r><w:rPr>" + rPr(o) + "</w:rPr>" + T(text) + "</w:r>"; }
+  function P(text, o) { return "<w:p>" + pStyle(o) + (text != null && text !== "" ? R(text, o) : "") + "</w:p>"; }
   function Pparts(parts, o) {
-    return "<w:p>" + pStyle(o) + parts.map(function (x) { return run(x[0], x[1] || o); }).join("") + "</w:p>";
+    return "<w:p>" + pStyle(o) + parts.map(function (x) { return R(x[0], Object.assign({}, o, x[1] || {})); }).join("") + "</w:p>";
   }
-  function leer() { return P("", { after: 0 }); }
-
-  function cell(xmlOrText, o) {
-    o = o || {};
-    const inner = typeof xmlOrText === "string" && xmlOrText.indexOf("<w:p") === 0 ? xmlOrText : P(xmlOrText, o);
-    const shd = o.shd ? "<w:shd w:val=\"clear\" w:color=\"auto\" w:fill=\"" + o.shd + "\"/>" : "";
-    const width = o.width ? "<w:tcW w:w=\"" + o.width + "\" w:type=\"dxa\"/>" : "";
-    const vAlign = o.vAlign ? "<w:vAlign w:val=\"" + o.vAlign + "\"/>" : "";
-    const grid = o.span ? "<w:gridSpan w:val=\"" + o.span + "\"/>" : "";
-    return "<w:tc><w:tcPr>" + width + grid + shd + vAlign + "<w:tcMar><w:top w:w=\"40\" w:type=\"dxa\"/><w:left w:w=\"60\" w:type=\"dxa\"/><w:bottom w:w=\"40\" w:type=\"dxa\"/><w:right w:w=\"60\" w:type=\"dxa\"/></w:tcMar></w:tcPr>" + inner + "</w:tc>";
+  function spacer(after) {
+    return P("\u00a0", { size: 2, color: "FFFFFF", before: 40, after: after != null ? after : 80, line: 240, keepNext: true });
   }
-
-  function table(rows, widths) {
-    const total = widths.reduce(function (a, b) { return a + b; }, 0);
-    let g = widths.map(function (w) { return "<w:gridCol w:w=\"" + w + "\"/>"; }).join("");
-    let body = rows.map(function (row) {
-      let cells = row.map(function (c, i) {
-        const o = Object.assign({ width: widths[i] }, c.o || {});
-        return cell(c.xml || c.text || "", o);
-      }).join("");
-      return "<w:tr><w:trPr><w:cantSplit/></w:trPr>" + cells + "</w:tr>";
-    }).join("");
-    return "<w:tbl><w:tblPr><w:tblW w:w=\"" + total + "\" w:type=\"dxa\"/><w:tblBorders>" +
-      "<w:top w:val=\"single\" w:sz=\"4\" w:color=\"B0B8C0\"/><w:left w:val=\"single\" w:sz=\"4\" w:color=\"B0B8C0\"/>" +
-      "<w:bottom w:val=\"single\" w:sz=\"4\" w:color=\"B0B8C0\"/><w:right w:val=\"single\" w:sz=\"4\" w:color=\"B0B8C0\"/>" +
-      "<w:insideH w:val=\"single\" w:sz=\"4\" w:color=\"B0B8C0\"/><w:insideV w:val=\"single\" w:sz=\"4\" w:color=\"B0B8C0\"/>" +
-      "</w:tblBorders><w:tblLayout w:type=\"fixed\"/></w:tblPr><w:tblGrid>" + g + "</w:tblGrid>" + body + "</w:tbl>";
-  }
-
-  function badge(label) {
-    return Pparts([["  " + label + "  ", { bold: true, size: 11, color: "FFFFFF" }]], { after: 80, before: 0, shd: "16325C" });
-  }
-  /* badge via table for background */
-  function badgeRow(label) {
-    const w = [9360];
-    return table([[{ text: label, o: { shd: "16325C", color: "FFFFFF", bold: true, size: 11, align: "left" } }]], w);
+  function leerzeile() {
+    return P("", { after: 160, before: 0, size: 10 });
   }
 
   function euro(n) { return (global.BEMA && BEMA.euro) ? BEMA.euro(n) : String(n); }
-  function kto(nr) { return nr + " " + ((global.BEMA && BEMA.kontoName(nr)) || ""); }
-
-  function satzXml(loesung, color) {
-    const o = { size: 11, color: color || "000000", keepLines: true };
-    return loesung.map(function (l) {
-      const pref = l.seite === "Haben" ? "an  " : "Soll ";
-      const lab = l.seite === "Haben" ? "Haben" : "Soll ";
-      return Pparts([
-        [lab + "  ", { bold: true, size: 11, color: color || "000000" }],
-        [kto(l.konto) + "    ", o],
-        [euro(l.betrag), Object.assign({ bold: true }, o)]
-      ], { after: 40, keepNext: true });
-    }).join("");
+  function num(n) {
+    return String(euro(n)).replace(/\s*€/g, "").trim();
+  }
+  function ktoKurz(nr, bezeichnung) {
+    let name = String(bezeichnung || ((global.BEMA && BEMA.kontoName) ? BEMA.kontoName(nr) : "") || "").trim();
+    name = name
+      .replace(/\s*\(Guthaben bei Kreditinstituten\)/i, "")
+      .replace(/\s+Gesellschaft m\.b\.H\./gi, "")
+      .replace(/\s+GmbH/g, "")
+      .replace(/\s+e\.U\./g, "")
+      .replace(/,?\s*Zweigniederlassung( Austria)?/gi, "")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (name.length > 40) name = name.slice(0, 38).replace(/\s+\S*$/, "") + "…";
+    return (nr != null && nr !== "" ? (nr + " ") : "") + name;
   }
 
-  function belegAlsText(b, color) {
-    if (!b) return "";
-    const o = { size: 11, color: color || "000000", after: 40, keepNext: true };
-    let s = P((b.typ || "Beleg") + (b.nummer ? "  " + b.nummer : "") + (b.datum ? "  ·  " + b.datum : ""), Object.assign({ bold: true }, o));
-    if (b.aussteller) s += P("Aussteller: " + b.aussteller.name + (b.aussteller.adresse ? ", " + b.aussteller.adresse : "") + (b.aussteller.uid ? ", UID " + b.aussteller.uid : ""), o);
-    if (b.empfaenger) s += P("Empfänger: " + b.empfaenger.name + (b.empfaenger.adresse ? ", " + b.empfaenger.adresse : "") + (b.empfaenger.uid ? ", UID " + b.empfaenger.uid : ""), o);
-    (b.positionen || []).forEach(function (p) {
-      let line = p.bezeichnung || "";
-      if (p.menge != null && p.einzelpreis != null) line += "  ·  " + p.menge + " × " + euro(p.einzelpreis);
-      else if (p.betrag != null) line += "  ·  " + (p.betrag > 0 ? "+" : "") + euro(p.betrag);
-      s += P(line, o);
-    });
-    if (b.rabatt) s += P("Rabatt " + b.rabatt.prozent + " %: −" + euro(b.rabatt.betrag), o);
-    if (b.netto != null && b.typ !== "Inventurliste") s += P("Netto " + euro(b.netto) + (b.ust_satz ? "  +  " + b.ust_satz + " % USt " + euro(b.ust) : "") + (b.brutto != null ? "  =  Brutto " + euro(b.brutto) : ""), o);
-    if (b.zahlungsbedingungen) s += P(b.zahlungsbedingungen, o);
-    if (b.saldo_alt != null) s += P("Alter Saldo " + euro(b.saldo_alt) + "  ·  Neuer Saldo " + euro(b.saldo_neu), o);
-    if (b.kennzeichnung) s += P(b.kennzeichnung + (b.summe ? "  " + euro(b.summe.betrag) : ""), o);
-    if (b.kasse && b.kasse.rksv) s += P("RKSV-QR am Belegfuß (Code nicht als Klartext).", o);
-    return s;
+  function borderEl(side, b) {
+    if (!b || b.val === "nil") return "<w:" + side + " w:val=\"nil\"/>";
+    return "<w:" + side + " w:val=\"" + (b.val || "single") + "\" w:sz=\"" + (b.sz || "8") + "\" w:space=\"" + (b.space || "0") + "\" w:color=\"" + (b.color || "000000") + "\"/>";
+  }
+  function singleBorder(sz, color) {
+    return { val: "single", sz: String(sz || "8"), color: color || "000000", space: "0" };
   }
 
-  function punkteSindGesetzt(modus) {
-    return modus === "gesetzt" || modus === "vorschlag";
-  }
-  function kopfNeutral(opts) {
-    opts = opts || {};
-    const color = opts.color || "000000";
-    const o = { size: 11, after: 40, color: color };
-    let s = badgeRow(opts.loesung ? "LÖSUNG" : "ANGABE");
-    s += P(opts.titel || "", { bold: true, size: 14, after: 60, color: color });
-    if (opts.thema) s += P(opts.thema, { size: 11, after: 40, color: color });
-    s += P("Schule: ____________________    Klasse: ____________    Datum: ____________", o);
-    if (opts.mitName && !opts.loesung)
-      s += P("Nachname: ____________________    Vorname: ____________________", o);
-    if (opts.mitDauer && !opts.loesung)
-      s += P("Dauer: ________ Min.", o);
-    if (!opts.loesung)
-      s += P("erreichte Punkte / Note: ____________________", { size: 11, after: 120, color: color });
-    else
-      s += P("", { after: 80, color: color });
-    return s;
-  }
-  function punkteSuffix(wert, modus, loesung) {
-    if (punkteSindGesetzt(modus) && wert != null && wert !== "" && isFinite(Number(wert)))
-      return "  (" + Number(wert) + " P)";
-    if (loesung) return "";
-    return "      ______ P";
-  }
-  function summeZeile(modus, summe, color, loesung) {
-    const o = { size: 11, after: 0, color: color || "000000" };
-    if (punkteSindGesetzt(modus) && summe != null && isFinite(Number(summe)))
-      return P("Summe: " + Number(summe) + " Punkte", o);
-    if (loesung) return "";
-    return P("Summe: ______ Punkte", o);
-  }
-  function fmtProzent(n) {
-    const v = Number(n);
-    if (!isFinite(v)) return "";
-    return String(Math.round(v * 10) / 10).replace(".", ",") + " %";
-  }
-  function notenschluesselZeile(ns, color) {
-    if (!ns) return "";
-    const teile = [
-      "Sehr gut ab " + fmtProzent(ns.sehrGut != null ? ns.sehrGut : 87.6),
-      "Gut ab " + fmtProzent(ns.gut != null ? ns.gut : 75.1),
-      "Befriedigend ab " + fmtProzent(ns.befriedigend != null ? ns.befriedigend : 62.6),
-      "Genügend ab " + fmtProzent(ns.genuegend != null ? ns.genuegend : 50.1)
-    ];
-    return P("Notenschlüssel: " + teile.join(", ") + ".", { size: 11, after: 40, before: 80, color: color || "000000" });
-  }
-  function kopfAngabe(titel, thema, dauer, punkte, mitName) {
-    return kopfNeutral({ titel: titel, thema: thema, mitName: mitName });
-  }
-  function kopfLoesung(titel, thema, punkte) {
-    return kopfNeutral({ titel: titel, thema: thema, mitName: false, loesung: true, color: C_SOL });
-  }
-
-  function angabeFall(fall, aufgabe, i, mitBeleg, freiZeilen, optsFall) {
-    optsFall = optsFall || {};
-    const o = { size: 11, after: 40, keepNext: true, keepLines: true };
-    const punkte = optsFall.punkteModus
-      ? punkteSuffix(optsFall.punkte, optsFall.punkteModus)
-      : (optsFall.punkte != null ? "  (" + optsFall.punkte + " P)" : "");
-    let s;
-    if (optsFall.ohneWir) s = P((i + 1) + "." + punkte, Object.assign({ bold: true }, o));
-    else s = P((i + 1) + ".  " + (fall.wirSatz || ("Wir sind " + (aufgabe.wir || (fall.wir && (fall.wir.name + (fall.wir.branche ? ", " + fall.wir.branche : ""))) || "") + ".")) + punkte, Object.assign({ bold: true }, o));
+  function tableFixed(colTwips, rows, opt) {
+    opt = opt || {};
+    const total = colTwips.reduce(function (a, b) { return a + b; }, 0);
+    const sides = ["top", "left", "bottom", "right", "insideH", "insideV"];
+    let tblPr = "<w:tblPr><w:tblW w:w=\"" + total + "\" w:type=\"dxa\"/><w:tblLayout w:type=\"fixed\"/><w:tblBorders>";
+    const all = opt.noOuter ? { val: "nil" } : (opt.borders && opt.borders.all) || { val: "nil" };
+    sides.forEach(function (s) { tblPr += borderEl(s, all); });
+    tblPr += "</w:tblBorders></w:tblPr><w:tblGrid>";
+    colTwips.forEach(function (w) { tblPr += "<w:gridCol w:w=\"" + w + "\"/>"; });
+    tblPr += "</w:tblGrid>";
+    const m = opt.cellMargins || [40, 40, 60, 60];
+    const last = rows.length - 1;
     let body = "";
-    if (mitBeleg && aufgabe.beleg) body += belegAlsText(aufgabe.beleg, "000000");
-    else if (aufgabe.zusatzbeleg && aufgabe.beleg && aufgabe.beleg.typ === "Inventurliste") {
-      body += belegAlsText(aufgabe.zusatzbeleg);
-      body += belegAlsText(aufgabe.beleg);
-    } else {
-      const tx = (fall.angabeOhneWir || aufgabe.text || "").replace(/^Buche diesen Beleg\.?/, "").trim();
-      body += P(tx || ("Beleggruppe " + fall.beleggruppe + " · " + fall.belegtyp + " · " + fall.datum + (fall.partner && fall.partner.name ? " · " + fall.partner.name : "") + (fall.netto ? " · Netto " + euro(fall.netto) : "") + (fall.ust_satz ? " + " + fall.ust_satz + " % USt " + euro(fall.ust) : "") + (fall.brutto ? " = " + euro(fall.brutto) : "") + "."), o);
-    }
-    if (aufgabe.zusatzbeleg && mitBeleg && aufgabe.beleg && aufgabe.beleg.typ !== "Inventurliste")
-      body += belegAlsText(aufgabe.zusatzbeleg);
-    if (!/Buche\./.test(body)) body += P("Buche.", o);
-    s += body;
-    for (let k = 0; k < (freiZeilen || 0); k++) s += P("", { after: 160, keepNext: k < (freiZeilen || 0) - 1 });
-    return s;
-  }
-
-  function loesungFall(fall, aufgabe, i, optsFall) {
-    optsFall = optsFall || {};
-    const o = { size: 11, after: 40, color: C_SOL, keepNext: true };
-    const gg = fall.gedankengang || {};
-    const punkte = optsFall.punkteModus
-      ? punkteSuffix(optsFall.punkte, optsFall.punkteModus, true)
-      : (optsFall.punkte != null ? "  (" + optsFall.punkte + " P)" : "");
-    let s = "";
-    if (!optsFall.ohneNummer) {
-      s = optsFall.ohneWir
-        ? P((i + 1) + "." + punkte, Object.assign({ bold: true }, o))
-        : P((i + 1) + ".  " + (fall.wirSatz || ("Wir sind " + (aufgabe.wir || (fall.wir && fall.wir.name) || "") + ".")) + punkte, Object.assign({ bold: true }, o));
-    }
-    s += P("1. Was passiert?  " + (gg.was_passiert || ""), o);
-    s += P("2. Welche Konten?  " + (gg.konten || ""), o);
-    s += P("3. Art und Zu-/Abgang → Soll/Haben  " + (gg.art_zu_abgang || ""), o);
-    s += P("4. USt/VSt  " + (gg.steuer || ""), o);
-    s += P("5. Beleggruppe  " + (gg.beleggruppe || fall.beleggruppe), o);
-    s += P("Buchungssatz", Object.assign({ bold: true }, o));
-    s += satzXml(fall.loesung, C_SOL);
-    s += P("Begründung  " + (gg.begruendung || aufgabe.erklaerung || ""), o);
-    s += leer();
-    return s;
+    rows.forEach(function (row, ri) {
+      let tr = "<w:tr><w:trPr>";
+      if (opt.keep !== false) tr += "<w:cantSplit/>";
+      if (opt.rowH) tr += "<w:trHeight w:val=\"" + opt.rowH + "\" w:hRule=\"atLeast\"/>";
+      tr += "</w:trPr>";
+      row.forEach(function (cell, ci) {
+        const c = (cell && typeof cell === "object") ? cell : { text: cell };
+        let tcPr = "<w:tcPr><w:tcW w:w=\"" + colTwips[ci] + "\" w:type=\"dxa\"/>";
+        if (opt.vAlign) tcPr += "<w:vAlign w:val=\"" + opt.vAlign + "\"/>";
+        tcPr += "<w:tcMar>" +
+          "<w:top w:w=\"" + m[0] + "\" w:type=\"dxa\"/>" +
+          "<w:left w:w=\"" + m[2] + "\" w:type=\"dxa\"/>" +
+          "<w:bottom w:w=\"" + m[1] + "\" w:type=\"dxa\"/>" +
+          "<w:right w:w=\"" + m[3] + "\" w:type=\"dxa\"/>" +
+          "</w:tcMar>";
+        if (c.leftLine) {
+          tcPr += "<w:tcBorders>" +
+            borderEl("top", { val: "nil" }) +
+            borderEl("left", singleBorder(8, "000000")) +
+            borderEl("bottom", { val: "nil" }) +
+            borderEl("right", { val: "nil" }) +
+            "</w:tcBorders>";
+        }
+        tcPr += "</w:tcPr>";
+        const keep = opt.keep !== false && ri < last;
+        let inner = c.xml;
+        if (inner == null) {
+          inner = P(c.text || "\u00a0", {
+            size: c.size, color: c.color, bold: c.bold, italic: c.italic,
+            align: c.align, after: 0, before: 0, keepNext: keep
+          });
+        }
+        tr += "<w:tc>" + tcPr + inner + "</w:tc>";
+      });
+      tr += "</w:tr>";
+      body += tr;
+    });
+    return "<w:tbl>" + tblPr + body + "</w:tbl>";
   }
 
   function stylesXml() {
     return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
       "<w:styles xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\">" +
-      "<w:docDefaults><w:rPrDefault><w:rPr>" + rPr({ size: 11 }) + "</w:rPr></w:rPrDefault>" +
-      "<w:pPrDefault><w:pPr><w:spacing w:after=\"80\" w:line=\"240\" w:lineRule=\"auto\"/></w:pPr></w:pPrDefault></w:docDefaults>" +
+      "<w:docDefaults><w:rPrDefault><w:rPr>" + rPr({ size: 10 }) + "</w:rPr></w:rPrDefault>" +
+      "<w:pPrDefault><w:pPr><w:spacing w:after=\"40\" w:line=\"259\" w:lineRule=\"auto\"/></w:pPr></w:pPrDefault></w:docDefaults>" +
       "<w:style w:type=\"paragraph\" w:default=\"1\" w:styleId=\"Normal\"><w:name w:val=\"Normal\"/><w:qFormat/></w:style>" +
       "</w:styles>";
   }
   function documentXml(body, opts) {
     opts = opts || {};
-    const margin = cm(opts.marginCm || 1.6);
+    const side = cm(opts.marginSideCm != null ? opts.marginSideCm : 1.6);
+    const tb = cm(opts.marginTbCm != null ? opts.marginTbCm : 1.5);
+    const head = cm(0.7);
     return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
       "<w:document xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">" +
       "<w:body>" + body +
       "<w:sectPr><w:pgSz w:w=\"11906\" w:h=\"16838\"/>" +
-      "<w:pgMar w:top=\"" + margin + "\" w:right=\"" + margin + "\" w:bottom=\"" + margin + "\" w:left=\"" + margin + "\" w:header=\"284\" w:footer=\"284\"/>" +
+      "<w:pgMar w:top=\"" + tb + "\" w:right=\"" + side + "\" w:bottom=\"" + tb + "\" w:left=\"" + side + "\" w:header=\"" + head + "\" w:footer=\"" + head + "\"/>" +
       "<w:docGrid w:linePitch=\"360\"/></w:sectPr></w:body></w:document>";
   }
   function pack(filename, bodyXml, opts) {
@@ -6765,121 +6692,437 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     a.download = filename;
     document.body.appendChild(a);
     a.click();
-    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
   }
 
-  function hausuebungDocs(packH) {
-    const titel = "Hausübung Buchungstrainer";
-    const thema = packH.typId ? packH.typId.replace(/_/g, " ") : "Übung";
-    const modus = packH.punkteModus === "gesetzt" ? "gesetzt" : "frei";
-    const liste = packH.punkteJeAufgabe || [];
-    let ang = kopfNeutral({ titel: titel, thema: thema, mitName: true });
-    const wirSatz = (packH.faelle[0] && packH.faelle[0].fall && packH.faelle[0].fall.wirSatz) || (packH.wir ? ("Wir sind " + packH.wir + ".") : "");
-    if (wirSatz) ang += P(wirSatz, { bold: true, size: 11, after: 80 });
-    packH.faelle.forEach(function (g, i) {
-      const pv = modus === "gesetzt" ? liste[i] : null;
-      ang += angabeFall(g.fall, g.aufgabe, i, packH.mitBelegen, 6, { ohneWir: true, punkte: pv, punkteModus: modus });
+  function setStatus(statusEl, text) {
+    if (statusEl) statusEl.textContent = text;
+    downloadQueue.lastStatus = text;
+  }
+  function downloadQueue(items, statusEl, delayMs) {
+    delayMs = delayMs == null ? 750 : delayMs;
+    items = items || [];
+    let i = 0;
+    function next() {
+      if (i >= items.length) {
+        const labs = items.map(function (x) { return x.label || x.filename; }).join(" und ");
+        setStatus(statusEl, items.length ? ("Fertig: " + labs + ".") : "Fertig.");
+        return;
+      }
+      const it = items[i];
+      setStatus(statusEl, (i + 1) + "/" + items.length + "  " + (it.label || it.filename) + " wird heruntergeladen …");
+      downloadBytes(it.filename, it.bytes);
+      i += 1;
+      setTimeout(next, delayMs);
+    }
+    next();
+  }
+
+  function nameTable(summe) {
+    const pkt = (summe != null) ? ("Punkte: ____ / " + summe) : "Punkte: ____ / ____";
+    const c0 = P("Nachname: ___________", { size: 11, after: 40, keepNext: true }) +
+      P("Vorname:  ___________", { size: 11, before: 40, after: 0 });
+    const c1 = P("Klasse: ________", { size: 11, after: 40, keepNext: true }) +
+      P("Gruppe: ________", { size: 11, before: 40, after: 0 });
+    const c2 = P(pkt, { size: 11, bold: true, color: C_ACC, after: 0 });
+    return tableFixed(NAME_COLS, [[{ xml: c0 }, { xml: c1 }, { xml: c2 }]], {
+      borders: { all: singleBorder(8, "000000") },
+      cellMargins: [50, 50, 80, 80],
+      keep: true
+    }) + spacer(80);
+  }
+
+  function kopf(opts) {
+    opts = opts || {};
+    const art = opts.loesung ? "LÖSUNG" : "ANGABE";
+    let s = P(art, { size: 10, color: C_LGREY, align: "right", after: 60, before: 0, bold: false });
+    s += P(opts.titel || "", { size: 14, bold: true, color: C_ACC, after: 40, before: 0, keepNext: true });
+    let sub = "Rechnungswesen  ·  " + (opts.thema || "Buchhaltung");
+    if (!opts.loesung) sub += "  ·  Datum: ________";
+    s += P(sub, { size: 10, color: C_GREY, after: 80, keepNext: true });
+    if (!opts.loesung) {
+      s += nameTable(opts.summe);
+      if (opts.dauer) s += P("Dauer: ________ Min.", { size: 10, color: C_GREY, after: 80, keepNext: true });
+    } else {
+      const pkt = opts.summe != null ? ("Lösung  ·  " + opts.summe + " Punkte") : "Lösung";
+      s += P(pkt, { size: 10, color: C_GREY, after: 80 });
+    }
+    if (opts.wirSatz) s += P(opts.wirSatz, { size: 10, after: 80, keepNext: true, keepLines: true });
+    return s;
+  }
+
+  function aufgabeKopf(nr, punkte, first) {
+    const before = first ? 120 : BEFORE_H;
+    const left = "A" + nr;
+    if (punkte != null && punkte !== "") {
+      return Pparts([
+        [left, { bold: true, size: 11, color: C_ACC }],
+        ["\t(" + punkte + " P)", { bold: true, size: 11, color: C_ACC }]
+      ], { before: before, after: AFTER_H, keepNext: true, keepLines: true, rightTab: TEXTW });
+    }
+    return P(left, { bold: true, size: 11, color: C_ACC, before: before, after: AFTER_H, keepNext: true, keepLines: true });
+  }
+
+  function bookingTable(loesung, opts) {
+    opts = opts || {};
+    const soll = (loesung || []).filter(function (l) { return l.seite !== "Haben"; });
+    const haben = (loesung || []).filter(function (l) { return l.seite === "Haben"; });
+    let n = Math.max(soll.length, haben.length, 1);
+    if (opts.leerExtra) n += 1;
+    const color = opts.fuellen ? C_SOL : "000000";
+    const rows = [];
+    for (let i = 0; i < n; i++) {
+      const sk = opts.fuellen && soll[i] ? ktoKurz(soll[i].konto, soll[i].bezeichnung) : "";
+      const sa = opts.fuellen && soll[i] && soll[i].betrag != null ? num(soll[i].betrag) : "";
+      const hk = opts.fuellen && haben[i] ? ktoKurz(haben[i].konto, haben[i].bezeichnung) : "";
+      const ha = opts.fuellen && haben[i] && haben[i].betrag != null ? num(haben[i].betrag) : "";
+      const nr = (opts.fuellen && i === 0 && opts.nr) ? opts.nr : "";
+      rows.push([
+        { text: nr, size: 9.5, bold: !!nr, color: color },
+        { text: sk, size: 9.5, color: color },
+        { text: sa, size: 9.5, color: color, align: "right", leftLine: true },
+        { text: hk, size: 9.5, color: color },
+        { text: ha, size: 9.5, color: color, align: "right", leftLine: true }
+      ]);
+    }
+    return tableFixed(BOOK_COLS, rows, {
+      noOuter: true,
+      rowH: ROW_H,
+      keep: true,
+      cellMargins: [20, 20, 30, 30],
+      vAlign: "center"
+    }) + spacer(80);
+  }
+
+  function belegAlsText(b, color, size) {
+    if (!b) return "";
+    const o = { size: size || 10, color: color || "000000", after: 40, keepNext: true };
+    let s = P((b.typ || "Beleg") + (b.nummer ? "  " + b.nummer : "") + (b.datum ? "  ·  " + b.datum : ""), Object.assign({ bold: true }, o));
+    if (b.aussteller) s += P("Aussteller: " + b.aussteller.name + (b.aussteller.adresse ? ", " + b.aussteller.adresse : "") + (b.aussteller.uid ? ", UID " + b.aussteller.uid : ""), o);
+    if (b.empfaenger) s += P("Empfänger: " + b.empfaenger.name + (b.empfaenger.adresse ? ", " + b.empfaenger.adresse : "") + (b.empfaenger.uid ? ", UID " + b.empfaenger.uid : ""), o);
+    (b.positionen || []).forEach(function (p) {
+      let line = p.bezeichnung || "";
+      if (p.menge != null && p.einzelpreis != null) line += "  ·  " + p.menge + " × " + euro(p.einzelpreis);
+      else if (p.betrag != null) line += "  ·  " + (p.betrag > 0 ? "+" : "") + euro(p.betrag);
+      s += P(line, o);
     });
-    ang += summeZeile(modus, modus === "gesetzt" ? liste.reduce(function (s, v) { return s + Number(v); }, 0) : null);
-    let loe = kopfNeutral({ titel: titel, thema: thema, mitName: false, loesung: true, mitDauer: false, color: C_SOL });
-    if (wirSatz) loe += P(wirSatz, { bold: true, size: 11, after: 80, color: C_SOL });
-    packH.faelle.forEach(function (g, i) {
-      const pv = modus === "gesetzt" ? liste[i] : null;
-      loe += loesungFall(g.fall, g.aufgabe, i, { ohneWir: true, punkte: pv, punkteModus: modus });
-    });
-    loe += summeZeile(modus, (modus === "gesetzt" || modus === "vorschlag") ? liste.reduce(function (s, v) { return s + Number(v); }, 0) : null, C_SOL, true);
+    if (b.rabatt) s += P("Rabatt " + b.rabatt.prozent + " %: −" + euro(b.rabatt.betrag), o);
+    if (b.netto != null && b.typ !== "Inventurliste") s += P("Netto " + euro(b.netto) + (b.ust_satz ? "  +  " + b.ust_satz + " % USt " + euro(b.ust) : "") + (b.brutto != null ? "  =  Brutto " + euro(b.brutto) : ""), o);
+    if (b.zahlungsbedingungen) s += P(b.zahlungsbedingungen, o);
+    if (b.saldo_alt != null) s += P("Alter Saldo " + euro(b.saldo_alt) + "  ·  Neuer Saldo " + euro(b.saldo_neu), o);
+    if (b.kennzeichnung) s += P(b.kennzeichnung + (b.summe ? "  " + euro(b.summe.betrag) : ""), o);
+    if (b.kasse && b.kasse.rksv) s += P("RKSV-QR am Belegfuß (Code nicht als Klartext).", o);
+    return s;
+  }
+
+  function belegRahmen(innerXml) {
+    return tableFixed([TEXTW], [[{ xml: innerXml }]], {
+      borders: { all: singleBorder(8, "000000") },
+      cellMargins: [60, 60, 80, 80],
+      keep: true
+    }) + spacer(80);
+  }
+
+  function belegKurz(e) {
+    const b = e && (e.beleg || (e.fall && e.fall.beleg));
+    if (!b) return (e && (e.text || e.angabeOhneWir || (e.fall && e.fall.angabeOhneWir))) || "";
+    const parts = [];
+    if (b.typ) parts.push(b.typ);
+    if (b.nummer) parts.push(b.nummer);
+    if (b.datum) parts.push(b.datum);
+    const typ = b.typ || "";
+    if (/Ausgang|Gutschrift|Mahnung|Zahlungsaufforderung/.test(typ) && b.empfaenger && b.empfaenger.name)
+      parts.push(b.empfaenger.name);
+    else if (b.aussteller && b.aussteller.name) parts.push(b.aussteller.name);
+    if (b.brutto != null) parts.push(num(b.brutto) + " €");
+    else if (b.netto != null) parts.push(num(b.netto) + " €");
+    return parts.join("  ·  ");
+  }
+
+  function normFall(x) {
+    if (!x) return { loesung: [], text: "", gedankengang: {} };
+    if (x.zeilen && !x.aufgabe && !x.loesung) {
+      return {
+        typId: x.aufgabeId,
+        text: x.text || "",
+        loesung: x.zeilen || [],
+        beleg: x.beleg,
+        erklaerung: x.erklaerung || "",
+        gedankengang: x.gedankengang || (x.fall && x.fall.gedankengang) || {},
+        beleggruppe: x.beleggruppe || "",
+        punkteVergeben: null,
+        wirSatz: ""
+      };
+    }
+    const aufg = x.aufgabe || x;
+    const fall = x.fall || aufg.bema || {};
     return {
-      angabe: pack("Hausuebung_Angabe.docx", ang, { title: titel + " Angabe" }),
-      loesung: pack("Hausuebung_Loesung.docx", loe, { title: titel + " Lösung" })
+      typId: (x.typ && x.typ.id) || fall.geschaeftstyp_id || aufg.typId,
+      text: fall.angabeOhneWir || aufg.angabeOhneWir || aufg.text || "",
+      loesung: aufg.loesung || fall.loesung || [],
+      beleg: aufg.beleg || fall.beleg,
+      erklaerung: aufg.erklaerung || "",
+      gedankengang: fall.gedankengang || aufg.gedankengang || {},
+      beleggruppe: fall.beleggruppe || aufg.beleggruppe || "",
+      punkteVergeben: x.punkteVergeben,
+      wirSatz: fall.wirSatz || ""
+    };
+  }
+
+  function begruendungZeile(text) {
+    if (!text) return "";
+    let t = String(text).replace(/\s+/g, " ").trim();
+    if (t.length > 160) t = t.slice(0, 157) + "…";
+    return P(t, { size: 10, color: C_SOL, after: 80, before: 20 });
+  }
+
+  function antwortenFuer(e) {
+    const n = (e && e.loesung !== undefined && e.gedankengang !== undefined) ? e : normFall(e);
+    const gg = n.gedankengang || {};
+    const z = n.loesung || [];
+    const konten = z.map(function (l) { return ktoKurz(l.konto, l.bezeichnung); }).join(", ");
+    const hatVst = z.some(function (l) { return String(l.konto) === "2500"; });
+    const hatUst = z.some(function (l) { return String(l.konto) === "3500"; });
+    let ust = gg.steuer || gg.ust || "";
+    if (!ust) {
+      if (hatVst && hatUst) ust = "Vorsteuer und Umsatzsteuer";
+      else if (hatVst) ust = "Vorsteuer (2500)";
+      else if (hatUst) ust = "Umsatzsteuer (3500)";
+      else ust = "keine USt/VSt in diesem Satz";
+    }
+    let art = gg.art_zu_abgang || "";
+    if (!art && z.length) {
+      art = z.map(function (l) { return (l.seite || "") + ": " + ktoKurz(l.konto, l.bezeichnung); }).join("; ");
+    }
+    return [
+      { q: "Was passiert?", a: gg.was_passiert || gg.was || belegKurz(e) },
+      { q: "Welche Konten?", a: gg.konten || konten },
+      { q: "Art und Zu-/Abgang → Soll/Haben", a: art },
+      { q: "USt/VSt", a: ust },
+      { q: "Beleggruppe", a: gg.beleggruppe || n.beleggruppe || "" }
+    ];
+  }
+
+  function leitfragenTabelle(items, fuellen) {
+    const rows = (items || []).map(function (it) {
+      return [
+        { text: it.q, size: 10, color: "000000" },
+        { text: fuellen ? (it.a || "") : "", size: 10, color: fuellen ? C_SOL : "000000" }
+      ];
+    });
+    if (!rows.length) return "";
+    return tableFixed(LQ_COLS, rows, {
+      borders: { all: singleBorder(8, "808080") },
+      rowH: LQ_H,
+      keep: true,
+      cellMargins: [40, 40, 60, 60],
+      vAlign: "center"
+    }) + spacer(80);
+  }
+
+  function punkteDes(a, i, pack) {
+    if (a && a.punkteVergeben != null && isFinite(a.punkteVergeben)) return Math.round(a.punkteVergeben);
+    if (!pack || pack.punkteModus === "frei" || pack.punkteModus == null) return null;
+    if (pack.punkteJeAufgabe && pack.punkteJeAufgabe[i] != null && isFinite(pack.punkteJeAufgabe[i]))
+      return Math.round(pack.punkteJeAufgabe[i]);
+    return null;
+  }
+  function summeDes(pack) {
+    if (!pack || pack.punkteModus === "frei" || pack.punkteModus == null) return null;
+    if (pack.punkteSumme != null && isFinite(pack.punkteSumme)) return Math.round(pack.punkteSumme);
+    if (pack.punkteJeAufgabe && pack.punkteJeAufgabe.length) {
+      const ok = pack.punkteJeAufgabe.every(function (v) { return v != null && isFinite(v); });
+      if (ok) return pack.punkteJeAufgabe.reduce(function (a, v) { return a + Math.round(v); }, 0);
+    }
+    return null;
+  }
+
+  function themaEinheiten(einheiten) {
+    const e = (einheiten || []).slice().sort(function (a, b) { return a - b; });
+    if (!e.length) return "Buchhaltung";
+    if (e.length === 1) return "Einheit E " + e[0];
+    return "Einheiten E " + e[0] + "–E " + e[e.length - 1];
+  }
+
+  function aufgabenText(a) {
+    return a.angabeOhneWir || a.text || "";
+  }
+
+  function buchungsFall(raw, i, loesung, pack, first, mitBeleg, mitLeitfragen) {
+    const a = normFall(raw);
+    a.punkteVergeben = raw && raw.punkteVergeben;
+    const pkt = punkteDes(a, i, pack);
+    let s = aufgabeKopf(i + 1, pkt, first);
+    const txt = a.text || "";
+    if (txt) s += P(txt, { size: 10.5, after: 80, keepNext: true, keepLines: true });
+    if (mitBeleg && a.beleg) s += belegRahmen(belegAlsText(a.beleg, "000000", 10));
+    s += bookingTable(a.loesung, { fuellen: loesung, nr: "1.", leerExtra: !loesung });
+    if (loesung) s += begruendungZeile((a.gedankengang && a.gedankengang.begruendung) || "");
+    if (mitLeitfragen) s += leitfragenTabelle(antwortenFuer(a), loesung);
+    s += leerzeile();
+    return s;
+  }
+
+  function frageFall(f, i, loesung, pack, first) {
+    const pkt = punkteDes(f, i, pack);
+    let s = aufgabeKopf(i + 1, pkt, first);
+    s += P(f.frage || f.text || "", { size: 10.5, after: 80, keepNext: true, keepLines: true });
+    if (f.optionen && f.optionen.length) {
+      const richtig = f.richtig || f.erwartung || f.antwort;
+      (f.optionen || []).forEach(function (opt) {
+        const lab = (opt && typeof opt === "object") ? ((opt.k ? (opt.k + "  ") : "") + (opt.t || "")) : String(opt);
+        const key = (opt && typeof opt === "object") ? opt.k : opt;
+        const ist = loesung && (richtig === key || richtig === lab || richtig === opt);
+        const mark = ist ? "☑ " : "☐ ";
+        s += P(mark + lab, { size: 10.5, color: ist ? C_SOL : "000000", after: 40, keepNext: true });
+      });
+    } else if (loesung) {
+      s += P(f.erwartung || f.antwort || f.loesung || "", { size: 10, color: C_SOL, after: 80 });
+    } else {
+      s += P("", { size: 10, after: 0, keepNext: true });
+      s += P(" ", { size: 10, after: 320, before: 0, keepNext: true });
+    }
+    s += leerzeile();
+    return s;
+  }
+
+  function notenschluesselBlock(ns) {
+    if (!ns) return "";
+    const z = function (n) { return String(n).replace(".", ","); };
+    return P("Notenschlüssel  ·  Sehr gut ab " + z(ns.sehrGut) + " %  ·  Gut ab " + z(ns.gut) + " %  ·  Befriedigend ab " + z(ns.befriedigend) + " %  ·  Genügend ab " + z(ns.genuegend) + " %",
+      { size: 9, color: C_GREY, before: 200, after: 0 });
+  }
+
+  function kombiDoc(angabeBody, loesungBody, filename, title) {
+    const body = angabeBody + P("", { pageBreak: true, after: 0, before: 0 }) + loesungBody;
+    return pack(filename, body, { title: title });
+  }
+
+  function stem(pack) {
+    const e = (pack.einheiten || []).slice().sort(function (a, b) { return a - b; });
+    const teil = e.length ? ("E" + e[0] + (e.length > 1 ? "-E" + e[e.length - 1] : "")) : "BEMA";
+    return teil;
+  }
+
+  function whBodies(packW, gruppe) {
+    const loesungFaelle = packW.faelle || packW.buchungen || [];
+    const fragen = packW.fragen || [];
+    const nBuch = loesungFaelle.length;
+    const summe = summeDes(packW);
+    const thema = packW.thema || themaEinheiten(packW.einheiten);
+    const wirSatz = packW.wirSatz || (loesungFaelle[0] && loesungFaelle[0].fall && loesungFaelle[0].fall.wirSatz) || "";
+    const dauer = !!(packW.mitDauer || packW.dauer);
+    const ns = packW.notenschluessel;
+    function body(istLoesung) {
+      let s = kopf({
+        loesung: istLoesung,
+        titel: "Schriftliche Wiederholung",
+        thema: thema,
+        summe: summe,
+        dauer: dauer,
+        wirSatz: wirSatz
+      });
+      loesungFaelle.forEach(function (a, i) {
+        s += buchungsFall(a, i, istLoesung, packW, i === 0, false, false);
+      });
+      fragen.forEach(function (f, i) {
+        s += frageFall(f, nBuch + i, istLoesung, packW, nBuch === 0 && i === 0);
+      });
+      if (!istLoesung && ns) s += notenschluesselBlock(ns);
+      return s;
+    }
+    const angabe = body(false);
+    const loesung = body(true);
+    const tag = stem(packW) + (gruppe ? "_Gruppe" + gruppe : "");
+    return {
+      angabeBody: angabe,
+      loesungBody: loesung,
+      angabe: pack("WH_" + tag + "_Angabe.docx", angabe, { title: "Schriftliche Wiederholung – Angabe" }),
+      loesung: pack("WH_" + tag + "_Loesung.docx", loesung, { title: "Schriftliche Wiederholung – Lösung" }),
+      kombi: kombiDoc(angabe, loesung, "WH_" + tag + "_Angabe_und_Loesung.docx", "Schriftliche Wiederholung – Angabe und Lösung")
     };
   }
 
   function whDocs(packW) {
-    const out = [];
-    packW.gruppen.forEach(function (gr) {
-      const titel = "Schriftliche Wiederholung";
-      const thema = packW.thema + (packW.gruppen.length > 1 ? "  ·  Gruppe " + gr.name : "");
-      const modus = (gr.punkteModus || packW.punkteModus || "frei");
-      const summe = punkteSindGesetzt(modus) ? (gr.punkteSumme != null ? gr.punkteSumme : null) : null;
-      const ns = packW.notenschluessel || null;
-      let ang = kopfNeutral({ titel: titel, thema: thema, mitName: true, mitDauer: !!packW.mitDauer });
-      const wirSatz = gr.wirSatz || (gr.faelle[0] && gr.faelle[0].fall && gr.faelle[0].fall.wirSatz) || "";
-      if (wirSatz) ang += P(wirSatz, { bold: true, size: 11, after: 80, keepNext: true });
-      let nr = 1;
-      gr.faelle.forEach(function (g) {
-        const o = { size: 11, after: 40, keepNext: true, keepLines: true };
-        ang += P(nr + ".  Buchungssatz" + punkteSuffix(g.punkteVergeben, modus, false), { bold: true, size: 11, after: 20, keepNext: true });
-        ang += P(g.fall.angabeOhneWir || g.aufgabe.text || "", o);
-        nr++;
-      });
-      gr.fragen.forEach(function (q) {
-        ang += P(nr + ".  " + (q.typ || "Verständnis") + punkteSuffix(q.punkteVergeben, modus, false), { bold: true, size: 11, after: 40, keepNext: true });
-        ang += P(q.frage, { size: 11, after: 40, keepNext: true });
-        if (q.optionen) q.optionen.forEach(function (op) { ang += P(op.k + ")  " + op.t, { size: 11, after: 20, keepNext: true }); });
-        ang += leer();
-        nr++;
-      });
-      ang += summeZeile(modus, summe, "000000", false);
-      if (ns) ang += notenschluesselZeile(ns);
-
-      let loe = kopfNeutral({ titel: titel, thema: thema, mitName: false, loesung: true, color: C_SOL });
-      if (wirSatz) loe += P(wirSatz, { bold: true, size: 11, after: 80, color: C_SOL, keepNext: true });
-      nr = 1;
-      gr.faelle.forEach(function (g) {
-        loe += P(nr + ".  Buchungssatz" + punkteSuffix(g.punkteVergeben, modus, true), { bold: true, size: 11, after: 20, color: C_SOL, keepNext: true });
-        loe += loesungFall(g.fall, g.aufgabe, nr - 1, { ohneWir: true, ohneNummer: true });
-        nr++;
-      });
-      gr.fragen.forEach(function (q) {
-        loe += P(nr + ".  " + (q.typ || "Verständnis") + punkteSuffix(q.punkteVergeben, modus, true), { bold: true, size: 11, after: 40, color: C_SOL, keepNext: true });
-        loe += P(q.frage, { size: 11, after: 40, color: C_SOL, keepNext: true });
-        if (q.optionen) q.optionen.forEach(function (op) { loe += P(op.k + ")  " + op.t, { size: 11, after: 20, color: C_SOL, keepNext: true }); });
-        loe += P("Lösung: " + (q.erwartung || q.richtig || ""), { size: 11, after: 80, color: C_SOL, bold: true });
-        nr++;
-      });
-      loe += summeZeile(modus, summe, C_SOL, true);
-      if (ns) loe += notenschluesselZeile(ns, C_SOL);
-      const suffix = packW.gruppen.length > 1 ? "_Gruppe" + gr.name : "_GruppeA";
-      out.push({
-        gruppe: gr.name,
-        angabe: pack("WH" + suffix + "_Angabe.docx", ang, { title: titel + " Angabe " + gr.name }),
-        loesung: pack("WH" + suffix + "_Loesung.docx", loe, { title: titel + " Lösung " + gr.name })
-      });
+    const gruppen = packW.gruppen || [packW];
+    return gruppen.map(function (g, i) {
+      const p = Object.assign({}, packW, g);
+      const d = whBodies(p, gruppen.length > 1 ? (i + 1) : 0);
+      return { gruppe: i + 1, angabe: d.angabe, loesung: d.loesung, kombi: d.kombi };
     });
-    return out;
+  }
+
+  function hausuebungDocs(packH) {
+    const faelle = packH.faelle || packH.buchungen || [];
+    const summe = summeDes(packH);
+    const wirSatz = packH.wirSatz || (faelle[0] && faelle[0].fall && faelle[0].fall.wirSatz) || "";
+    const mitBeleg = packH.mitBelegen !== false;
+    const mitLq = !!packH.leitfragen;
+    const typ = packH.typId || (faelle[0] && faelle[0].typ && faelle[0].typ.id) || "HU";
+    const thema = String(typ).replace(/^E(\d+)_/, "E $1 · ").replace(/_/g, " ");
+    function body(istLoesung) {
+      let s = kopf({
+        loesung: istLoesung,
+        titel: "Hausübung",
+        thema: thema,
+        summe: summe,
+        wirSatz: wirSatz
+      });
+      faelle.forEach(function (a, i) {
+        s += buchungsFall(a, i, istLoesung, packH, i === 0, mitBeleg, mitLq);
+      });
+      return s;
+    }
+    const angabe = body(false);
+    const loesung = body(true);
+    return {
+      angabe: pack("HU_" + typ + "_Angabe.docx", angabe, { title: "Hausübung – Angabe" }),
+      loesung: pack("HU_" + typ + "_Loesung.docx", loesung, { title: "Hausübung – Lösung" }),
+      kombi: kombiDoc(angabe, loesung, "HU_" + typ + "_Angabe_und_Loesung.docx", "Hausübung – Angabe und Lösung")
+    };
   }
 
   function mitschriftDocs(journal) {
-    const titel = "Mitschrift Buchungstrainer";
-    const thema = "Gebuchte Fälle";
-    let ang = kopfAngabe(titel, thema, "", journal.length, true);
-    journal.forEach(function (e, i) {
-      ang += P((i + 1) + ".  Wir sind " + e.wir + ".", { bold: true, size: 11, after: 40, keepNext: true });
-      if (e.beleg) ang += belegAlsText(e.beleg);
-      else ang += P(e.text || "", { size: 11, after: 40, keepNext: true });
-      if (e.zusatzbeleg) ang += belegAlsText(e.zusatzbeleg);
-      ang += leer();
-    });
-    let loe = badgeRow("LÖSUNG");
-    loe += P(titel, { bold: true, size: 14, after: 60, color: C_SOL });
-    loe += P("Fach RW  ·  " + thema, { size: 11, after: 160, color: C_SOL });
-    journal.forEach(function (e, i) {
-      const fall = e.fall || { wir: { name: e.wir }, loesung: e.zeilen, gedankengang: e.gedankengang || {}, beleggruppe: e.beleggruppe };
-      const aufg = { wir: e.wir, erklaerung: e.erklaerung || "" };
-      loe += loesungFall(fall, aufg, i);
-    });
+    const ein = journal || [];
+    function body(istLoesung) {
+      let s = kopf({
+        loesung: istLoesung,
+        titel: "Mitschrift",
+        thema: "Buchhaltung",
+        summe: null
+      });
+      ein.forEach(function (e, i) {
+        s += aufgabeKopf(i + 1, null, i === 0);
+        const kurz = belegKurz(e);
+        if (kurz) s += P(kurz, { size: 10.5, after: 80, keepNext: true, keepLines: true });
+        const n = normFall(e);
+        s += bookingTable(n.loesung, { fuellen: istLoesung, nr: "1.", leerExtra: !istLoesung });
+        if (istLoesung) s += begruendungZeile((n.gedankengang && n.gedankengang.begruendung) || "");
+        s += leitfragenTabelle(antwortenFuer(n), istLoesung);
+        s += leerzeile();
+      });
+      return s;
+    }
+    const angabe = body(false);
+    const loesung = body(true);
     return {
-      angabe: pack("Mitschrift_Angabe.docx", ang, { title: titel + " Angabe" }),
-      loesung: pack("Mitschrift_Loesung.docx", loe, { title: titel + " Lösung" })
+      angabe: pack("Mitschrift_Angabe.docx", angabe, { title: "Mitschrift – Angabe" }),
+      loesung: pack("Mitschrift_Loesung.docx", loesung, { title: "Mitschrift – Lösung" }),
+      kombi: kombiDoc(angabe, loesung, "Mitschrift_Angabe_und_Loesung.docx", "Mitschrift – Angabe und Lösung")
     };
   }
 
   global.BEMA_DOCX = {
-    pack: pack, downloadBytes: downloadBytes,
-    hausuebungDocs: hausuebungDocs, whDocs: whDocs, mitschriftDocs: mitschriftDocs,
-    kopfNeutral: kopfNeutral, punkteSuffix: punkteSuffix, notenschluesselZeile: notenschluesselZeile, euro: euro
+    pack: pack,
+    downloadBytes: downloadBytes,
+    downloadQueue: downloadQueue,
+    whDocs: whDocs,
+    hausuebungDocs: hausuebungDocs,
+    mitschriftDocs: mitschriftDocs,
+    C_SOL: C_SOL,
+    C_ACC: C_ACC
   };
-})(typeof window !== "undefined" ? window : globalThis);
+})(typeof window !== "undefined" ? window : global);
 
 (function (global) {
   "use strict";
@@ -6994,6 +7237,36 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
   function schliesseDlg() {
     const d = document.getElementById("bema-dlg");
     if (d) d.remove();
+  }
+
+  function optionenZahl(von, bis, gewaehlt) {
+    let s = "";
+    for (let i = von; i <= bis; i++) s += "<option value=\"" + i + "\"" + (i === gewaehlt ? " selected" : "") + ">" + i + "</option>";
+    return s;
+  }
+  function exportWahlHtml() {
+    return "<div class=\"row\"><span>Export</span>" +
+      "<label><input type=\"radio\" name=\"bema-export\" value=\"zwei\" checked> zwei Dateien (Angabe, dann Lösung)</label>" +
+      "<label><input type=\"radio\" name=\"bema-export\" value=\"eins\"> beides in einem Dokument (Lösung ab neuer Seite)</label></div>" +
+      "<p id=\"bema-dl-status\" class=\"bema-hinweis\" aria-live=\"polite\"></p>";
+  }
+  function starteExport(docs, box) {
+    const status = box.querySelector("#bema-dl-status");
+    const modus = ((box.querySelector("[name=\"bema-export\"]:checked") || {}).value) || "zwei";
+    const liste = Array.isArray(docs) ? docs : [docs];
+    let items;
+    if (modus === "eins") {
+      items = liste.map(function (d) {
+        return { filename: d.kombi.filename, bytes: d.kombi.bytes, label: "Angabe und Lösung in einem Dokument" };
+      });
+    } else {
+      items = [];
+      liste.forEach(function (d) {
+        items.push({ filename: d.angabe.filename, bytes: d.angabe.bytes, label: "Angabe" });
+        items.push({ filename: d.loesung.filename, bytes: d.loesung.bytes, label: "Lösung" });
+      });
+    }
+    BEMA_DOCX.downloadQueue(items, status);
   }
 
   function injectTools() { /* Knöpfe sitzen in der Leiste #bema-dock, nicht in der Aufgabenleiste */ }
@@ -7202,9 +7475,18 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
 
   function exportMitschrift() {
     if (!journal().length) { dlg("<h2>Mitschrift</h2><p>Noch keine gebuchten Fälle.</p><div class=\"actions\"><button type=\"button\" class=\"sec\" id=\"bema-cancel\">Schließen</button></div>").querySelector("#bema-cancel").onclick = schliesseDlg; return; }
-    const docs = BEMA_DOCX.mitschriftDocs(journal());
-    BEMA_DOCX.downloadBytes(docs.angabe.filename, docs.angabe.bytes);
-    BEMA_DOCX.downloadBytes(docs.loesung.filename, docs.loesung.bytes);
+    const box = dlg(
+      "<h2>Mitschrift</h2>" +
+      "<p>Handout mit Belegkurzbeschreibung, Buchungsraster und Leitfragen. Die Lösung enthält die Antworten in Dunkelblau.</p>" +
+      exportWahlHtml() +
+      "<div class=\"actions\"><button type=\"button\" id=\"bema-go\">DOCX erzeugen</button>" +
+      "<button type=\"button\" class=\"sec\" id=\"bema-cancel\">Abbrechen</button></div>"
+    );
+    box.querySelector("#bema-cancel").onclick = schliesseDlg;
+    box.querySelector("#bema-go").onclick = function () {
+      const docs = BEMA_DOCX.mitschriftDocs(journal());
+      starteExport(docs, box);
+    };
   }
 
   function setzeAufgabeInQueue(aufg, ersetze) {
@@ -7253,18 +7535,20 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     const typId = typ && typ.typId;
     const box = dlg(
       "<h2>Hausübung</h2>" +
-      "<p>3–4 ähnliche Fälle, gleiche Kontenlogik. Maximal ein Zahlungsweg-Twist in der ganzen Hausübung.</p>" +
+      "<p>1–10 ähnliche Fälle (Standard: 3), gleiche Kontenlogik. Maximal ein Zahlungsweg-Twist in der ganzen Hausübung.</p>" +
       (typId ? "<p>Geschäftstyp: <b>" + typId + "</b>" + (typ.hinweis ? " · " + typ.hinweis : "") + "</p>" : "<p class=\"bema-luecke\">Kein Geschäftstyp zur aktuellen Aufgabe. Bitte zuerst eine passende Aufgabe öffnen.</p>") +
       (typ && typ.verboten ? "<p class=\"bema-luecke\">" + typ.grund + "</p>" : "") +
-      "<div class=\"row\"><label>Anzahl <select id=\"bema-n\"><option>3</option><option>4</option></select></label>" +
+      "<div class=\"row\"><label>Anzahl <select id=\"bema-n\">" + optionenZahl(1, 10, 3) + "</select></label>" +
       "<label><input type=\"radio\" name=\"bema-bel\" value=\"mit\" checked> mit Belegen</label>" +
       "<label><input type=\"radio\" name=\"bema-bel\" value=\"text\"> nur Text</label>" +
       "<label><input type=\"checkbox\" id=\"bema-tw\"> ein Twist in einem Fall</label></div>" +
+      "<div class=\"row\"><label><input type=\"checkbox\" id=\"bema-lq\"> Leitfragen (standardmäßig aus)</label></div>" +
       "<div class=\"row\"><span>Punkte</span>" +
       "<label><input type=\"radio\" name=\"bema-pkt\" value=\"frei\" checked> freilassen (Standard)</label>" +
       "<label><input type=\"radio\" name=\"bema-pkt\" value=\"gesetzt\"> je Aufgabe festlegen</label></div>" +
       "<div id=\"bema-pkt-felder\" hidden></div>" +
       "<p id=\"bema-pkt-summe\" class=\"bema-hinweis\" hidden></p>" +
+      exportWahlHtml() +
       "<div class=\"actions\"><button type=\"button\" id=\"bema-go\" " + (!typId || typ.verboten || typ.luecke ? "disabled" : "") + ">DOCX erzeugen</button>" +
       "<button type=\"button\" class=\"sec\" id=\"bema-cancel\">Abbrechen</button></div>"
     );
@@ -7322,9 +7606,10 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       if (!packH.ok) { box.querySelector(".box").insertAdjacentHTML("beforeend", "<p class=\"bema-luecke\">" + packH.fehler + "</p>"); return; }
       packH.punkteModus = modus;
       packH.punkteJeAufgabe = liste;
+      if (liste) packH.punkteSumme = liste.reduce(function (s, v) { return s + Math.round(v); }, 0);
+      packH.leitfragen = !!(box.querySelector("#bema-lq") && box.querySelector("#bema-lq").checked);
       const docs = BEMA_DOCX.hausuebungDocs(packH);
-      BEMA_DOCX.downloadBytes(docs.angabe.filename, docs.angabe.bytes);
-      BEMA_DOCX.downloadBytes(docs.loesung.filename, docs.loesung.bytes);
+      starteExport(docs, box);
     };
   }
 
@@ -7332,12 +7617,12 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     const e = (S.cur && S.cur.a && S.cur.a.einheit) || 5;
     const box = dlg(
       "<h2>Schriftliche Wiederholung</h2>" +
-      "<p>2–4 Buchungsfälle (Standard: 3, 15-Punkte-Profil). 0 Verständnisfragen: Profil A bzw. C (wenn E 8 oder E 9 dabei ist). 2 Fragen: Profil D, 3 Fragen: Profil B – nur wenn genug Zweizeiler in den gewählten Einheiten sind, nichts aus Nachbareinheiten. Punkte: freilassen, Vorschlag (2 P Konten/Seiten + 1 P je Betrag, Verständnis/MC 1) oder selbst festlegen (überschreibt den Vorschlag, nur ganze Punkte).</p>" +
+      "<p>1–10 Buchungsfälle (Standard: 3, historisches 15-Punkte-Profil). 0 Verständnisfragen: Profil A bzw. C (wenn E 8 oder E 9 dabei ist). 2 Fragen: Profil D, 3 Fragen: Profil B – nur wenn genug Zweizeiler in den gewählten Einheiten sind, nichts aus Nachbareinheiten. Punkte: freilassen, Vorschlag (2 P Konten/Seiten + 1 P je Betrag, Verständnis/MC 1) oder selbst festlegen (überschreibt den Vorschlag, nur ganze Punkte).</p>" +
       "<p id=\"bema-wh-verf\" class=\"bema-hinweis\"></p>" +
       "<div class=\"row\"><label>Aktuelle / neueste Einheit <select id=\"bema-e\">" +
       Array.from({ length: 17 }, function (_, i) { return "<option value=\"" + (i + 1) + "\"" + (i + 1 === e ? " selected" : "") + ">E " + (i + 1) + "</option>"; }).join("") +
       "</select></label>" +
-      "<label>Fälle <select id=\"bema-faelle\"><option value=\"2\">2</option><option value=\"3\" selected>3</option><option value=\"4\">4</option></select></label></div>" +
+      "<label>Fälle <select id=\"bema-faelle\">" + optionenZahl(1, 10, 3) + "</select></label></div>" +
       "<div class=\"row\"><label>Einheiten mischen <select id=\"bema-mix\"><option value=\"1\">nur diese Einheit</option><option value=\"2\">letzte 2</option><option value=\"3\">letzte 3</option></select></label>" +
       "<label>Verständnis / MC <select id=\"bema-v\"><option value=\"0\">0</option><option value=\"2\">2</option><option value=\"3\">3</option></select></label>" +
       "<label>Gruppen <select id=\"bema-g\"><option value=\"1\">1</option><option value=\"2\">2</option></select></label></div>" +
@@ -7355,6 +7640,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       "<label>Befriedigend ab <input type=\"number\" class=\"bema-ns\" id=\"bema-ns-b\" min=\"0\" max=\"100\" step=\"0.1\" value=\"62.6\"> %</label> " +
       "<label>Genügend ab <input type=\"number\" class=\"bema-ns\" id=\"bema-ns-n\" min=\"0\" max=\"100\" step=\"0.1\" value=\"50.1\"> %</label>" +
       "</div>" +
+      exportWahlHtml() +
       "<div class=\"actions\"><button type=\"button\" id=\"bema-go\">DOCX erzeugen</button><button type=\"button\" class=\"sec\" id=\"bema-cancel\">Abbrechen</button></div>"
     );
     box.querySelector("#bema-cancel").onclick = schliesseDlg;
@@ -7492,10 +7778,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       const packW = BEMA.schriftlicheWH(o);
       if (!packW.ok) { box.querySelector(".box").insertAdjacentHTML("beforeend", "<p class=\"bema-luecke\">" + packW.fehler + "</p>"); return; }
       const docs = BEMA_DOCX.whDocs(packW);
-      docs.forEach(function (d) {
-        BEMA_DOCX.downloadBytes(d.angabe.filename, d.angabe.bytes);
-        BEMA_DOCX.downloadBytes(d.loesung.filename, d.loesung.bytes);
-      });
+      starteExport(docs, box);
     };
   }
 
