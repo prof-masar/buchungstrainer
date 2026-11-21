@@ -576,11 +576,84 @@ button.bm-hit:hover .bm-i, button.bm-hit:focus .bm-i{background:#fff;color:var(-
   .bm-einheiten{grid-template-columns:repeat(4,1fr);}
 }
 
+/* ===== v3: Zoom-Bühne, Stern, Beleg-Popover ===== */
+html.beamer, body.beamer{height:100%;margin:0;background:#d8dbe0;overflow:hidden;}
+body.beamer{display:flex;flex-direction:column;}
+#bmzoombar{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:6px 14px;background:#1f2a3a;color:#fff;z-index:40;box-shadow:0 1px 0 rgba(0,0,0,.15);}
+#bmzoombar .bmz-lab{font-size:.8rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;opacity:.8;margin-right:4px;}
+#bmzoombar button{min-height:36px;min-width:40px;padding:4px 12px;border:0;border-radius:8px;background:#3a4760;color:#fff;font-size:1.05rem;font-weight:700;cursor:pointer;}
+#bmzoombar button:hover{background:#4b5a78;}
+#bmzoombar #bmzfit{background:#2f6f6d;}
+#bmzoombar #bmzfit[aria-pressed="true"]{background:#1f9d8f;}
+#bmzoombar #bmzpct{min-width:9.5rem;text-align:center;font-variant-numeric:tabular-nums;font-weight:700;font-size:.98rem;}
+#bmport{flex:1 1 auto;min-height:0;position:relative;overflow:auto;background:#c9ced6;}
+#bmstage{position:absolute;width:1920px;height:1080px;transform-origin:0 0;background:#e8eaee;overflow:hidden;}
+#bmstage header.top{display:none;}
+#bmstage main.wrap{height:100%;max-width:none;margin:0;padding:0;overflow:hidden;}
+body.beamer main.wrap{height:100%;overflow:hidden;}
+
+/* Stern */
+#bmstern{position:fixed;inset:0;z-index:90;background:rgba(16,24,40,.55);display:flex;align-items:center;justify-content:center;padding:12px;}
+#bmstern[hidden]{display:none;}
+.bm-stern{position:relative;width:min(1180px,96vw);height:min(760px,92vh);background:radial-gradient(circle at center,#f7f8fb 0%,#eef1f6 55%,#e4e8ef 100%);border-radius:28px;box-shadow:0 20px 60px rgba(16,24,40,.35);overflow:visible;}
+.bm-stern-x{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:6;border:0;background:#e8ebf0;width:48px;height:48px;border-radius:12px;font-size:1.4rem;cursor:pointer;}
+.bm-stern-x:hover{background:#d5dae3;}
+.bm-stern-mitte{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:220px;height:220px;border-radius:50%;background:#fff;box-shadow:0 8px 28px rgba(20,30,50,.16),inset 0 0 0 3px var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px;z-index:2;pointer-events:none;}
+.bm-stern-mitte .bm-sm-k{font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:700;}
+.bm-stern-mitte .bm-sm-t{font-size:1.25rem;font-weight:800;line-height:1.25;margin-top:4px;}
+.bm-stern-mitte .bm-sm-t.s{color:var(--soll);}
+.bm-stern-mitte .bm-sm-t.h{color:var(--haben);}
+.bm-arm{position:absolute;width:44%;z-index:3;}
+.bm-arm.aufwand{left:22px;top:22px;text-align:left;}
+.bm-arm.ertrag{right:22px;top:22px;text-align:right;}
+.bm-arm.vermoegen{left:18px;bottom:18px;text-align:left;}
+.bm-arm.kapital{right:18px;bottom:18px;text-align:right;}
+.bm-arm h3{margin:0 0 8px;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+.bm-kklassen{display:flex;flex-direction:column;gap:8px;}
+.bm-arm.ertrag .bm-kklassen, .bm-arm.kapital .bm-kklassen{align-items:flex-end;}
+.bm-kklasse{position:relative;}
+.bm-kklasse > button.kk{min-height:58px;min-width:220px;padding:8px 16px;border-radius:14px;border:2px solid var(--line);background:#fff;font-weight:700;font-size:1.05rem;text-align:left;cursor:pointer;box-shadow:0 2px 8px rgba(20,30,50,.08);}
+.bm-arm.ertrag .bm-kklasse > button.kk, .bm-arm.kapital .bm-kklasse > button.kk{text-align:right;}
+.bm-kklasse > button.kk:hover, .bm-kklasse.an > button.kk{border-color:var(--accent);background:var(--accent-soft);}
+.bm-kklasse .kk .nr{display:block;font-size:.78rem;color:var(--accent);font-weight:800;letter-spacing:.04em;}
+.bm-kliste{display:none;position:absolute;z-index:8;min-width:280px;max-width:min(420px,70vw);max-height:min(360px,50vh);overflow:auto;background:#fff;border-radius:14px;border:2px solid var(--accent);box-shadow:0 12px 32px rgba(20,30,50,.22);padding:6px;text-align:left;}
+.bm-kklasse.an .bm-kliste, .bm-kklasse:hover .bm-kliste, .bm-kklasse:focus-within .bm-kliste{display:block;}
+.bm-arm.aufwand .bm-kliste{left:0;top:100%;padding-top:6px;}
+.bm-arm.ertrag .bm-kliste{right:0;top:100%;padding-top:6px;}
+.bm-arm.vermoegen .bm-kliste{left:0;bottom:100%;padding-bottom:6px;}
+.bm-arm.kapital .bm-kliste{right:0;bottom:100%;padding-bottom:6px;}
+.bm-kliste button{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:0;background:transparent;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:1.02rem;line-height:1.3;}
+.bm-kliste button:hover, .bm-kliste button:focus{background:var(--accent-soft);outline:none;}
+.bm-kliste .nr{font-weight:800;min-width:58px;font-variant-numeric:tabular-nums;color:var(--accent);}
+.bm-arm.leer{display:none;}
+
+/* Beleg-Popover und klickbare Belegteile */
+.bm-bhit{display:inline;margin:0;padding:0 1px;border:0;background:transparent;color:inherit;font:inherit;font-weight:inherit;cursor:pointer;box-shadow:inset 0 -2px 0 rgba(31,122,118,.45);border-radius:2px;text-align:inherit;}
+.bm-bhit:hover, .bm-bhit:focus{background:var(--accent-soft);box-shadow:inset 0 -2px 0 var(--accent);outline:none;}
+#bmpop{position:fixed;z-index:95;max-width:min(440px,92vw);background:#fff;border-radius:16px;box-shadow:0 16px 40px rgba(16,24,40,.28);padding:14px 16px 16px;border:2px solid var(--accent);}
+#bmpop[hidden]{display:none;}
+#bmpop h3{margin:0 28px 8px 0;font-size:1.15rem;line-height:1.25;}
+#bmpop p{margin:0;font-size:1.02rem;line-height:1.45;}
+#bmpop .bm-popx{position:absolute;top:8px;right:8px;border:0;background:#f0f2f5;width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:1.1rem;}
+@media (max-height:800px){
+  #bmzoombar{padding:4px 10px;}
+  #bmzoombar button{min-height:32px;}
+}
+
 </style>
 </head>
 <body class="beamer">
+<div id="bmzoombar" role="toolbar" aria-label="Zoom">
+  <span class="bmz-lab">Zoom</span>
+  <button type="button" id="bmzminus" aria-label="Verkleinern">−</button>
+  <span id="bmzpct">Einpassen</span>
+  <button type="button" id="bmzplus" aria-label="Vergrößern">+</button>
+  <button type="button" id="bmzfit">Einpassen</button>
+</div>
+<div id="bmport"><div id="bmspacer" aria-hidden="true"></div><div id="bmstage">
 <header class="top"><div class="wrap"><h1 id="titel">Buchungstrainer Rechnungswesen</h1><div class="sub" id="untertitel"></div></div></header>
 <main class="wrap" id="app"><noscript>Bitte JavaScript aktivieren.</noscript></main>
+</div></div>
 <div class="sheet-bg" id="sheetbg"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
 <div class="vidmodal" id="vidmodal"></div>
@@ -1004,10 +1077,10 @@ function inventurHtml(b) {
   const kz = String(b.kennzeichnung || "").toUpperCase(), art = kz === "ANFANGSBESTAND" ? "ab" : kz === "ENDBESTAND" ? "eb" : "";
   return `<div class="bl a4 inv${art ? " inv-" + art : ""}" style="--bc:${f.farbe || "#5a4a3a"}">
   <div class="kopf">${logoHtml(b.aussteller.name)}
-    <div class="absender"><b>${esc(b.aussteller.name)}</b><br>${esc(b.aussteller.adresse).replace(/, /, "<br>")}</div></div>
+    <div class="absender">${belegHit("aussteller", `<b>${esc(b.aussteller.name)}</b>`)}<br>${esc(b.aussteller.adresse).replace(/, /, "<br>")}</div></div>
   ${kz ? `<div class="invband" data-kz="${esc(kz)}">${esc(kz)}</div>` : ""}
   <h4>Inventurliste</h4>
-  <table class="meta invmeta"><tr><td>Nummer</td><td><b>${esc(b.nummer)}</b></td></tr><tr><td>Inventurdatum</td><td>${esc(b.datum)}</td></tr><tr><td>Materialart</td><td><b>${esc(b.materialart)}</b></td></tr></table>
+  <table class="meta invmeta"><tr><td>Nummer</td><td><b>${belegHit("nummer", esc(b.nummer))}</b></td></tr><tr><td>Inventurdatum</td><td>${belegHit("datum", esc(b.datum))}</td></tr><tr><td>Materialart</td><td><b>${esc(b.materialart)}</b></td></tr></table>
   <div class="lead">Zählliste: Was ist am ${esc(kurzDatum(b.datum))} noch da?</div>
   <table class="pos"><thead><tr><th style="width:34px">Pos.</th><th>Bezeichnung</th><th class="num">Menge</th><th class="num">Einzelpreis</th><th class="num">Wert</th></tr></thead><tbody>${posRows(b)}</tbody></table>
   <table class="sum invsum"><tr class="eb"><td>${esc(su.bezeichnung)}</td><td class="num">${erklaerTreffer("bestand", eur(su.betrag))}</td></tr></table>
@@ -1037,16 +1110,16 @@ function a4Html(b) {
   const e = b.empfaenger || {};
   return `<div class="bl a4" style="--bc:${f.farbe || "#444"}">
   <div class="kopf">${logoHtml(b.aussteller.name)}
-    <div class="absender"><b>${esc(b.aussteller.name)}</b><br>${esc(b.aussteller.adresse).replace(/, /, "<br>")}<br>UID: ${esc(b.aussteller.uid)}</div></div>
+    <div class="absender">${belegHit("aussteller", `<b>${esc(b.aussteller.name)}</b>`)}<br>${esc(b.aussteller.adresse).replace(/, /, "<br>")}<br>${b.aussteller.uid ? belegHit("uid-aussteller", "UID: " + esc(b.aussteller.uid)) : ""}</div></div>
   <div class="fenster"><div><div class="ruecksende">${esc(b.aussteller.name)} · ${esc(b.aussteller.adresse)}</div>
-    <div class="empf">${esc(e.name)}<br>${esc(e.adresse).replace(/, /, "<br>")}${e.uid ? `<br>UID: ${esc(e.uid)}` : ""}</div></div>
-    <table class="meta"><tr><td>${titel}snummer</td><td><b>${esc(b.nummer)}</b></td></tr><tr><td>${titel}sdatum</td><td>${esc(b.datum)}</td></tr>${gs ? "" : `<tr><td>Liefer-/Leistungsdatum</td><td>${esc(b.leistungsdatum || b.datum)}</td></tr>`}<tr><td>Seite</td><td>1 von 1</td></tr></table></div>
+    <div class="empf">${belegHit("empfaenger", esc(e.name))}<br>${esc(e.adresse).replace(/, /, "<br>")}${e.uid ? `<br>${belegHit("uid-empfaenger", "UID: " + esc(e.uid))}` : ""}</div></div>
+    <table class="meta"><tr><td>${titel}snummer</td><td><b>${belegHit("nummer", esc(b.nummer))}</b></td></tr><tr><td>${titel}sdatum</td><td>${belegHit("datum", esc(b.datum))}</td></tr>${gs ? "" : `<tr><td>Liefer-/Leistungsdatum</td><td>${belegHit("leistung", esc(b.leistungsdatum || b.datum))}</td></tr>`}<tr><td>Seite</td><td>1 von 1</td></tr></table></div>
   <h4>${titel}</h4>
   <div class="lead">${gs ? "Wir schreiben Ihnen folgende Beträge gut:" : "Für unsere Lieferungen und Leistungen erlauben wir uns zu verrechnen:"}</div>
   <table class="pos"><thead><tr><th style="width:34px">Pos.</th><th>Bezeichnung</th><th class="num">Menge</th><th class="num">Einzelpreis</th><th class="num">Gesamt</th></tr></thead><tbody>${posRows(b)}</tbody></table>
   <table class="sum">${sum}</table>
-  ${b.zahlungsbedingungen ? `<div class="zb">${esc(b.zahlungsbedingungen)}</div>` : ""}
-  <div class="fuss"><span>${esc(b.aussteller.name)}<br>${esc(b.aussteller.adresse)}</span><span>UID: ${esc(b.aussteller.uid)}${f.fn ? `<br>${esc(f.fn)}` : ""}</span>${b.bankverbindung ? `<span>Bankverbindung<br>IBAN ${esc(b.bankverbindung.iban)}</span>` : ""}</div>
+  ${b.zahlungsbedingungen ? `<div class="zb">${belegHit("zb", esc(b.zahlungsbedingungen))}</div>` : ""}
+  <div class="fuss"><span>${esc(b.aussteller.name)}<br>${esc(b.aussteller.adresse)}</span><span>${b.aussteller.uid ? belegHit("uid-aussteller", "UID: " + esc(b.aussteller.uid)) : ""}${f.fn ? `<br>${esc(f.fn)}` : ""}</span>${b.bankverbindung ? `<span>${belegHit("iban", "Bankverbindung<br>IBAN " + esc(b.bankverbindung.iban))}</span>` : ""}</div>
 </div>`;
 }
 /* Mahnung, Bankabrechnung, Zahlungsaufforderung: A4-Optik, Positionen mit Betrag, Summe = brutto */
@@ -1065,21 +1138,22 @@ function abrechnungHtml(b) {
   let sum = "";
   if (b.ust_satz) sum += `<tr><td>Nettobetrag</td><td class="num">${eur(b.netto)}</td></tr><tr><td>zuzüglich ${menge(b.ust_satz)} % USt</td><td class="num">${eur(b.ust)}</td></tr>`;
   sum += `<tr class="tot"><td>${T.vz ? (summe < 0 ? "Belastung" : "Gutschrift") : T.sum}</td><td class="num">${T.vz ? vz(summe) : eur(b.brutto)}</td></tr>`;
+  const metaArt = {Nummer:"nummer", Datum:"datum", Zeitraum:"zeitraum", "Fällig am":"faellig", IBAN:"iban", BIC:"iban"};
   const meta = [["Nummer", b.nummer], ["Datum", b.datum], ["Zeitraum", b.zeitraum], ["Fällig am", b.faellig_am], ["IBAN", k.iban], ["BIC", k.bic]]
-    .filter(m => m[1]).map(m => `<tr><td>${m[0]}</td><td><b>${esc(m[1])}</b></td></tr>`).join("");
+    .filter(m => m[1]).map(m => `<tr><td>${m[0]}</td><td><b>${belegHit(metaArt[m[0]] || "nummer", esc(m[1]))}</b></td></tr>`).join("");
   return `<div class="bl a4 abr" data-typ="${esc(b.typ)}" style="--bc:${f.farbe || "#444"}">
   <div class="kopf">${logoHtml(b.aussteller.name)}
-    <div class="absender"><b>${esc(b.aussteller.name)}</b><br>${esc(b.aussteller.adresse).replace(/, /, "<br>")}${b.aussteller.uid ? `<br>UID: ${esc(b.aussteller.uid)}` : ""}</div></div>
+    <div class="absender">${belegHit("aussteller", `<b>${esc(b.aussteller.name)}</b>`)}<br>${esc(b.aussteller.adresse).replace(/, /, "<br>")}${b.aussteller.uid ? `<br>${belegHit("uid-aussteller", "UID: " + esc(b.aussteller.uid))}` : ""}</div></div>
   <div class="fenster"><div><div class="ruecksende">${esc(b.aussteller.name)} · ${esc(b.aussteller.adresse)}</div>
-    <div class="empf">${esc(e.name)}<br>${esc(e.adresse).replace(/, /, "<br>")}${e.uid ? `<br>UID: ${esc(e.uid)}` : ""}</div></div>
+    <div class="empf">${belegHit("empfaenger", esc(e.name))}<br>${esc(e.adresse).replace(/, /, "<br>")}${e.uid ? `<br>${belegHit("uid-empfaenger", "UID: " + esc(e.uid))}` : ""}</div></div>
     <table class="meta">${meta}</table></div>
   <h4>${T.titel}</h4>
   ${b.bezug ? `<div class="bezug">${esc(b.bezug)}</div>` : ""}
   <div class="lead">${T.lead}</div>
   <table class="pos"><thead><tr><th style="width:34px">Pos.</th><th>Bezeichnung</th><th class="num">Betrag</th></tr></thead><tbody>${zeilen}</tbody></table>
   <table class="sum">${sum}</table>
-  ${b.zahlungsbedingungen ? `<div class="zb">${esc(b.zahlungsbedingungen)}</div>` : ""}
-  <div class="fuss"><span>${esc(b.aussteller.name)}<br>${esc(b.aussteller.adresse)}</span>${b.aussteller.uid || f.fn ? `<span>${b.aussteller.uid ? "UID: " + esc(b.aussteller.uid) : ""}${f.fn ? `<br>${esc(f.fn)}` : ""}</span>` : ""}${k.iban ? `<span>Bankverbindung<br>IBAN ${esc(k.iban)}</span>` : ""}</div>
+  ${b.zahlungsbedingungen ? `<div class="zb">${belegHit("zb", esc(b.zahlungsbedingungen))}</div>` : ""}
+  <div class="fuss"><span>${esc(b.aussteller.name)}<br>${esc(b.aussteller.adresse)}</span>${b.aussteller.uid || f.fn ? `<span>${b.aussteller.uid ? belegHit("uid-aussteller", "UID: " + esc(b.aussteller.uid)) : ""}${f.fn ? `<br>${esc(f.fn)}` : ""}</span>` : ""}${k.iban ? `<span>${belegHit("iban", "Bankverbindung<br>IBAN " + esc(k.iban))}</span>` : ""}</div>
 </div>`;
 }
 function bonHtml(b) {
@@ -1091,10 +1165,10 @@ function bonHtml(b) {
   const qr = k.rksv && QR && QR[b.nummer];
   return `<div class="bl bon">
   ${logoHtml(b.aussteller.name, .9)}
-  <div class="c"><div class="fn">${esc(b.aussteller.name)}</div><div>${esc(b.aussteller.adresse)}</div><div>UID: ${esc(b.aussteller.uid)}</div></div>
+  <div class="c"><div class="fn">${belegHit("aussteller", esc(b.aussteller.name))}</div><div>${esc(b.aussteller.adresse)}</div><div>${b.aussteller.uid ? belegHit("uid-aussteller", "UID: " + esc(b.aussteller.uid)) : ""}</div></div>
   <hr><div class="c"><b>${/karte/i.test(b.typ || "") ? "KARTENBELEG" : "KASSABELEG"}</b></div>
-  <table>${k.id ? `<tr><td>Kassen-ID</td><td class="num">${esc(k.id)}</td></tr>` : ""}<tr><td>Beleg-Nr.</td><td class="num">${esc(b.nummer)}</td></tr><tr><td>Datum</td><td class="num">${esc(b.datum)}${k.zeit ? " " + esc(k.zeit) : ""}</td></tr></table>
-  ${e.name ? `<div class="kl" style="margin-top:4px">Kunde: ${esc(e.name)}, ${esc(e.adresse)}${b.brutto > 400 && e.uid ? `, UID: ${esc(e.uid)}` : ""}</div>` : ""}
+  <table>${k.id ? `<tr><td>Kassen-ID</td><td class="num">${esc(k.id)}</td></tr>` : ""}<tr><td>Beleg-Nr.</td><td class="num">${belegHit("nummer", esc(b.nummer))}</td></tr><tr><td>Datum</td><td class="num">${belegHit("datum", esc(b.datum) + (k.zeit ? " " + esc(k.zeit) : ""))}</td></tr></table>
+  ${e.name ? `<div class="kl" style="margin-top:4px">Kunde: ${belegHit("empfaenger", esc(e.name))}, ${esc(e.adresse)}${b.brutto > 400 && e.uid ? `, ${belegHit("uid-empfaenger", "UID: " + esc(e.uid))}` : ""}</div>` : ""}
   <hr><table>${rows}</table><hr>
   <table>${b.rabatt ? `<tr><td>Rabatt ${menge(b.rabatt.prozent)} %</td><td class="num">−${eur(b.rabatt.betrag, false)}</td></tr>` : ""}
   <tr class="tot"><td>SUMME EUR</td><td class="num">${eur(b.brutto, false)}</td></tr></table>
@@ -1114,10 +1188,10 @@ function kontoauszugHtml(b) {
     const bet = `${v > 0 ? "+" : ""}${eur(v)}`;
     return `<tr><td>${esc(p.datum || b.datum)}</td><td>${esc(p.bezeichnung)}</td><td>${esc(p.valuta || p.datum || b.datum)}</td><td class="num ${v < 0 ? "neg" : "pos"}">${art ? erklaerTreffer(art, bet) : bet}</td></tr>`; }).join("");
   return `<div class="bl ka" style="--bc:${f.farbe || "#1b4f72"}">
-  <div class="kopf">${logoHtml(b.aussteller.name, .8)}<div class="absender small" style="text-align:right;font-size:11px">${esc(b.aussteller.name)}<br>${esc(b.aussteller.adresse)}${b.aussteller.uid ? `<br>UID: ${esc(b.aussteller.uid)}` : ""}</div></div>
-  <h4>Kontoauszug Nr. ${esc(b.nummer)}</h4>
-  <table class="kinfo"><tr><td>Kontoinhaber</td><td><b>${esc(k.inhaber || e.name)}</b>${e.adresse ? ", " + esc(e.adresse) : ""}</td><td>Auszugsdatum</td><td class="num">${esc(b.datum)}</td></tr>
-  ${k.iban ? `<tr><td>IBAN</td><td>${esc(k.iban)}</td><td>Blatt</td><td class="num">${esc(b.blatt || "1 von 1")}</td></tr><tr><td>BIC</td><td>${esc(k.bic || "")}</td><td>Währung</td><td class="num">EUR</td></tr>` : ""}</table>
+  <div class="kopf">${logoHtml(b.aussteller.name, .8)}<div class="absender small" style="text-align:right;font-size:11px">${belegHit("aussteller", esc(b.aussteller.name))}<br>${esc(b.aussteller.adresse)}${b.aussteller.uid ? `<br>${belegHit("uid-aussteller", "UID: " + esc(b.aussteller.uid))}` : ""}</div></div>
+  <h4>Kontoauszug Nr. ${belegHit("nummer", esc(b.nummer))}</h4>
+  <table class="kinfo"><tr><td>Kontoinhaber</td><td><b>${belegHit("empfaenger", esc(k.inhaber || e.name))}</b>${e.adresse ? ", " + esc(e.adresse) : ""}</td><td>Auszugsdatum</td><td class="num">${belegHit("datum", esc(b.datum))}</td></tr>
+  ${k.iban ? `<tr><td>IBAN</td><td>${belegHit("iban", esc(k.iban))}</td><td>Blatt</td><td class="num">${esc(b.blatt || "1 von 1")}</td></tr><tr><td>BIC</td><td>${belegHit("iban", esc(k.bic || ""))}</td><td>Währung</td><td class="num">EUR</td></tr>` : ""}</table>
   <table><thead><tr><th>Buchung</th><th>Buchungstext</th><th>Valuta</th><th class="num" style="text-align:right">Betrag</th></tr></thead><tbody>${b.saldo_alt != null ? `<tr class="saldo"><td></td><td>Alter Kontostand</td><td></td><td class="num">${eur(b.saldo_alt)}</td></tr>` : ""}${rows}${b.saldo_neu != null ? `<tr class="saldo neu"><td></td><td>Neuer Kontostand</td><td></td><td class="num">${erklaerTreffer("saldo", eur(b.saldo_neu))}</td></tr>` : ""}</tbody></table>
   ${b.zahlungsbedingungen ? `<div style="margin-top:12px;font-size:12px;color:#555">${esc(b.zahlungsbedingungen)}</div>` : ""}
   <div class="kfuss">${esc(b.aussteller.name)} · Sitz Wien${f.fn ? " · " + esc(f.fn) : ""} · BIC ${esc(k.bic || "")}</div>
@@ -2327,8 +2401,7 @@ drawAufgabe = function () {
   if (pick && !c.geprueft) {
     const r = c.rows[pick.seite][pick.i];
     if (pick.art === "konto") {
-      pickHtml = `<div class="bm-pick" id="bmpick"><h3>Konto im <span class="${pick.seite === "Soll" ? "s" : "h"}">${pick.seite}</span> wählen</h3>
-        <div class="klist">${c.konten.map(k => `<button class="kchip ${r.konto === k ? "cur" : ""}" data-konto="${k}"><span class="nr">${k}</span><span>${esc(KONTO[k])}</span></button>`).join("")}</div></div>`;
+      pickHtml = "";
     } else {
       pickHtml = `<div class="bm-pick" id="bmpick"><h3>Betrag wählen</h3>
         <div class="blist">${c.betraege.map(bt => `<button class="bchip ${r.betrag === bt ? "cur" : ""}" data-betrag="${bt}">${eur(bt)}</button>`).join("")}</div></div>`;
@@ -2494,8 +2567,415 @@ window.BT_BEAMER = {
   aufgaben() { return DATA.aufgaben.map(a => a.id); }
 };
 
-init();
+/* ===== v3: Zoom, Stern-Kontoauswahl, Beleg-Popover ===== */
+const BM_LS_ZOOM = "bt_beamer_zoom_v3";
+const BM_DESIGN_W = 1920, BM_DESIGN_H = 1080;
+const BM_KLASSEN = {
+  "0": { ecke: "vermoegen", titel: "Anlagevermögen", kurz: "Klasse 0" },
+  "1": { ecke: "vermoegen", titel: "Vorräte", kurz: "Klasse 1" },
+  "2": { ecke: "vermoegen", titel: "Umlaufvermögen", kurz: "Klasse 2" },
+  "3": { ecke: "kapital", titel: "Verbindlichkeiten", kurz: "Klasse 3" },
+  "4": { ecke: "ertrag", titel: "Betriebliche Erträge", kurz: "Klasse 4" },
+  "5": { ecke: "aufwand", titel: "Materialaufwand", kurz: "Klasse 5" },
+  "6": { ecke: "aufwand", titel: "Personalaufwand", kurz: "Klasse 6" },
+  "7": { ecke: "aufwand", titel: "Sonstige Aufwendungen", kurz: "Klasse 7" },
+  "8e": { ecke: "ertrag", titel: "Finanzerträge", kurz: "Klasse 8" },
+  "8a": { ecke: "aufwand", titel: "Finanzaufwendungen", kurz: "Klasse 8" },
+  "9": { ecke: "kapital", titel: "Eigenkapital / Privat", kurz: "Klasse 9" }
+};
+const BM_ECKEN = [
+  { id: "aufwand", titel: "Aufwand" },
+  { id: "vermoegen", titel: "Vermögen" },
+  { id: "ertrag", titel: "Ertrag" },
+  { id: "kapital", titel: "Kapital" }
+];
 
+function kontoKlasseId(nr) {
+  const s = String(nr || "");
+  const d = s.charAt(0);
+  if (d === "8") return (s.startsWith("80") || s.startsWith("81")) ? "8e" : "8a";
+  return d;
+}
+function sternGruppen(konten) {
+  const gruppen = {};
+  (konten || []).forEach(nr => {
+    if (!KONTO[nr]) return;
+    const id = kontoKlasseId(nr);
+    const meta = BM_KLASSEN[id]; if (!meta) return;
+    if (!gruppen[id]) gruppen[id] = { id, ecke: meta.ecke, titel: meta.titel, kurz: meta.kurz, konten: [] };
+    gruppen[id].konten.push(nr);
+  });
+  Object.values(gruppen).forEach(g => g.konten.sort(kontoSort));
+  const ecken = {};
+  BM_ECKEN.forEach(e => { ecken[e.id] = { id: e.id, titel: e.titel, klassen: [] }; });
+  Object.keys(BM_KLASSEN).forEach(id => { if (gruppen[id]) ecken[gruppen[id].ecke].klassen.push(gruppen[id]); });
+  return ecken;
+}
+
+function belegHit(art, html) {
+  return `<button type="button" class="bm-bhit" data-beleg="${esc(art)}">${html}</button>`;
+}
+
+function wirName(a) {
+  return String((a && a.wir) || "").split(",")[0].trim();
+}
+function istWir(a, name) {
+  const w = wirName(a).toLowerCase(), n = String(name || "").toLowerCase();
+  return !!(w && n && (w === n || w.includes(n) || n.includes(w)));
+}
+
+function belegErklaerInhalt(art, a, b) {
+  if (!a || !b) return null;
+  const typ = b.typ || "";
+  const wir = wirName(a);
+  const aus = b.aussteller || {}, emp = b.empfaenger || {};
+  if (art === "aussteller") {
+    const wirA = istWir(a, aus.name);
+    let warum;
+    if (/kontoauszug|bankabrechnung/i.test(typ))
+      warum = `${esc(aus.name)} ist das Kreditinstitut, das diesen Auszug ausstellt.`;
+    else if (/inventur/i.test(typ))
+      warum = `Die Inventurliste stammt von ${esc(aus.name)}.`;
+    else if (wirA)
+      warum = `Wir (${esc(wir)}) stellen diesen Beleg aus – typisch für eine Ausgangsrechnung oder eine Gutschrift, die wir erteilen.`;
+    else
+      warum = `${esc(aus.name)} stellt den Beleg aus. Wir (${esc(wir)}) sind nicht der Aussteller.`;
+    return { titel: "Aussteller", warum, checks: [] };
+  }
+  if (art === "empfaenger") {
+    const name = emp.name || (b.konto && b.konto.inhaber) || "";
+    const wirE = istWir(a, name);
+    let warum;
+    if (/kontoauszug/i.test(typ))
+      warum = `${esc(name)} ist Kontoinhaberin oder Kontoinhaber dieses Kontos.${wirE ? " Das sind wir." : ""}`;
+    else if (wirE)
+      warum = `Wir (${esc(wir)}) sind der Empfänger dieses Belegs – typisch für eine Eingangsrechnung.`;
+    else
+      warum = `Empfänger ist ${esc(name)}. Wir (${esc(wir)}) stellen den Beleg aus oder mahnen diesen Partner.`;
+    return { titel: /kontoauszug/i.test(typ) ? "Kontoinhaber" : "Empfänger", warum, checks: [] };
+  }
+  if (art === "nummer") {
+    const label = /kontoauszug/i.test(typ) ? "Auszugsnummer" : /inventur/i.test(typ) ? "Inventurnummer" : /gutschrift/i.test(typ) ? "Gutschriftsnummer" : /mahnung/i.test(typ) ? "Mahnungsnummer" : "Belegnummer";
+    return { titel: label, warum: `Die Nummer dieses Belegs lautet <b>${esc(b.nummer)}</b>. Jede Rechnung braucht eine eindeutige Nummer, damit man sie später zuordnen und prüfen kann.`, checks: [] };
+  }
+  if (art === "datum") {
+    return { titel: /inventar|inventur/i.test(typ) ? "Inventurdatum" : /kontoauszug/i.test(typ) ? "Auszugsdatum" : "Belegdatum", warum: `Das Datum auf dem Beleg ist der <b>${esc(b.datum)}</b>. Danach ordnen wir den Vorgang einem Zeitraum zu.`, checks: [] };
+  }
+  if (art === "leistung") {
+    const d = b.leistungsdatum || b.datum;
+    const anders = b.leistungsdatum && b.leistungsdatum !== b.datum;
+    return { titel: "Liefer- oder Leistungsdatum", warum: anders
+      ? `Die Lieferung oder Leistung war am <b>${esc(b.leistungsdatum)}</b>, die Rechnung trägt das Datum ${esc(b.datum)}. Für die Zuordnung zählt der Zeitpunkt der Leistung.`
+      : `Liefer- oder Leistungsdatum ist der <b>${esc(d)}</b>, hier gleich dem Rechnungsdatum.`, checks: [] };
+  }
+  if (art === "uid-aussteller" || art === "uid-empfaenger") {
+    const wer = art === "uid-aussteller" ? aus : emp;
+    if (!wer || !wer.uid) return null;
+    const at = /^ATU/i.test(wer.uid);
+    return { titel: "UID (Umsatzsteuer-Identifikationsnummer)", warum: `Die UID von ${esc(wer.name)} lautet <b>${esc(wer.uid)}</b>.${at ? " Österreichische UIDs beginnen mit ATU." : ""} Auf Rechnungen zwischen Unternehmern muss die UID des Ausstellers stehen.`, checks: [] };
+  }
+  if (art === "bank" || art === "iban") {
+    const iban = (b.bankverbindung && b.bankverbindung.iban) || (b.konto && b.konto.iban);
+    const bic = (b.bankverbindung && b.bankverbindung.bic) || (b.konto && b.konto.bic);
+    if (!iban) return null;
+    return { titel: "Bankverbindung (IBAN)", warum: `Die IBAN lautet <b>${esc(iban)}</b>${bic ? `, BIC ${esc(bic)}` : ""}. Darüber wird der Betrag per Überweisung (SEPA) bezahlt oder gutgeschrieben.`, checks: [] };
+  }
+  if (art === "zb") {
+    const zb = b.zahlungsbedingungen || "";
+    if (!zb) return null;
+    const s = parseSkontoBeleg(a);
+    if (s && s.quelle !== "zahlung") {
+      return { titel: "Zahlungsbedingungen (Skonto)", warum: `Die Bedingung lautet: „${esc(zb)}“. Wenn innerhalb der Frist gezahlt wird, dürfen ${menge(s.satz)} % von ${eur(s.rechnung)} abgezogen werden, also ${eur(s.skonto)}. Gebucht wird der Skonto erst bei der Zahlung, nicht schon beim Rechnungsbeleg.`, checks: s.checks };
+    }
+    return { titel: "Zahlungsbedingungen", warum: `Die Zahlungsbedingung auf dem Beleg lautet: „${esc(zb)}“. Sie sagt, wann und wie der Betrag zu zahlen ist.`, checks: [] };
+  }
+  if (art === "zeitraum") {
+    if (!b.zeitraum) return null;
+    return { titel: "Zeitraum", warum: `Dieser Beleg betrifft den Zeitraum <b>${esc(b.zeitraum)}</b>.`, checks: [] };
+  }
+  if (art === "faellig") {
+    if (!b.faellig_am) return null;
+    return { titel: "Fälligkeit", warum: `Der Betrag ist am <b>${esc(b.faellig_am)}</b> fällig.`, checks: [] };
+  }
+  return null;
+}
+
+function pruefeBelegKlicks(a) {
+  const fehler = [];
+  const arten = ["aussteller", "empfaenger", "nummer", "datum", "leistung", "uid-aussteller", "uid-empfaenger", "iban", "zb", "zeitraum", "faellig"];
+  const belege = [];
+  if (a.beleg) belege.push(a.beleg);
+  if (a.zusatzbeleg) belege.push(a.zusatzbeleg);
+  belege.forEach(b => {
+    arten.forEach(art => {
+      const inh = belegErklaerInhalt(art, a, b);
+      if (!inh) return;
+      (inh.checks || []).forEach(([l, r], i) => { if (!passt(l, r)) fehler.push(`${a.id} ${art} ${i + 1}: ${l} ≠ ${r}`); });
+    });
+  });
+  return { ok: !fehler.length, fehler };
+}
+
+function ladeZoom() {
+  try {
+    const v = JSON.parse(localStorage.getItem(BM_LS_ZOOM) || "null");
+    if (v && v.mode === "pct" && v.pct >= 40 && v.pct <= 200) return { mode: "pct", pct: Math.round(v.pct) };
+  } catch (e) {}
+  return { mode: "fit", pct: 100 };
+}
+function speichereZoom(z) {
+  try { localStorage.setItem(BM_LS_ZOOM, JSON.stringify(z.mode === "fit" ? { mode: "fit" } : { mode: "pct", pct: z.pct })); } catch (e) {}
+}
+function fitScale() {
+  const port = document.getElementById("bmport");
+  if (!port) return 1;
+  const w = port.clientWidth, h = port.clientHeight;
+  if (!w || !h) return 1;
+  let s = Math.min(w / BM_DESIGN_W, h / BM_DESIGN_H);
+  if (Math.ceil(BM_DESIGN_W * s) > w || Math.ceil(BM_DESIGN_H * s) > h) {
+    s = Math.min((Math.max(1, w - 1)) / BM_DESIGN_W, (Math.max(1, h - 1)) / BM_DESIGN_H);
+  }
+  return Math.max(s, 0.1);
+}
+function aktuelleSkala() {
+  const z = S.zoom || ladeZoom();
+  return z.mode === "fit" ? fitScale() : (z.pct / 100);
+}
+function applyZoom() {
+  const stage = document.getElementById("bmstage"), port = document.getElementById("bmport");
+  if (!stage || !port) return aktuelleSkala();
+  S.zoom = S.zoom || ladeZoom();
+  const scale = aktuelleSkala();
+  const sw = BM_DESIGN_W * scale, sh = BM_DESIGN_H * scale;
+  const left = Math.max(0, Math.floor((port.clientWidth - sw) / 2));
+  const top = Math.max(0, Math.floor((port.clientHeight - sh) / 2));
+  stage.style.width = BM_DESIGN_W + "px";
+  stage.style.height = BM_DESIGN_H + "px";
+  stage.style.transform = "scale(" + scale + ")";
+  stage.style.left = left + "px";
+  stage.style.top = top + "px";
+  // Scrollraum, wenn größer als der Port
+  stage.style.marginBottom = "0";
+  const spacer = document.getElementById("bmspacer");
+  if (spacer) {
+    spacer.style.width = Math.max(port.clientWidth, Math.ceil(sw)) + "px";
+    spacer.style.height = Math.max(port.clientHeight, Math.ceil(sh)) + "px";
+  }
+  const pctEl = document.getElementById("bmzpct");
+  const fitBtn = document.getElementById("bmzfit");
+  const proz = Math.round(scale * 100);
+  if (pctEl) pctEl.textContent = S.zoom.mode === "fit" ? "Einpassen · " + proz + " %" : proz + " %";
+  if (fitBtn) fitBtn.setAttribute("aria-pressed", S.zoom.mode === "fit" ? "true" : "false");
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (typeof fitBelege === "function") fitBelege(); });
+  else if (typeof fitBelege === "function") fitBelege();
+  return scale;
+}
+function setZoomFit() {
+  S.zoom = { mode: "fit", pct: Math.round(fitScale() * 100) };
+  speichereZoom(S.zoom);
+  applyZoom();
+}
+function setZoomPct(pct) {
+  const p = Math.max(40, Math.min(200, Math.round(pct)));
+  S.zoom = { mode: "pct", pct: p };
+  speichereZoom(S.zoom);
+  applyZoom();
+}
+function zoomSchritt(dir) {
+  const jetzt = Math.round(aktuelleSkala() * 100);
+  const stufen = [40, 50, 60, 70, 80, 90, 100, 110, 125, 150, 175, 200];
+  let n;
+  if (dir > 0) n = stufen.find(s => s > jetzt) || 200;
+  else { const k = stufen.filter(s => s < jetzt); n = k.length ? k[k.length - 1] : 40; }
+  setZoomPct(n);
+}
+
+function setupZoom() {
+  document.documentElement.classList.add("beamer");
+  S.zoom = ladeZoom();
+  const minus = document.getElementById("bmzminus");
+  const plus = document.getElementById("bmzplus");
+  const fit = document.getElementById("bmzfit");
+  if (minus) minus.onclick = () => zoomSchritt(-1);
+  if (plus) plus.onclick = () => zoomSchritt(1);
+  if (fit) fit.onclick = () => setZoomFit();
+  window.addEventListener("resize", () => applyZoom());
+  window.addEventListener("keydown", ev => {
+    if (!(ev.ctrlKey || ev.metaKey)) return;
+    const k = ev.key;
+    if (k === "+" || k === "=" || k === "Add") { ev.preventDefault(); zoomSchritt(1); }
+    else if (k === "-" || k === "_" || k === "Subtract") { ev.preventDefault(); zoomSchritt(-1); }
+    else if (k === "0") { ev.preventDefault(); setZoomFit(); }
+  }, true);
+  window.addEventListener("wheel", ev => {
+    if (!(ev.ctrlKey || ev.metaKey)) return;
+    ev.preventDefault();
+    const jetzt = aktuelleSkala() * 100;
+    setZoomPct(jetzt + (ev.deltaY < 0 ? 5 : -5));
+  }, { passive: false });
+  applyZoom();
+}
+
+function oeffneStern() {
+  const c = S.cur; if (!c || !c.pick || c.pick.art !== "konto" || c.geprueft) return;
+  schliessePop();
+  const ov = document.getElementById("bmstern"); if (!ov) return;
+  const ecken = sternGruppen(c.konten);
+  const seite = c.pick.seite;
+  ov.innerHTML = `<div class="bm-stern" role="dialog" aria-modal="true" aria-label="Konto wählen">
+    <button type="button" class="bm-stern-x" id="bmsternx" aria-label="Schließen">✕</button>
+    <div class="bm-stern-mitte"><div class="bm-sm-k">Konto wählen</div><div class="bm-sm-t ${seite === "Soll" ? "s" : "h"}">im ${esc(seite)}</div></div>
+    ${BM_ECKEN.map(e => {
+      const g = ecken[e.id];
+      if (!g.klassen.length) return `<div class="bm-arm ${e.id} leer"></div>`;
+      return `<div class="bm-arm ${e.id}" data-ecke="${e.id}">
+        <h3>${esc(e.titel)}</h3>
+        <div class="bm-kklassen">${g.klassen.map(k => `
+          <div class="bm-kklasse" data-klasse="${esc(k.id)}">
+            <button type="button" class="kk"><span class="nr">${esc(k.kurz)}</span>${esc(k.titel)}</button>
+            <div class="bm-kliste">${k.konten.map(nr => `<button type="button" data-konto="${esc(nr)}"><span class="nr">${esc(nr)}</span><span>${esc(KONTO[nr])}</span></button>`).join("")}</div>
+          </div>`).join("")}</div>
+      </div>`;
+    }).join("")}
+  </div>`;
+  ov.hidden = false;
+  ov.querySelectorAll(".bm-kklasse > button.kk").forEach(btn => {
+    const box = btn.parentElement;
+    btn.addEventListener("mouseenter", () => {
+      ov.querySelectorAll(".bm-kklasse.an").forEach(x => { if (x !== box) x.classList.remove("an"); });
+      box.classList.add("an");
+    });
+    btn.addEventListener("click", ev => {
+      ev.preventDefault(); ev.stopPropagation();
+      const an = box.classList.contains("an");
+      ov.querySelectorAll(".bm-kklasse.an").forEach(x => x.classList.remove("an"));
+      if (!an) box.classList.add("an");
+    });
+  });
+  ov.querySelectorAll(".bm-kliste [data-konto]").forEach(b => {
+    b.onclick = ev => {
+      ev.preventDefault(); ev.stopPropagation();
+      const c2 = S.cur, pick = c2 && c2.pick;
+      if (!pick || pick.art !== "konto") return;
+      c2.rows[pick.seite][pick.i].konto = b.dataset.konto;
+      autoBetragWennEinzeln();
+      c2.pick = null;
+      schliesseStern();
+      drawAufgabe();
+    };
+  });
+  document.getElementById("bmsternx").onclick = () => { S.cur && (S.cur.pick = null); schliesseStern(); drawAufgabe(); };
+  ov.onclick = ev => { if (ev.target === ov) { S.cur && (S.cur.pick = null); schliesseStern(); drawAufgabe(); } };
+}
+function schliesseStern() {
+  const ov = document.getElementById("bmstern");
+  if (ov) { ov.hidden = true; ov.innerHTML = ""; }
+}
+function sternOffen() { const ov = document.getElementById("bmstern"); return ov && !ov.hidden; }
+
+function belegVonKlick(el) {
+  const a = S.cur && S.cur.a; if (!a) return null;
+  const fr = el.closest(".beleg-frame");
+  if (fr && (fr.id === "zusatzframe" || fr.classList.contains("zusatz"))) return a.zusatzbeleg || a.beleg;
+  return a.beleg || a.zusatzbeleg;
+}
+function oeffnePop(art, anker, b) {
+  const a = S.cur && S.cur.a; if (!a) return;
+  const inh = belegErklaerInhalt(art, a, b); if (!inh) return;
+  const pop = document.getElementById("bmpop"); if (!pop) return;
+  pop.innerHTML = `<button type="button" class="bm-popx" id="bmpopx" aria-label="Schließen">✕</button><h3>${esc(inh.titel)}</h3><p>${inh.warum}</p>`;
+  pop.hidden = false;
+  const r = anker.getBoundingClientRect();
+  const pw = pop.offsetWidth, ph = pop.offsetHeight;
+  let x = r.left, y = r.bottom + 8;
+  if (x + pw > window.innerWidth - 8) x = window.innerWidth - pw - 8;
+  if (y + ph > window.innerHeight - 8) y = r.top - ph - 8;
+  if (x < 8) x = 8; if (y < 8) y = 8;
+  pop.style.left = Math.round(x) + "px";
+  pop.style.top = Math.round(y) + "px";
+  document.getElementById("bmpopx").onclick = schliessePop;
+}
+function schliessePop() {
+  const pop = document.getElementById("bmpop");
+  if (pop) { pop.hidden = true; pop.innerHTML = ""; }
+}
+function popOffen() { const p = document.getElementById("bmpop"); return p && !p.hidden; }
+
+function bindBelegKlicks() {
+  app().querySelectorAll("[data-beleg]").forEach(b => {
+    b.addEventListener("click", ev => {
+      ev.preventDefault(); ev.stopPropagation();
+      oeffnePop(b.dataset.beleg, b, belegVonKlick(b));
+    });
+  });
+}
+
+/* hooks in bestehende Beamer-Zeichnung */
+const _drawAufgabeV2 = drawAufgabe;
+drawAufgabe = function () {
+  const c = S.cur;
+  const hatteKontoPick = c && c.pick && c.pick.art === "konto" && !c.geprueft;
+  if (c && c.pick && c.pick.art === "konto") {
+    /* Stern statt Chip-Liste im Buchungsfeld */
+    c._bmStern = true;
+  }
+  _drawAufgabeV2();
+  if (c) c._bmStern = false;
+  bindBelegKlicks();
+  if (hatteKontoPick) oeffneStern();
+  else schliesseStern();
+  requestAnimationFrame(applyZoom);
+};
+
+const _drawV2Pick = (function () {
+  /* pickHtml für Konto unterdrücken: wir patchen die erzeugte Liste nachträglich, falls sie gerendert wurde */
+})();
+
+function entferneKontoListe() {
+  const pick = document.getElementById("bmpick");
+  if (!pick) return;
+  if (S.cur && S.cur.pick && S.cur.pick.art === "konto") pick.remove();
+}
+
+const _drawAufgabeV2b = drawAufgabe;
+drawAufgabe = function () {
+  _drawAufgabeV2b();
+  entferneKontoListe();
+};
+
+const _initV2 = init;
+init = function () {
+  setupZoom();
+  _initV2();
+  applyZoom();
+};
+
+const _ovOffen = typeof ovOffen === "function" ? ovOffen : function () { return false; };
+ovOffen = function () { return _ovOffen() || sternOffen() || popOffen(); };
+
+document.addEventListener("keydown", ev => {
+  if (ev.key !== "Escape") return;
+  if (popOffen()) { schliessePop(); ev.preventDefault(); ev.stopImmediatePropagation(); return; }
+  if (sternOffen()) {
+    if (S.cur) S.cur.pick = null;
+    schliesseStern();
+    drawAufgabe();
+    ev.preventDefault(); ev.stopImmediatePropagation();
+  }
+}, true);
+document.addEventListener("click", ev => {
+  const pop = document.getElementById("bmpop");
+  if (pop && !pop.hidden && !ev.target.closest("#bmpop") && !ev.target.closest("[data-beleg]")) schliessePop();
+});
+
+window.BT_BEAMER = Object.assign(window.BT_BEAMER || {}, {
+  belegErklaerInhalt, pruefeBelegKlicks, sternGruppen, kontoKlasseId, BM_KLASSEN,
+  oeffneStern, schliesseStern,
+  applyZoom, setZoomFit, setZoomPct, zoomSchritt, fitScale, aktuelleSkala,
+  zoom() { return Object.assign({}, S.zoom, { skala: aktuelleSkala(), fit: fitScale() }); }
+});
+
+init();
 
 </script>
 
@@ -2505,5 +2985,7 @@ init();
     <div id="bmovbody"></div>
   </div>
 </div>
+<div id="bmstern" hidden></div>
+<div id="bmpop" hidden></div>
 </body>
 </html>
