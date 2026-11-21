@@ -6521,7 +6521,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
   }
   function cm(c) { return Math.round(c * 567); }
   const TEXTW = cm(TEXT_CM);
-  const BOOK_COLS = [0.8, 6.0, 2.3, 0.9, 6.0, 2.3].map(cm);
+  const BOOK_COLS = [0.8, 5.75, 2.3, 0.9, 5.75, 2.3].map(cm);
   const NAME_COLS = [cm(5.93), cm(5.93), TEXTW - 2 * cm(5.93)];
 
   function rPr(o) {
@@ -7748,7 +7748,9 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       const profil = fragen === 3 ? "B" : (fragen === 2 ? "D" : (v.C ? "C" : "A"));
       const ok = v[profil];
       const el = box.querySelector("#bema-wh-verf");
-      el.textContent = ok ? ("Profil " + profil + ".") : ("Profil " + profil + " in diesen Einheiten nicht anbieten.");
+      el.textContent = ok
+        ? ("2 P. pro Buchungssatz + 1 P. pro Betrag" + (fragen ? ", Fragen je 1 P." : "") + ".")
+        : "Diese Kombination aus Einheiten und Fragen ist so nicht möglich.";
       el.style.color = ok ? "" : "#8a1f1f";
       box.querySelector("#bema-go").disabled = !ok;
     }
