@@ -6848,24 +6848,62 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     if (g === "ohne") return "I";
     return "";
   }
+  function kurzNummer(n) {
+    const v = Number(n);
+    if (isFinite(v) && Math.round(v) === v && v >= 1 && v <= 99) return String(v);
+    return "";
+  }
+  function stempelAusText(text, symbol) {
+    if (!symbol) return "";
+    const s = String(text || "");
+    const re = new RegExp("\\(\\s*" + symbol + "\\s*0*([1-9]\\d?)\\s*\\)", "ig");
+    let m, last = "";
+    while ((m = re.exec(s))) last = kurzNummer(m[1]);
+    if (last) return last;
+    const re2 = new RegExp("(?:^|\\s)" + symbol + "\\s+0*([1-9]\\d?)\\b", "ig");
+    while ((m = re2.exec(s))) last = kurzNummer(m[1]);
+    return last || "";
+  }
+  function texteDesFalls(a) {
+    const b = belegDesFalls(a);
+    const auf = a && a.aufgabe;
+    const fall = a && a.fall;
+    return [
+      a && a.text, a && a.angabeOhneWir,
+      auf && (auf.text || auf.angabeOhneWir),
+      fall && (fall.angabeOhneWir || fall.text),
+      b && (b.stempel || b.kennzeichnung)
+    ].filter(Boolean).join("\n");
+  }
   function nummerAusBeleg(nummer, symbol) {
     const n = String(nummer || "").trim();
     if (!n) return "";
+    const pref = new RegExp("^[A-Z]*0*(\\d{1,2})(?=$|[^0-9])", "i").exec(n);
+    if (pref && (symbol === "K" || /^K/i.test(n))) {
+      const k = kurzNummer(pref[1]);
+      if (k) return k;
+    }
     if (symbol === "K") {
       const m = /^K0*(\d+)/i.exec(n);
-      if (m) return String(+m[1]);
+      if (m) return kurzNummer(m[1]);
     }
-    const slash = /^(\d+)\s*\/\s*\d{4}/.exec(n);
-    if (slash) return String(+slash[1]);
+    const slash = /^(\d{1,2})\s*\/\s*\d{4}/.exec(n);
+    if (slash) return kurzNummer(slash[1]);
     const parts = n.split(/[^0-9]+/).filter(Boolean);
-    if (!parts.length) return "";
-    return String(+parts[parts.length - 1]);
+    if (parts.length) return kurzNummer(parts[parts.length - 1]);
+    return "";
+  }
+  function bevorzugteNummer(a, symbol) {
+    if (!symbol) return "";
+    const ausText = stempelAusText(texteDesFalls(a), symbol);
+    if (ausText) return ausText;
+    const b = belegDesFalls(a);
+    return nummerAusBeleg(b && b.nummer, symbol);
   }
   function labelsFuerFaelle(faelle) {
     const items = (faelle || []).map(function (a, i) {
       const sym = symbolDesBelegs(a);
-      const b = belegDesFalls(a);
-      return { sym: sym, prefer: sym ? nummerAusBeleg(b && b.nummer, sym) : "", i: i };
+      return { sym: sym, prefer: bevorzugteNummer(a, sym), i: i };
     });
     const used = {};
     const out = new Array(items.length);
@@ -6874,7 +6912,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
         if (!used[it.sym]) used[it.sym] = {};
         if (!used[it.sym][it.prefer]) {
           used[it.sym][it.prefer] = true;
-          out[i] = it.sym + " " + it.prefer;
+          out[i] = it.sym + it.prefer;
         }
       }
     });
@@ -6882,11 +6920,10 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       if (out[i]) return;
       if (!it.sym) { out[i] = "Fall " + (i + 1); return; }
       if (!used[it.sym]) used[it.sym] = {};
-      let k = it.prefer ? (Number(it.prefer) || 1) : 1;
-      if (!(k >= 1)) k = 1;
+      let k = 1;
       while (used[it.sym][String(k)]) k++;
       used[it.sym][String(k)] = true;
-      out[i] = it.sym + " " + k;
+      out[i] = it.sym + String(k);
     });
     return out;
   }
