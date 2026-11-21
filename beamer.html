@@ -640,6 +640,78 @@ body.beamer main.wrap{height:100%;overflow:hidden;}
   #bmzoombar button{min-height:32px;}
 }
 
+/* ===== v4: Mindestschrift 18px (Zoom 100 %), Stern mit offenen Listen ===== */
+html.beamer, body.beamer, #bmstage, #bmzoombar, #bmstern, #bmpop, #bmov, #vidmodal { font-size: 18px; }
+#bmzoombar .bmz-lab,
+#bmzoombar button,
+#bmzoombar #bmzpct { font-size: 18px; }
+#bmzoombar button { min-height: 36px; padding: 4px 12px; }
+
+/* Beamer-UI: alles mindestens 18px, keine Verkleinerung in Media Queries */
+body.beamer .kchip, body.beamer .bchip,
+body.beamer .kchip .nr, body.beamer .slot, body.beamer .slot .nm,
+body.beamer .add, body.beamer .btn,
+.bm-bar .bm-titel, .bm-bar .bm-entwurf, .bm-entwurf, .bm-bar .pill,
+.bm-nav, .bm-erklaer-leiste .bm-hint, .bm-erklaer-leiste .btn,
+.bm-meta .wir, .bm-meta .fall, #buchung .bm-satz-h,
+body.beamer .msg, body.beamer .loesung, body.beamer .erkl,
+.bm-pick h3, .bm-wahl-kopf .lead, .bm-ecard .nr, .bm-ecard .ti, .bm-ecard .meta,
+.bm-ecard .vid, .bm-aufgabenbox h3, .bm-achip, .bm-wahl .footnote,
+button.bm-hit, button.bm-hit .bm-i,
+.bm-warum, .bm-kontrolle,
+.bm-stern-mitte .bm-sm-k, .bm-stern-mitte .bm-sm-t, .bm-arm h3,
+.bm-kklasse > button.kk, .bm-kklasse .kk .nr, .bm-kliste button,
+#bmpop h3, #bmpop p, #bmpop .bm-popx,
+#bmstage .small, #bmstage .sub, #bmstage .unit-title, #bmstage .unit-meta,
+#bmstage .stat, #bmstage footer.foot, #bmstage .pill, #bmstage .wir,
+#bmstage .fall, #bmstage .einheit-tag, #bmstage .side-h, #bmstage .slot,
+#bmstage .slot .nm, #bmstage .rowhint, #bmstage .sheet h3, #bmstage .an,
+#bmstage .serie, #bmstage .beste, #bmstage .stufe .pkt, #bmstage .stufe .pn,
+#bmstage .badge, #bmstage .badge small, #bmstage .tk-datum, #bmstage .tk-text,
+#bmstage .rzartbtn span, #bmstage .rzartbtn b, #bmstage .rz-formel,
+#bmstage .tippmore, #bmstage .tippmore .small, #bmstage details.tipp,
+#bmstage details.tipp summary, #bmstage details.tipp p, #bmstage details.tipp li,
+#bmstage .tkonten, #bmstage .muted, #bmstage .ph, #bmstage .linkbtn,
+#bmstage .btn.tippbtn, #vidmodal, #vidmodal .vidkopf b, #vidmodal .vidende .vetitel,
+#bmstage h2, #bmstage h3, #bmstage .lead {
+  font-size: 18px !important;
+}
+.bm-wahl-kopf h2, .bm-ovkopf h2, .bm-formel .bm-z, .bm-formel .bm-op,
+#bmstage h1, body.beamer .rm { font-size: max(18px, 1.25rem) !important; }
+.bm-fall-gross { font-size: max(18px, 1.25rem) !important; }
+
+/* Belege: alle Fließtexte mindestens 18px */
+#bmstage .bl, #bmstage .bl * { font-size: 18px !important; line-height: 1.3; }
+#bmstage .bl h4, #bmstage .bl .wm, #bmstage .bl .fn,
+#bmstage .bl .tot td, #bmstage .bl.ka h4, #bmstage .bl.bon .tot td { font-size: 20px !important; }
+#bmstage .bl.a4 .ruecksende, #bmstage .bl.a4 .fuss, #bmstage .bl.ka .kfuss { font-size: 18px !important; }
+
+/* Media-Query darf Schrift nicht unter 18px drücken */
+@media (max-height:800px){
+  .bm-nav, .bm-meta .wir, .bm-meta .fall, #buchung .bm-satz-h,
+  body.beamer .slot, body.beamer .kchip, body.beamer .bchip,
+  body.beamer .msg, body.beamer .loesung, body.beamer .erkl,
+  .bm-erklaer-leiste .btn, .bm-wahl-kopf h2, .bm-wahl-kopf .lead { font-size: 18px !important; }
+}
+
+/* Stern v4: Listen immer sichtbar, vier Ecken */
+#bmstern{background:rgba(16,24,40,.4);}
+.bm-stern{width:min(1240px,96vw);height:min(820px,94vh);overflow:visible;}
+.bm-stern-mitte{width:160px;height:160px;padding:10px;z-index:1;}
+.bm-stern-mitte .bm-sm-k, .bm-stern-mitte .bm-sm-t{font-size:18px !important;}
+.bm-arm{width:46%;}
+.bm-arm.aufwand{left:16px;top:52px;}
+.bm-arm.ertrag{right:16px;top:52px;}
+.bm-arm.vermoegen{left:16px;bottom:16px;}
+.bm-arm.kapital{right:16px;bottom:16px;}
+.bm-kklasse > button.kk{display:none;} /* kein zweites Hover, Überschrift statt Knopf */
+.bm-kklasse h4{margin:0 0 4px;font-size:18px !important;font-weight:800;color:var(--accent);letter-spacing:.03em;}
+.bm-kliste{display:block !important;position:relative;left:auto !important;right:auto !important;top:auto !important;bottom:auto !important;max-width:none;max-height:none;overflow:visible;padding:2px 0 8px;border:0;box-shadow:none;background:transparent;}
+.bm-kklasse.an .bm-kliste, .bm-kklasse:hover .bm-kliste, .bm-kklasse:focus-within .bm-kliste{display:block !important;}
+.bm-kliste button{font-size:18px !important;padding:6px 10px;background:#fff;border:1.5px solid var(--line);margin:0 0 6px;border-radius:10px;box-shadow:0 1px 4px rgba(20,30,50,.08);}
+.bm-kliste button:hover, .bm-kliste button:focus{border-color:var(--accent);background:var(--accent-soft);}
+.bm-kliste .nr{font-size:18px !important;min-width:64px;}
+
 </style>
 </head>
 <body class="beamer">
@@ -2816,9 +2888,26 @@ function setupZoom() {
   applyZoom();
 }
 
-function oeffneStern() {
+const BM_STERN_DELAY = 380;
+let bmSternTimer = null, bmSternModus = "hover", bmSternHover = false, bmSlotHover = false;
+
+function cancelSternZu() { if (bmSternTimer) { clearTimeout(bmSternTimer); bmSternTimer = null; } }
+function planeSternZu() {
+  cancelSternZu();
+  bmSternTimer = setTimeout(() => {
+    if (bmSternModus === "pin") return;
+    if (bmSternHover || bmSlotHover) return;
+    if (S.cur && S.cur.pick && S.cur.pick.art === "konto") S.cur.pick = null;
+    schliesseStern();
+  }, BM_STERN_DELAY);
+}
+
+function oeffneStern(modus) {
   const c = S.cur; if (!c || !c.pick || c.pick.art !== "konto" || c.geprueft) return;
   schliessePop();
+  cancelSternZu();
+  if (modus === "pin" || bmSternModus === "pin" && modus !== "hover") bmSternModus = "pin";
+  else if (modus) bmSternModus = modus;
   const ov = document.getElementById("bmstern"); if (!ov) return;
   const ecken = sternGruppen(c.konten);
   const seite = c.pick.seite;
@@ -2831,27 +2920,17 @@ function oeffneStern() {
       return `<div class="bm-arm ${e.id}" data-ecke="${e.id}">
         <h3>${esc(e.titel)}</h3>
         <div class="bm-kklassen">${g.klassen.map(k => `
-          <div class="bm-kklasse" data-klasse="${esc(k.id)}">
-            <button type="button" class="kk"><span class="nr">${esc(k.kurz)}</span>${esc(k.titel)}</button>
+          <div class="bm-kklasse an" data-klasse="${esc(k.id)}">
+            <h4>${esc(k.kurz)} · ${esc(k.titel)}</h4>
             <div class="bm-kliste">${k.konten.map(nr => `<button type="button" data-konto="${esc(nr)}"><span class="nr">${esc(nr)}</span><span>${esc(KONTO[nr])}</span></button>`).join("")}</div>
           </div>`).join("")}</div>
       </div>`;
     }).join("")}
   </div>`;
   ov.hidden = false;
-  ov.querySelectorAll(".bm-kklasse > button.kk").forEach(btn => {
-    const box = btn.parentElement;
-    btn.addEventListener("mouseenter", () => {
-      ov.querySelectorAll(".bm-kklasse.an").forEach(x => { if (x !== box) x.classList.remove("an"); });
-      box.classList.add("an");
-    });
-    btn.addEventListener("click", ev => {
-      ev.preventDefault(); ev.stopPropagation();
-      const an = box.classList.contains("an");
-      ov.querySelectorAll(".bm-kklasse.an").forEach(x => x.classList.remove("an"));
-      if (!an) box.classList.add("an");
-    });
-  });
+  const box = ov.querySelector(".bm-stern");
+  box.addEventListener("mouseenter", () => { bmSternHover = true; cancelSternZu(); });
+  box.addEventListener("mouseleave", () => { bmSternHover = false; if (bmSternModus !== "pin") planeSternZu(); });
   ov.querySelectorAll(".bm-kliste [data-konto]").forEach(b => {
     b.onclick = ev => {
       ev.preventDefault(); ev.stopPropagation();
@@ -2864,14 +2943,47 @@ function oeffneStern() {
       drawAufgabe();
     };
   });
-  document.getElementById("bmsternx").onclick = () => { S.cur && (S.cur.pick = null); schliesseStern(); drawAufgabe(); };
-  ov.onclick = ev => { if (ev.target === ov) { S.cur && (S.cur.pick = null); schliesseStern(); drawAufgabe(); } };
+  document.getElementById("bmsternx").onclick = ev => {
+    ev.preventDefault(); ev.stopPropagation();
+    if (S.cur) S.cur.pick = null;
+    schliesseStern();
+  };
+  ov.onclick = ev => {
+    if (ev.target === ov) {
+      if (S.cur) S.cur.pick = null;
+      schliesseStern();
+    }
+  };
 }
 function schliesseStern() {
+  cancelSternZu();
+  bmSternHover = false;
+  bmSternModus = "hover";
   const ov = document.getElementById("bmstern");
   if (ov) { ov.hidden = true; ov.innerHTML = ""; }
 }
 function sternOffen() { const ov = document.getElementById("bmstern"); return ov && !ov.hidden; }
+
+function bindSternHover() {
+  const c = S.cur; if (!c || c.geprueft) return;
+  app().querySelectorAll('[data-pick="konto"]').forEach(btn => {
+    btn.addEventListener("mouseenter", () => {
+      if (!S.cur || S.cur.geprueft) return;
+      const row = btn.closest(".brow"); if (!row) return;
+      bmSlotHover = true;
+      cancelSternZu();
+      const neu = { seite: row.dataset.seite, i: +row.dataset.i, art: "konto" };
+      const alt = S.cur.pick;
+      const gleich = alt && alt.seite === neu.seite && alt.i === neu.i && alt.art === "konto";
+      S.cur.pick = neu;
+      if (!gleich || !sternOffen()) oeffneStern(bmSternModus === "pin" && gleich ? "pin" : "hover");
+    });
+    btn.addEventListener("mouseleave", () => {
+      bmSlotHover = false;
+      if (bmSternModus !== "pin") planeSternZu();
+    });
+  });
+}
 
 function belegVonKlick(el) {
   const a = S.cur && S.cur.a; if (!a) return null;
@@ -2922,8 +3034,9 @@ drawAufgabe = function () {
   _drawAufgabeV2();
   if (c) c._bmStern = false;
   bindBelegKlicks();
-  if (hatteKontoPick) oeffneStern();
-  else schliesseStern();
+  bindSternHover();
+  if (hatteKontoPick) oeffneStern(bmSternModus === "pin" ? "pin" : "hover");
+  else if (!bmSlotHover) schliesseStern();
   requestAnimationFrame(applyZoom);
 };
 
@@ -2941,6 +3054,22 @@ const _drawAufgabeV2b = drawAufgabe;
 drawAufgabe = function () {
   _drawAufgabeV2b();
   entferneKontoListe();
+};
+
+const _bindAufgabeV3 = bindAufgabe;
+bindAufgabe = function () {
+  _bindAufgabeV3();
+  app().querySelectorAll('[data-pick="konto"]').forEach(b => {
+    const prev = b.onclick;
+    b.addEventListener("click", ev => {
+      if (S.cur && S.cur.geprueft) return;
+      ev.preventDefault();
+      const row = b.closest(".brow"); if (!row) return;
+      S.cur.pick = { seite: row.dataset.seite, i: +row.dataset.i, art: "konto" };
+      bmSternModus = "pin";
+      oeffneStern("pin");
+    }, true);
+  });
 };
 
 const _initV2 = init;
@@ -2970,10 +3099,35 @@ document.addEventListener("click", ev => {
 
 window.BT_BEAMER = Object.assign(window.BT_BEAMER || {}, {
   belegErklaerInhalt, pruefeBelegKlicks, sternGruppen, kontoKlasseId, BM_KLASSEN,
-  oeffneStern, schliesseStern,
+  oeffneStern, schliesseStern, bindSternHover, cancelSternZu,
   applyZoom, setZoomFit, setZoomPct, zoomSchritt, fitScale, aktuelleSkala,
-  zoom() { return Object.assign({}, S.zoom, { skala: aktuelleSkala(), fit: fitScale() }); }
+  zoom() { return Object.assign({}, S.zoom, { skala: aktuelleSkala(), fit: fitScale() }); },
+  minSchriftOk, sternListenSichtbar
 });
+
+function minSchriftOk(wurzel) {
+  const roots = wurzel ? [wurzel] : [document.getElementById("bmstage"), document.getElementById("bmzoombar"), document.getElementById("bmstern"), document.getElementById("bmpop"), document.getElementById("bmov")].filter(Boolean);
+  const bad = [];
+  roots.forEach(root => {
+    [root, ...root.querySelectorAll("*")].forEach(el => {
+      if (el.closest("[hidden]")) return;
+      if (el.getAttribute("aria-hidden") === "true") return;
+      const st = getComputedStyle(el);
+      if (st.display === "none" || st.visibility === "hidden") return;
+      const text = [...el.childNodes].filter(n => n.nodeType === 3 && n.textContent.trim()).map(n => n.textContent.trim()).join(" ");
+      if (!text) return;
+      const px = parseFloat(st.fontSize);
+      if (!(px >= 17.5)) bad.push({ tag: el.tagName, cls: String(el.className || "").slice(0, 60), px, text: text.slice(0, 50) });
+    });
+  });
+  return { ok: !bad.length, bad };
+}
+function sternListenSichtbar() {
+  const lists = [...document.querySelectorAll("#bmstern .bm-kliste")];
+  const hidden = lists.filter(el => getComputedStyle(el).display === "none" || el.closest("[hidden]"));
+  const konten = [...document.querySelectorAll("#bmstern [data-konto]")].map(b => b.dataset.konto);
+  return { listen: lists.length, versteckt: hidden.length, konten };
+}
 
 init();
 
