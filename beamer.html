@@ -712,6 +712,72 @@ button.bm-hit, button.bm-hit .bm-i,
 .bm-kliste button:hover, .bm-kliste button:focus{border-color:var(--accent);background:var(--accent-soft);}
 .bm-kliste .nr{font-size:18px !important;min-width:64px;}
 
+/* ===== v5: einspaltiges Layout, Startauswahl, Kontoliste ===== */
+.bm-einspalt{height:100%;min-height:0;display:flex;flex-direction:column;background:transparent;}
+.bm-einspalt .bm-flow, .bm-wahl { background: transparent; }
+.bm-einspalt .bm-flow{
+  display:flex;flex-direction:column;gap:10px;min-height:0;padding:10px 24px 12px;
+  overflow-x:hidden;overflow-y:auto;flex:1 1 auto;height:100%;
+}
+.bm-einspalt .bm-oben, .bm-einspalt .bm-unten,
+.bm-einspalt .bm-links, .bm-einspalt .bm-rechts,
+.bm-einspalt .bm-main{box-shadow:none;border:0;background:transparent;}
+.bm-einspalt .bm-main{display:block;}
+.bm-oben{display:flex;flex-direction:column;min-width:0;min-height:0;}
+.bm-oben.mit{flex:1 1 48%;min-height:0;}
+.bm-oben.ohne{flex:0 0 auto;}
+.bm-wirzeile{font-size:18px;padding:0 4px 6px;color:var(--text);}
+.bm-fallmini{color:var(--muted);font-weight:400;margin-left:8px;}
+.bm-oben .bm-belegflaeche{flex:1 1 auto;min-height:0;max-width:620px;width:100%;margin:0 auto;background:#fff;border-radius:16px;padding:8px;box-shadow:var(--shadow);display:flex;align-items:stretch;justify-content:center;}
+.bm-oben .beleg-frame{flex:1;width:100%;height:100%;margin:0;overflow:hidden;cursor:zoom-in;border-radius:8px;display:block;position:relative;}
+.bm-oben .beleg-frame .scaler{transform-origin:0 0;}
+#bmstern{display:none !important;}
+.bm-angabe{max-width:1200px;width:100%;margin:0 auto;font-size:clamp(18px, 2.1vh, 28px);line-height:1.45;padding:16px 8px 8px;color:var(--text);}
+.bm-oben .bm-erklaer-leiste{max-width:1080px;width:100%;margin:6px auto 0;flex:0 0 auto;}
+.bm-unten{flex:0 1 auto;max-width:1200px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:8px;min-height:0;}
+.bm-unten #buchung{position:relative;overflow:visible;display:flex;flex-direction:column;flex:0 0 auto;height:auto;padding-bottom:6px;}
+.bm-unten{gap:8px;flex:0 0 auto;}
+.bm-unten .bm-actions{flex:0 0 auto;}
+.bm-klapp{flex:0 0 auto;height:auto;min-height:180px;max-height:300px;overflow:auto;}
+.bm-kitem{padding:5px 8px;}
+.bm-unten .bm-actions{display:flex;gap:10px;}
+.bm-unten .bm-actions .btn{flex:1;}
+.bm-tipps{min-height:0;}
+
+/* Start: Modus und Zähler – eine Fläche, kein Zweispalt-Unterrichtslayout, aber Raster zum Platzsparen */
+.bm-modus{display:flex;gap:10px;padding:2px 0 6px;}
+.bm-modus-btn{min-height:48px;padding:8px 20px;border-radius:12px;border:2px solid var(--line);background:#fff;font-size:18px;font-weight:700;cursor:pointer;}
+.bm-modus-btn.an{border-color:var(--accent);background:var(--accent-soft);}
+.bm-wahl-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;min-height:0;overflow:auto;align-content:start;}
+.bm-wahl-sec h3{margin:0 0 8px;font-size:18px;}
+.bm-zaehl-list{display:flex;flex-direction:column;gap:3px;}
+.bm-zaehl{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;background:#fff;border-radius:10px;padding:3px 8px;box-shadow:var(--shadow);}
+.bm-zaehl-t{font-size:18px;line-height:1.25;}
+.bm-zaehl-max{font-size:18px;color:var(--muted);white-space:nowrap;}
+.bm-zaehl-btns{display:flex;align-items:center;gap:6px;}
+.bm-pm{width:32px;height:32px;border:0;border-radius:8px;background:#e8ebf0;font-size:20px;font-weight:700;cursor:pointer;}
+.bm-pm:hover:not(:disabled){background:var(--accent-soft);}
+.bm-pm:disabled{opacity:.35;cursor:default;}
+.bm-zaehl-n{min-width:2ch;text-align:center;font-weight:800;font-size:18px;font-variant-numeric:tabular-nums;}
+
+/* Kontoliste nach unten */
+.bm-klapp{z-index:30;background:#fff;border:2px solid var(--accent);border-radius:14px;box-shadow:0 12px 32px rgba(20,30,50,.22);padding:10px;max-height:480px;overflow:auto;}
+.bm-klapp[hidden]{display:none;}
+.bm-klapp-lab{display:block;font-size:18px;margin-bottom:4px;color:var(--muted);}
+#bmklapp-filter{width:100%;font-size:18px;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;margin-bottom:8px;}
+.bm-klapp-list h4{margin:8px 0 4px;font-size:18px;color:var(--accent);}
+.bm-kitem{display:flex;gap:10px;width:100%;text-align:left;border:0;background:transparent;padding:8px 10px;border-radius:8px;font-size:18px;cursor:pointer;line-height:1.3;}
+.bm-kitem:hover, .bm-kitem:focus{background:var(--accent-soft);outline:none;}
+.bm-kitem .nr{font-weight:800;font-variant-numeric:tabular-nums;min-width:64px;color:var(--accent);}
+.bm-kleer{margin:8px;color:var(--muted);font-size:18px;}
+
+.bm-wahl{height:100%;min-height:0;display:flex;flex-direction:column;padding:8px 24px 12px;overflow:hidden;}
+.bm-wahl-kopf{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex:0 0 auto;margin-bottom:4px;}
+.bm-wahl-kopf .lead{margin:4px 0 0;}
+.bm-wahl-kopf h2{margin:2px 0;}
+.bm-wahl-sec h3{margin:0 0 4px;}
+.bm-wahl-grid{flex:1 1 auto;}
+
 </style>
 </head>
 <body class="beamer">
@@ -3128,6 +3194,507 @@ function sternListenSichtbar() {
   const konten = [...document.querySelectorAll("#bmstern [data-konto]")].map(b => b.dataset.konto);
   return { listen: lists.length, versteckt: hidden.length, konten };
 }
+
+/* ===== v5: Auswahl mit/ohne Beleg, einspaltiges Layout, Kontoliste ===== */
+S.bmModus = S.bmModus || "mit";
+S.bmCounts = S.bmCounts || {};
+S.bmUnsicher = S.bmUnsicher || [];
+
+const BM_TYP_TITEL = {
+  Eingangsrechnung: "Eingangsrechnung",
+  Ausgangsrechnung: "Ausgangsrechnung",
+  Gutschrift: "Gutschrift",
+  Kontoauszug: "Kontoauszug",
+  Kassabeleg: "Kassabeleg",
+  Kartenbeleg: "Kartenbeleg",
+  Mahnung: "Mahnung",
+  Bankabrechnung: "Bankabrechnung",
+  Zahlungsaufforderung: "Zahlungsaufforderung",
+  Inventurliste: "Inventur / Bestandsveränderung",
+  TEXT: "Textaufgabe"
+};
+
+function bmKategorien() {
+  const themen = EINHEITEN.map(e => ({
+    id: "e-" + e.nr,
+    gruppe: "thema",
+    titel: "E" + e.nr + " · " + e.titel,
+    filter: a => a.einheit === e.nr
+  }));
+  const typen = Object.keys(BM_TYP_TITEL).map(typ => ({
+    id: "t-" + typ,
+    gruppe: "art",
+    titel: BM_TYP_TITEL[typ],
+    filter: typ === "TEXT"
+      ? a => !(a.beleg || a.zusatzbeleg)
+      : a => a.beleg && a.beleg.typ === typ
+  }));
+  return themen.concat(typen);
+}
+
+function bmPasstModus(a) {
+  const mit = !!(a.beleg || a.zusatzbeleg);
+  return S.bmModus === "mit" ? mit : true;
+}
+function bmPool(kat) {
+  return DATA.aufgaben.filter(a => bmPasstModus(a) && kat.filter(a));
+}
+function bmVerfuegbar(kat) { return bmPool(kat).length; }
+
+function baueQueue() {
+  const used = new Set(), ids = [];
+  bmKategorien().forEach(kat => {
+    if (S.bmModus === "mit" && kat.id === "t-TEXT") return;
+    const n = S.bmCounts[kat.id] || 0;
+    if (n <= 0) return;
+    let genommen = 0;
+    for (const a of bmPool(kat)) {
+      if (used.has(a.id)) continue;
+      ids.push(a.id);
+      used.add(a.id);
+      genommen++;
+      if (genommen >= n) break;
+    }
+  });
+  return ids;
+}
+
+function starteFest(ids) {
+  S.queue = ids.slice(); S.idx = 0; S.ergebnisse = []; S.serie = 0; S.besteSerie = 0;
+  if (typeof MOT !== "undefined" && MOT.schnappschuss) S.vorher = MOT.schnappschuss();
+  renderAufgabe();
+}
+
+function istPlatzhalterText(t) {
+  return /^Buche diesen Beleg\b/i.test(String(t || "").trim());
+}
+
+function eurTxt(n) { return eur(n, false); }
+
+function kurzPositionen(b) {
+  const ps = b.positionen || [];
+  if (!ps.length) return "";
+  const teile = ps.map(p => {
+    let s = p.bezeichnung || "";
+    if (p.menge != null && p.einzelpreis != null && p.menge !== 1)
+      s += " (" + menge(p.menge) + " × " + eurTxt(p.einzelpreis) + ")";
+    return s;
+  }).filter(Boolean);
+  if (teile.length === 1) return teile[0];
+  if (teile.length === 2) return teile[0] + " und " + teile[1];
+  return teile.slice(0, 3).join(", ") + (teile.length > 3 ? " u. a." : "");
+}
+
+function zahlweiseTxt(a, b) {
+  const zb = String(b.zahlungsbedingungen || "");
+  const typ = b.typ || "";
+  if (/kassabeleg/i.test(typ) || /^bar bezahlt/i.test(zb)) return "bar";
+  if (/kartenbeleg/i.test(typ) || /karte/i.test(zb)) {
+    const m = /bezahlt mit\s+([^.,]+)/i.exec(zb);
+    return m ? "mit " + m[1].trim() : "mit Karte";
+  }
+  if (/lastschrift|abgebucht/i.test(zb)) return "per Lastschrift";
+  if (/überweisung erhalten|bereits bezahlt|betrag.*erhalten/i.test(zb)) return "bereits bezahlt";
+  const sk = parseSkontoBeleg(a);
+  if (sk && sk.satz) return "auf Ziel, mit " + menge(sk.satz) + " % Skonto bei pünktlicher Zahlung";
+  if (/%\s*skonto/i.test(zb)) return "auf Ziel, mit Skonto bei pünktlicher Zahlung";
+  if (/zahlbar|tage|ohne abzug|netto/i.test(zb) || /rechnung|gutschrift/i.test(typ)) return "auf Ziel";
+  return "";
+}
+
+function betragMitSteuer(b) {
+  if (b.netto == null) return "";
+  let s = eurTxt(b.netto) + " € netto";
+  if (b.ust_satz) s += " + " + menge(b.ust_satz) + " % USt" + (b.ust != null ? " (" + eurTxt(b.ust) + " €)" : "");
+  else if (b.ust) s += " + USt " + eurTxt(b.ust) + " €";
+  if (b.rabatt && b.rabatt.prozent) {
+    const bruttoVor = (b.positionen || []).reduce((sum, p) => sum + (p.menge != null && p.einzelpreis != null ? p.menge * p.einzelpreis : 0), 0);
+    if (bruttoVor) s = "Listenpreis " + eurTxt(bruttoVor) + " € netto, " + menge(b.rabatt.prozent) + " % Rabatt, daher " + eurTxt(b.netto) + " € netto" + (b.ust_satz ? " + " + menge(b.ust_satz) + " % USt (" + eurTxt(b.ust) + " €)" : "");
+  }
+  if (b.nova && b.nova.betrag) s += ", dazu NoVA " + menge(b.nova.prozent) + " % (" + eurTxt(b.nova.betrag) + " €)";
+  return s;
+}
+
+function angabeAusBeleg(a) {
+  const b = a.beleg; if (!b) return null;
+  const wir = wirName(a);
+  const aus = (b.aussteller || {}).name || "";
+  const emp = (b.empfaenger || {}).name || "";
+  const typ = b.typ || "";
+  const pos = kurzPositionen(b);
+  const bet = betragMitSteuer(b);
+  const zw = zahlweiseTxt(a, b);
+  const zwSatz = zw ? " " + zw + "." : ".";
+  let unsicher = false, text = null;
+
+  if (/eingangsrechnung/i.test(typ)) {
+    text = "Wir kaufen bei " + aus + (pos ? " " + pos : " Waren") + (bet ? (bet.startsWith("Listenpreis") ? " — " + bet : " um " + bet) : "") + zwSatz;
+  } else if (/ausgangsrechnung/i.test(typ)) {
+    text = "Wir verkaufen an " + emp + (pos ? " " + pos : " Waren") + (bet ? (bet.startsWith("Listenpreis") ? " — " + bet : " um " + bet) : "") + zwSatz;
+  } else if (/gutschrift/i.test(typ)) {
+    if (istWir(a, emp)) text = "Wir erhalten eine Gutschrift von " + aus + (pos ? " über " + pos : "") + (bet ? " um " + bet : "") + ".";
+    else text = "Wir erteilen " + emp + " eine Gutschrift" + (pos ? " über " + pos : "") + (bet ? " um " + bet : "") + ".";
+  } else if (/kassabeleg/i.test(typ)) {
+    const kauf = istWir(a, emp) || !istWir(a, aus);
+    text = (kauf ? "Wir kaufen bei " + aus : "Wir verkaufen an " + emp) + (pos ? " " + pos : "") + (bet ? " um " + bet : "") + " bar.";
+  } else if (/kartenbeleg/i.test(typ)) {
+    const kauf = istWir(a, emp) || !istWir(a, aus);
+    text = (kauf ? "Wir kaufen bei " + aus : "Wir verkaufen an " + emp) + (pos ? " " + pos : "") + (bet ? " um " + bet : "") + " " + (zw || "mit Karte") + ".";
+  } else if (/kontoauszug/i.test(typ)) {
+    const ps = b.positionen || [];
+    if (ps.length === 1) {
+      const p = ps[0], betr = p.betrag != null ? p.betrag : 0;
+      const richtung = betr < 0 ? "Ausgabe" : "Eingang";
+      text = "Laut Kontoauszug: " + (p.bezeichnung || "eine Bewegung") + " über " + eurTxt(Math.abs(betr)) + " € (" + richtung + ").";
+      if (!p.bezeichnung) unsicher = true;
+    } else {
+      text = "Laut Kontoauszug sind " + ps.length + " Bewegungen zu buchen.";
+      unsicher = true;
+    }
+  } else if (/bankabrechnung/i.test(typ)) {
+    const ps = (b.positionen || []).map(p => (p.bezeichnung || "") + " " + (p.betrag != null ? eurTxt(p.betrag) + " €" : "")).join(", ");
+    text = "Bankabrechnung" + (b.zeitraum ? " für " + b.zeitraum : "") + (ps ? ": " + ps : "") + ".";
+  } else if (/mahnung/i.test(typ)) {
+    const bezug = (b.bezug || "").trim();
+    const posMehr = ((b.positionen || []).length > 1)
+      ? " (" + (b.positionen || []).map(p => (p.bezeichnung || "Position") + " " + eurTxt(p.betrag) + " €").join(", ") + ")"
+      : "";
+    if (istWir(a, aus)) text = "Wir mahnen " + emp + (bezug ? " (" + bezug + ")" : "") + (b.brutto != null ? " über " + eurTxt(b.brutto) + " €" : "") + posMehr + ".";
+    else if (aus) text = "Wir erhalten von " + aus + " " + (bezug || "eine Mahnung") + (b.brutto != null ? " über " + eurTxt(b.brutto) + " €" : "") + posMehr + ".";
+    else { text = a.text || "Buche die Mahnung."; unsicher = true; }
+  } else if (/zahlungsaufforderung/i.test(typ)) {
+    text = "Zahlungsaufforderung" + (pos ? " für " + pos : "") + (b.brutto != null ? " über " + eurTxt(b.brutto) + " €" : "") + (b.faellig_am ? ", fällig am " + b.faellig_am : "") + (zw ? ", " + zw : "") + ".";
+  } else if (/inventur/i.test(typ)) {
+    const endB = (b.summe && b.summe.betrag) || (b.endbestand && b.endbestand.betrag);
+    const anf = a.zusatzbeleg && a.zusatzbeleg.summe ? a.zusatzbeleg.summe.betrag : null;
+    const mat = b.materialart || "";
+    if (a.text && !istPlatzhalterText(a.text) && /bestandsveränderung/i.test(a.text)) {
+      text = a.text.replace(/\s*Anfangsbestand:.*$/i, "").trim();
+      if (mat) text = "Buche die Bestandsveränderung von " + mat + "." + (anf != null && endB != null ? " Anfangsbestand " + eurTxt(anf) + " €, Endbestand " + eurTxt(endB) + " €." : "");
+    } else {
+      text = "Buche die Bestandsveränderung" + (mat ? " von " + mat : "") + "." + (anf != null && endB != null ? " Anfangsbestand " + eurTxt(anf) + " €, Endbestand " + eurTxt(endB) + " €." : "");
+    }
+  } else {
+    text = pos && bet ? "Vorgang: " + pos + " um " + bet + zwSatz : null;
+    unsicher = true;
+  }
+  if (unsicher) {
+    if (!S.bmUnsicher.includes(a.id)) S.bmUnsicher.push(a.id);
+  }
+  return text;
+}
+
+function angabeText(a) {
+  if (a.text && !istPlatzhalterText(a.text)) return a.text;
+  const gen = angabeAusBeleg(a);
+  return gen || a.text || "";
+}
+
+function zeigtBeleg(a) {
+  return S.bmModus === "mit" && !!(a.beleg || a.zusatzbeleg);
+}
+
+/* ---------- Startseite ---------- */
+function setzeCount(id, n, max) {
+  const v = Math.max(0, Math.min(max, n | 0));
+  S.bmCounts[id] = v;
+}
+function aendereCount(id, d) {
+  const kat = bmKategorien().find(k => k.id === id); if (!kat) return;
+  const max = bmVerfuegbar(kat);
+  setzeCount(id, (S.bmCounts[id] || 0) + d, max);
+  renderStart();
+}
+
+renderStart = function () {
+  if (!S.bmCounts) S.bmCounts = {};
+  if (!S.bmModus) S.bmModus = "mit";
+  const kats = bmKategorien();
+  const ids = baueQueue();
+  const themen = kats.filter(k => k.gruppe === "thema");
+  const arten = kats.filter(k => k.gruppe === "art" && !(S.bmModus === "mit" && k.id === "t-TEXT"));
+  const zaehlHtml = kat => {
+    const max = bmVerfuegbar(kat);
+    const n = Math.min(S.bmCounts[kat.id] || 0, max);
+    S.bmCounts[kat.id] = n;
+    const disM = n <= 0 ? "disabled" : "";
+    const disP = n >= max ? "disabled" : "";
+    return `<div class="bm-zaehl" data-kat="${esc(kat.id)}">
+      <span class="bm-zaehl-t">${esc(kat.titel)}</span>
+      <span class="bm-zaehl-max">${max} verfügbar</span>
+      <div class="bm-zaehl-btns">
+        <button type="button" class="bm-pm" data-delta="-1" data-kat="${esc(kat.id)}" ${disM} aria-label="weniger">−</button>
+        <span class="bm-zaehl-n" aria-live="polite">${n}</span>
+        <button type="button" class="bm-pm" data-delta="1" data-kat="${esc(kat.id)}" ${disP} aria-label="mehr">+</button>
+      </div>
+    </div>`;
+  };
+  app().innerHTML = `<div class="bm-wahl" id="startkarte">
+    <div class="bm-wahl-kopf">
+      <div><span class="bm-entwurf">Präsentationsansicht</span>
+        <h2>Buchungstrainer für Tafel und Beamer</h2>
+        <p class="lead">Zuerst wählen, ob ihr mit Beleg oder nur mit Angabe (Text) übt. Dann festlegen, wie viele Aufgaben aus welchem Thema oder welcher Belegart. Die Schüleransicht bleibt unverändert.</p></div>
+      <div class="bm-wahl-aktionen">
+        <button type="button" class="linkbtn" id="bm-zero">Alle auf 0</button>
+        <button type="button" class="btn primary" id="start" ${ids.length ? "" : "disabled"}>${ids.length ? "Übung starten (" + ids.length + ")" : "Bitte Anzahl wählen"}</button>
+      </div>
+    </div>
+    <div class="bm-modus" role="tablist" aria-label="Übungsmodus">
+      <button type="button" class="bm-modus-btn ${S.bmModus === "mit" ? "an" : ""}" data-modus="mit">Mit Beleg</button>
+      <button type="button" class="bm-modus-btn ${S.bmModus === "ohne" ? "an" : ""}" data-modus="ohne">Ohne Beleg (nur Angabe)</button>
+    </div>
+    <div class="bm-wahl-grid">
+      <section class="bm-wahl-sec"><h3>Nach Thema</h3><div class="bm-zaehl-list">${themen.map(zaehlHtml).join("")}</div></section>
+      <section class="bm-wahl-sec"><h3>Nach Belegart</h3><div class="bm-zaehl-list">${arten.map(zaehlHtml).join("")}</div></section>
+    </div>
+  </div>`;
+  app().querySelectorAll("[data-modus]").forEach(b => b.onclick = () => { S.bmModus = b.dataset.modus; renderStart(); });
+  app().querySelectorAll(".bm-pm").forEach(b => b.onclick = () => aendereCount(b.dataset.kat, +b.dataset.delta));
+  const zero = document.getElementById("bm-zero");
+  if (zero) zero.onclick = () => { S.bmCounts = {}; renderStart(); };
+  const start = document.getElementById("start");
+  if (start) start.onclick = () => { const q = baueQueue(); if (q.length) starteFest(q); };
+};
+
+/* ---------- Einspaltige Aufgabe ---------- */
+function kontoListenHtml(konten, filter) {
+  const q = String(filter || "").replace(/\s/g, "");
+  const ecken = sternGruppen(konten);
+  // flache Klassen in Kontenplan-Reihenfolge 0,1,2,3,4,5,6,7,8e,8a,9
+  const order = ["0", "1", "2", "3", "4", "5", "6", "7", "8e", "8a", "9"];
+  const klassen = [];
+  const gesehen = new Set();
+  order.forEach(id => {
+    Object.values(ecken).forEach(e => e.klassen.forEach(k => {
+      if (k.id === id && !gesehen.has(k.id)) { klassen.push(k); gesehen.add(k.id); }
+    }));
+  });
+  const teile = klassen.map(k => {
+    const liste = k.konten.filter(nr => !q || String(nr).startsWith(q) || (KONTO[nr] || "").toLowerCase().includes(q.toLowerCase()));
+    if (!liste.length) return "";
+    return `<h4>${esc(k.kurz)} · ${esc(k.titel)}</h4>` +
+      liste.map(nr => `<button type="button" class="bm-kitem" data-konto="${esc(nr)}"><span class="nr">${esc(nr)}</span> <span class="nm">${esc(KONTO[nr])}</span></button>`).join("");
+  }).filter(Boolean);
+  return teile.join("") || `<p class="bm-kleer">Kein Konto passt zu „${esc(filter)}“.</p>`;
+}
+
+function oeffneKontoListe() {
+  const c = S.cur; if (!c || !c.pick || c.pick.art !== "konto" || c.geprueft) return;
+  schliessePop(); schliesseStern();
+  const host = document.getElementById("bmklapp") || document.createElement("div");
+  host.id = "bmklapp";
+  host.className = "bm-klapp";
+  host.hidden = false;
+  host.innerHTML = `<label class="bm-klapp-lab" for="bmklapp-filter">Kontonummer tippen</label>
+    <input type="search" id="bmklapp-filter" inputmode="numeric" autocomplete="off" placeholder="z. B. 2500">
+    <div class="bm-klapp-list" id="bmklapp-list">${kontoListenHtml(c.konten, "")}</div>`;
+  const row = document.querySelector(`.brow[data-seite="${c.pick.seite}"][data-i="${c.pick.i}"]`);
+  const box = document.getElementById("buchung") || app();
+  if (host.parentNode !== box) box.appendChild(host);
+  host.style.position = "relative";
+  host.style.left = "0";
+  host.style.top = "0";
+  host.style.width = "100%";
+  host.style.margin = "8px 0 0";
+  const list = () => document.getElementById("bmklapp-list");
+  const inp = document.getElementById("bmklapp-filter");
+  const zeichne = () => { if (list()) list().innerHTML = kontoListenHtml(c.konten, inp.value); bindItems(); };
+  const bindItems = () => {
+    host.querySelectorAll("[data-konto]").forEach(b => b.onclick = ev => {
+      ev.preventDefault(); ev.stopPropagation();
+      const c2 = S.cur, pick = c2 && c2.pick;
+      if (!pick || pick.art !== "konto") return;
+      c2.rows[pick.seite][pick.i].konto = b.dataset.konto;
+      autoBetragWennEinzeln();
+      c2.pick = null;
+      schliesseKontoListe();
+      drawAufgabe();
+    });
+  };
+  bindItems();
+  if (inp) {
+    inp.oninput = zeichne;
+    setTimeout(() => inp.focus(), 20);
+  }
+  host.onmouseenter = () => { bmSternHover = true; cancelSternZu(); };
+  host.onmouseleave = () => { bmSternHover = false; if (bmSternModus !== "pin") planeSternZu(); };
+}
+
+function schliesseKontoListe() {
+  cancelSternZu();
+  const host = document.getElementById("bmklapp");
+  if (host) { host.hidden = true; host.innerHTML = ""; }
+  bmSternHover = false;
+  bmSternModus = "hover";
+}
+function kontoListeOffen() {
+  const host = document.getElementById("bmklapp");
+  return host && !host.hidden && host.querySelector("[data-konto], .bm-klapp-list");
+}
+
+let bmListeAufTimer = 0;
+function cancelListeAuf() { if (bmListeAufTimer) { clearTimeout(bmListeAufTimer); bmListeAufTimer = 0; } }
+
+function bindKontoListe() {
+  const c = S.cur; if (!c || c.geprueft) return;
+  app().querySelectorAll('[data-pick="konto"]').forEach(btn => {
+    btn.addEventListener("mouseenter", () => {
+      if (!S.cur || S.cur.geprueft) return;
+      const row = btn.closest(".brow"); if (!row) return;
+      bmSlotHover = true;
+      cancelSternZu();
+      cancelListeAuf();
+      S.cur.pick = { seite: row.dataset.seite, i: +row.dataset.i, art: "konto" };
+      bmListeAufTimer = setTimeout(() => {
+        if (!bmSlotHover || !S.cur || S.cur.geprueft) return;
+        oeffneKontoListe();
+      }, 180);
+    });
+    btn.addEventListener("mouseleave", () => {
+      bmSlotHover = false;
+      cancelListeAuf();
+      if (bmSternModus !== "pin") planeKontoZu();
+    });
+    btn.addEventListener("click", ev => {
+      if (!S.cur || S.cur.geprueft) return;
+      ev.preventDefault(); ev.stopPropagation();
+      const row = btn.closest(".brow"); if (!row) return;
+      cancelListeAuf();
+      S.cur.pick = { seite: row.dataset.seite, i: +row.dataset.i, art: "konto" };
+      bmSternModus = "pin";
+      oeffneKontoListe();
+    }, true);
+  });
+}
+
+planeSternZu = planeKontoZu;
+function planeKontoZu() {
+  cancelSternZu();
+  bmSternTimer = setTimeout(() => {
+    if (bmSternModus === "pin") return;
+    if (bmSternHover || bmSlotHover) return;
+    if (S.cur && S.cur.pick && S.cur.pick.art === "konto") S.cur.pick = null;
+    schliesseKontoListe();
+  }, 380);
+}
+
+/* Stern aus v4 abschalten */
+bindSternHover = function () {};
+oeffneStern = function (modus) { if (modus) bmSternModus = modus; oeffneKontoListe(); };
+schliesseStern = function () { schliesseKontoListe(); };
+
+drawAufgabe = function () {
+  const c = S.cur, a = c.a, e = EINHEITEN.find(x => x.nr === a.einheit);
+  const punkte = S.ergebnisse.reduce((s, r) => s + r.punkte, 0);
+  const mit = zeigtBeleg(a);
+  const zwei = !!(mit && a.beleg && a.zusatzbeleg);
+  const fall = nbsp(esc(a.text)).replace(/\(([A-Z]{1,2}) (\d+)\)/g, "($1\u00a0$2)");
+  const angabe = nbsp(esc(angabeText(a))).replace(/\(([A-Z]{1,2}) (\d+)\)/g, "($1\u00a0$2)");
+  const belegTeil = mit
+    ? `<div class="bm-belegflaeche${zwei ? " zwei" : ""}">${a.zusatzbeleg ? `<div class="beleg-frame zusatz" id="zusatzframe" role="button" aria-label="Beleg vergrößern"><div class="scaler">${belegHtml(a.zusatzbeleg, zusatzSymbol(a.zusatzbeleg, a.text))}</div></div>` : ""}
+       ${a.beleg ? `<div class="beleg-frame" id="belegframe" role="button" aria-label="Beleg vergrößern"><div class="scaler">${belegHtml(a.beleg, belegSymbol(a.text))}</div></div>` : ""}</div>`
+    : `<div class="bm-angabe">${angabe}</div>`;
+  const pick = c.pick;
+  let pickHtml = "";
+  if (pick && !c.geprueft && pick.art === "betrag") {
+    const r = c.rows[pick.seite][pick.i];
+    pickHtml = `<div class="bm-pick" id="bmpick"><h3>Betrag wählen</h3>
+      <div class="blist">${c.betraege.map(bt => `<button class="bchip ${r.betrag === bt ? "cur" : ""}" data-betrag="${bt}">${eur(bt)}</button>`).join("")}</div></div>`;
+  }
+  const actions = c.rz && !c.rz.fertig
+    ? `<button class="btn tippbtn" data-tipp ${c.tipps >= 3 ? "disabled" : ""}>Tipp</button><button class="btn primary" id="rzpruefen" ${rzBereit() ? "" : "disabled"}>Rechnung prüfen</button>`
+    : c.geprueft
+    ? `<button class="btn primary" id="weiter">${S.idx + 1 < S.queue.length ? "Weiter zur nächsten" : "Zur Auswertung"}</button>`
+    : `<button class="btn tippbtn" data-tipp ${c.tipps >= 3 ? "disabled" : ""} aria-label="Tipp anzeigen">${BULB}<span>${c.tipps === 0 ? "Tipp" : c.tipps < 3 ? "Tipp " + (c.tipps + 1) : "Tipps"}</span></button><button class="btn primary" id="pruefen" ${bereit() ? "" : "disabled"}>Prüfen</button>`;
+  const vids = videosDerEinheit(a.einheit);
+  const videoBtns = vids.map((V, i) => `<button type="button" class="btn btn-video" data-video="${esc(V.datei)}" data-vor="${V.vorEinheit}">${vids.length > 1 ? "Video " + (i + 1) : "Video"}</button>`).join("");
+
+  app().innerHTML = `<div class="bm bm-einspalt" id="aufgabe" data-id="${esc(a.id)}" data-modus="${esc(S.bmModus)}">
+    <div class="bm-bar">
+      <span class="bm-entwurf">Beamer</span>
+      <span class="bm-titel">Einheit ${a.einheit} · ${esc(e ? e.titel : "")}</span>
+      <span class="pill">Aufgabe ${S.idx + 1} von ${S.queue.length} · ${esc(a.id)}</span>
+      <span class="pill" id="punkte">${punkteTxt(punkte)} P.</span>
+      <span class="serie ${S.serie ? "" : "leer"}" id="serie" data-serie="${S.serie}">${S.serie ? `${FLAMME}<span>${S.serie} richtig in Folge</span>` : ""}</span>
+      ${videoBtns}
+      <div class="bm-navbox">
+        <button type="button" class="btn bm-nav" id="zurueck" ${S.idx === 0 ? "disabled" : ""}>← Zurück</button>
+        <button type="button" class="btn bm-nav" id="vor" ${S.idx + 1 >= S.queue.length ? "disabled" : ""}>Vor →</button>
+      </div>
+      <button class="linkbtn" id="ende">Beenden</button>
+    </div>
+    <div class="bm-flow">
+      <div class="bm-oben ${mit ? "mit" : "ohne"}">
+        <div class="bm-wirzeile">Wir sind: <b>${esc(a.wir)}</b>${mit ? ` <span class="bm-fallmini">${fall}</span>` : ""}</div>
+        ${belegTeil}
+        ${mit ? leisteHtml(a) : ""}
+      </div>
+      <div class="bm-unten">
+        ${c.rz ? rechenzeileHtml() : ""}
+        ${c.rz && !c.rz.fertig ? "" : `<div class="card" id="buchung">
+          <div class="bm-satz-h">Dein Buchungssatz</div>
+          ${seiteHtml("Soll")}${seiteHtml("Haben")}
+          ${pickHtml}
+          <div id="fb">${c.geprueft ? feedbackHtml() : ""}</div>
+        </div>`}
+        <div id="tipps" class="bm-tipps">${tippHtml()}</div>
+        <div class="bm-actions">${actions}</div>
+      </div>
+    </div>
+  </div>`;
+  bindAufgabe();
+  if (pick && !c.geprueft && pick.art === "betrag") bindBeamerPick();
+  bindErklaer();
+  bindBelegKlicks();
+  bindKontoListe();
+  $("#zurueck") && ($("#zurueck").onclick = () => geheZu(S.idx - 1));
+  $("#vor") && ($("#vor").onclick = () => geheZu(S.idx + 1));
+  app().querySelectorAll("[data-video]").forEach(b => b.onclick = ev => {
+    ev.preventDefault(); ev.stopPropagation();
+    const V = videoListe().find(v => v.datei === b.dataset.video && String(v.vorEinheit) === b.dataset.vor);
+    if (V) starteVideo(V);
+  });
+  if (c.geprueft && c.pick && c.pick.art === "konto") { c.pick = null; }
+  else if (c.pick && c.pick.art === "konto" && !c.geprueft) oeffneKontoListe();
+  fitBelege();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitBelege);
+  app().querySelectorAll(".beleg-frame img").forEach(img => img.addEventListener("load", fitBelege));
+  requestAnimationFrame(applyZoom);
+};
+
+drawKeepScroll = function () { drawAufgabe(); };
+
+const _initV4 = init;
+init = function () {
+  S.bmModus = S.bmModus || "mit";
+  S.bmCounts = S.bmCounts || {};
+  _initV4();
+};
+
+document.addEventListener("keydown", ev => {
+  if (ev.key !== "Escape") return;
+  if (kontoListeOffen()) {
+    if (S.cur) S.cur.pick = null;
+    schliesseKontoListe();
+    ev.preventDefault(); ev.stopImmediatePropagation();
+  }
+}, true);
+
+window.BT_BEAMER = Object.assign(window.BT_BEAMER || {}, {
+  angabeText, angabeAusBeleg, baueQueue, starteFest, bmKategorien, bmPool, bmVerfuegbar, zeigtBeleg, istPlatzhalterText,
+  kontoListenHtml, oeffneKontoListe, schliesseKontoListe, kontoListeOffen,
+  setzeModus(m) { S.bmModus = m === "ohne" ? "ohne" : "mit"; },
+  setzeCount,
+  unsichereAngaben() { return (S.bmUnsicher || []).slice(); },
+  zeige(id, opt) {
+    if (opt && opt.modus) S.bmModus = opt.modus;
+    else if (!opt) S.bmModus = (function () {
+      const a = DATA.aufgaben.find(x => x.id === id);
+      return a && (a.beleg || a.zusatzbeleg) ? "mit" : "ohne";
+    })();
+    starteFest([id]);
+  }
+});
 
 init();
 
