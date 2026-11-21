@@ -956,6 +956,7 @@ body.beamer .rm { font-size: max(18px, 1.25rem) !important; }.bm-fall-gross { fo
 .bema-dlg #bema-pkt-felder{display:flex;flex-wrap:wrap;gap:8px 14px;margin:8px 0}
 .bema-dlg #bema-pkt-felder[hidden],.bema-dlg #bema-pkt-summe[hidden]{display:none}
 .bema-dlg input.bema-pkt{width:4.5em;font-size:18px;padding:2px 6px}
+.bema-dlg #bema-pkt-je{width:3.2em;font-size:18px;padding:2px 6px}
 
 .bema-dlg #bema-ns-felder{display:flex;flex-wrap:wrap;gap:8px 14px;margin:8px 0}
 .bema-dlg #bema-ns-felder[hidden]{display:none}
@@ -970,8 +971,23 @@ body.beamer .rm { font-size: max(18px, 1.25rem) !important; }.bm-fall-gross { fo
 .bema-dlg .bema-mehr{margin:14px 0 4px;border-top:1px solid #e6eaee;padding-top:8px}
 .bema-dlg .bema-mehr summary{cursor:pointer;font-size:16px;color:#16325c;font-weight:600;list-style:none}
 .bema-dlg .bema-mehr summary::-webkit-details-marker{display:none}
-.bema-dlg .bema-mehr summary::before{content:"▸ ";}
-.bema-dlg .bema-mehr[open] summary::before{content:"▾ ";}
+.bema-dlg .bema-mehr summary::before{
+  content:"";
+  display:inline-block;
+  width:0;
+  height:0;
+  border-style:solid;
+  border-width:4.5px 0 4.5px 7px;
+  border-color:transparent transparent transparent #16325c;
+  margin-right:8px;
+  vertical-align:middle;
+  transform:translateY(-1px);
+}
+.bema-dlg .bema-mehr[open] summary::before{
+  content:"";
+  border-width:7px 4.5px 0 4.5px;
+  border-color:#16325c transparent transparent transparent;
+}
 .bema-dlg .bema-mehr-box{padding:10px 0 0}
 .bema-dlg .bema-mehr-box .row{margin:8px 0}
 .bema-dlg #bema-dl-status{min-height:1.2em;color:#1F4E79;font-weight:600;margin:10px 0 0;font-size:16px}
@@ -6288,10 +6304,17 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       }
       const fragen = plan.fragenN ? verstaendnisItems(plan.einheiten, plan.fragenN, rng, g) : [];
       const intern = faelle.reduce((s, f) => s + f.punkte.summe, 0) + fragen.length;
-      const modus = opts.punkteModus === "gesetzt" ? "gesetzt" : (opts.punkteModus === "vorschlag" ? "vorschlag" : "frei");
-      const liste = opts.punkteJeAufgabe || [];
+      const modusIn = opts.punkteModus;
+      const modus = modusIn === "gesetzt" ? "gesetzt" : (modusIn === "vorschlag" ? "vorschlag" : (modusIn === "jefall" ? "jefall" : "frei"));
+      let liste = opts.punkteJeAufgabe || [];
       const nPos = faelle.length + fragen.length;
       function ganzeZahl(v) { return typeof v === "number" && isFinite(v) && Math.round(v) === v && v >= 0; }
+      if (modus === "jefall") {
+        let je = opts.punkteJeFall != null ? Math.round(Number(opts.punkteJeFall)) : 3;
+        if (!(je >= 1 && je <= 10))
+          return { ok: false, fehler: "Punkte je Fall müssen eine ganze Zahl von 1 bis 10 sein.", profil: plan.profil };
+        liste = faelle.map(function () { return je; }).concat(fragen.map(function () { return 1; }));
+      }
       if (modus === "gesetzt") {
         if (liste.length !== nPos)
           return { ok: false, fehler: "Bitte für jede Aufgabe eine ganze Punktzahl angeben (" + nPos + " Felder).", profil: plan.profil };
@@ -6300,14 +6323,15 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
             return { ok: false, fehler: "Punktzahlen müssen ganze Zahlen ab 0 sein.", profil: plan.profil };
         }
       }
+      const mitListe = (modus === "gesetzt" || modus === "jefall");
       faelle.forEach(function (f, i) {
-        f.punkteVergeben = modus === "gesetzt" ? Number(liste[i]) : (modus === "vorschlag" ? f.punkte.summe : null);
+        f.punkteVergeben = mitListe ? Number(liste[i]) : (modus === "vorschlag" ? f.punkte.summe : null);
       });
       fragen.forEach(function (q, i) {
-        q.punkteVergeben = modus === "gesetzt" ? Number(liste[faelle.length + i]) : (modus === "vorschlag" ? 1 : null);
+        q.punkteVergeben = mitListe ? Number(liste[faelle.length + i]) : (modus === "vorschlag" ? 1 : null);
       });
-      const vergeben = (modus === "gesetzt" || modus === "vorschlag")
-        ? (modus === "gesetzt" ? liste : faelle.map(function (f) { return f.punkteVergeben; }).concat(fragen.map(function (q) { return q.punkteVergeben; }))).reduce(function (s, v) { return s + Number(v); }, 0)
+      const vergeben = (mitListe || modus === "vorschlag")
+        ? (mitListe ? liste : faelle.map(function (f) { return f.punkteVergeben; }).concat(fragen.map(function (q) { return q.punkteVergeben; }))).reduce(function (s, v) { return s + Number(v); }, 0)
         : null;
       gruppen.push({
         name: gruppenN === 2 ? (g === 0 ? "A" : "B") : "A",
@@ -6319,7 +6343,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     const thema = "Einheiten " + plan.einheiten.map(function (e) { return "E " + e; }).join(", ");
     return {
       ok: true, profil: plan.profil, einheiten: plan.einheiten, thema: thema, gruppen: gruppen,
-      punkteModus: (opts.punkteModus === "gesetzt" ? "gesetzt" : (opts.punkteModus === "vorschlag" ? "vorschlag" : "frei")),
+      punkteModus: (opts.punkteModus === "gesetzt" ? "gesetzt" : (opts.punkteModus === "vorschlag" ? "vorschlag" : (opts.punkteModus === "jefall" ? "jefall" : "frei"))),
       mitDauer: !!opts.mitDauer,
       notenschluessel: opts.notenschluessel || null,
       faelleN: plan.faelleN || plan.buchungen.length,
@@ -6781,12 +6805,163 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       s += P(pkt, { size: 10, color: C_GREY, after: 80 });
     }
     if (opts.wirSatz) s += P(opts.wirSatz, { size: 10, after: 80, keepNext: true, keepLines: true });
+    if (opts.anweisung !== false) {
+      s += P(opts.anweisung || "Verbuche die Geschäftsfälle mit Angabe der Kontonummern.", { size: 10.5, after: 80, keepNext: true, keepLines: true });
+    }
     return s;
   }
 
-  function aufgabeKopf(nr, punkte, first) {
+  function typDesFalls(a) {
+    return (a && ((a.beleg && a.beleg.typ) || a.belegtyp
+      || (a.fall && ((a.fall.beleg && a.fall.beleg.typ) || a.fall.belegtyp))
+      || (a.aufgabe && a.aufgabe.beleg && a.aufgabe.beleg.typ))) || "";
+  }
+  function gruppeDesFalls(a) {
+    return (a && (a.beleggruppe || (a.fall && a.fall.beleggruppe) || (a.aufgabe && a.aufgabe.beleggruppe))) || "";
+  }
+  function belegDesFalls(a) {
+    return (a && (a.beleg || (a.fall && a.fall.beleg) || (a.aufgabe && a.aufgabe.beleg))) || null;
+  }
+  function loesungDesFalls(a) {
+    return (a && (a.loesung || a.zeilen || (a.aufgabe && a.aufgabe.loesung) || (a.fall && a.fall.loesung))) || [];
+  }
+  function symbolDesBelegs(a) {
+    const typ = typDesFalls(a);
+    if (typ === "Eingangsrechnung") return "E";
+    if (typ === "Ausgangsrechnung") return "A";
+    if (typ === "Kassabeleg") return "K";
+    if (typ === "Kartenbeleg" || typ === "Gutschrift" || typ === "Zahlungsaufforderung") return "S";
+    if (typ === "Inventurliste") return "I";
+    if (typ === "Kontoauszug" || typ === "Bankabrechnung") return "B";
+    if (typ === "Mahnung") {
+      const nrs = loesungDesFalls(a).map(function (l) { return String((l && l.konto) || ""); });
+      if (nrs.some(function (k) { return /^33\d{3}$/.test(k); })) return "E";
+      if (nrs.some(function (k) { return /^20\d{3}$/.test(k); })) return "A";
+      return "E";
+    }
+    const g = gruppeDesFalls(a);
+    if (g === "ER") return "E";
+    if (g === "AR") return "A";
+    if (g === "K") return "K";
+    if (g === "S") return "S";
+    if (g === "B") return "B";
+    if (g === "ohne") return "I";
+    return "";
+  }
+  function nummerAusBeleg(nummer, symbol) {
+    const n = String(nummer || "").trim();
+    if (!n) return "";
+    if (symbol === "K") {
+      const m = /^K0*(\d+)/i.exec(n);
+      if (m) return String(+m[1]);
+    }
+    const slash = /^(\d+)\s*\/\s*\d{4}/.exec(n);
+    if (slash) return String(+slash[1]);
+    const parts = n.split(/[^0-9]+/).filter(Boolean);
+    if (!parts.length) return "";
+    return String(+parts[parts.length - 1]);
+  }
+  function labelsFuerFaelle(faelle) {
+    const items = (faelle || []).map(function (a, i) {
+      const sym = symbolDesBelegs(a);
+      const b = belegDesFalls(a);
+      return { sym: sym, prefer: sym ? nummerAusBeleg(b && b.nummer, sym) : "", i: i };
+    });
+    const used = {};
+    const out = new Array(items.length);
+    items.forEach(function (it, i) {
+      if (it.sym && it.prefer) {
+        if (!used[it.sym]) used[it.sym] = {};
+        if (!used[it.sym][it.prefer]) {
+          used[it.sym][it.prefer] = true;
+          out[i] = it.sym + " " + it.prefer;
+        }
+      }
+    });
+    items.forEach(function (it, i) {
+      if (out[i]) return;
+      if (!it.sym) { out[i] = "Fall " + (i + 1); return; }
+      if (!used[it.sym]) used[it.sym] = {};
+      let k = it.prefer ? (Number(it.prefer) || 1) : 1;
+      if (!(k >= 1)) k = 1;
+      while (used[it.sym][String(k)]) k++;
+      used[it.sym][String(k)] = true;
+      out[i] = it.sym + " " + k;
+    });
+    return out;
+  }
+  function istPersonenkonto(nr) {
+    return /^(20|33)\d{3}$/.test(String(nr || ""));
+  }
+  function personenkontenDerLoesung(loesung) {
+    const out = [];
+    const seen = {};
+    (loesung || []).forEach(function (l) {
+      const nr = String((l && l.konto) || "");
+      if (istPersonenkonto(nr) && !seen[nr]) { seen[nr] = true; out.push(nr); }
+    });
+    return out;
+  }
+  function nameVarianten(name) {
+    const n = String(name || "").trim();
+    if (!n) return [];
+    const vars = [n];
+    const ohneZusatz = n.replace(/,\s*Zweigniederlassung.*$/i, "").trim();
+    if (ohneZusatz && ohneZusatz !== n) vars.push(ohneZusatz);
+    const ohneForm = ohneZusatz.replace(/\s*(e\.U\.|GmbH|AG|Gesellschaft m\.b\.H\.|B\.V\.|KG)\s*$/i, "").trim();
+    if (ohneForm && vars.indexOf(ohneForm) < 0) vars.push(ohneForm);
+    return vars;
+  }
+  function kontoVollname(nr) {
+    if (global.BEMA && typeof BEMA.kontoName === "function") return BEMA.kontoName(nr) || "";
+    const stamm = global.BEMA_STAMM;
+    if (stamm && stamm.konten) {
+      const k = stamm.konten.find(function (x) { return String(x.nummer) === String(nr); });
+      if (k) return k.name || "";
+    }
+    if (global.KONTO && global.KONTO[nr]) return global.KONTO[nr];
+    return "";
+  }
+  function textOhneBuche(text) {
+    return String(text || "")
+      .replace(/\s*Buche diesen Beleg\s*(\([^)]*\))?\s*\.?/gi, "")
+      .replace(/\s*Buche den Geschäftsvorfall\s*\.?/gi, "")
+      .replace(/\s*Buche\s*\.?\s*$/gi, "")
+      .replace(/[ \t]+/g, " ")
+      .replace(/\s+\./g, ".")
+      .trim();
+  }
+  function mitPersonenkonten(text, loesung) {
+    let s = String(text || "");
+    personenkontenDerLoesung(loesung).forEach(function (nr) {
+      const kl = "(" + nr + ")";
+      if (s.indexOf(kl) >= 0) return;
+      const name = kontoVollname(nr);
+      const vars = nameVarianten(name);
+      let gesetzt = false;
+      for (let i = 0; i < vars.length; i++) {
+        const v = vars[i];
+        const idx = s.indexOf(v);
+        if (idx < 0) continue;
+        const after = s.slice(idx + v.length);
+        if (/^\s*\(\d+\)/.test(after)) { gesetzt = true; break; }
+        s = s.slice(0, idx + v.length) + " " + kl + s.slice(idx + v.length);
+        gesetzt = true;
+        break;
+      }
+      if (!gesetzt) {
+        const zusatz = (name ? name + " " : "") + kl;
+        s = s.replace(/\s*$/, "");
+        if (s && !/[.!?]$/.test(s)) s += ".";
+        s = (s ? s + " " : "") + zusatz + (/[.!?]$/.test(zusatz) ? "" : ".");
+      }
+    });
+    return s;
+  }
+
+  function aufgabeKopf(label, punkte, first) {
     const before = first ? 120 : BEFORE_H;
-    const left = "A" + nr;
+    const left = String(label || "");
     if (punkte != null && punkte !== "") {
       return Pparts([
         [left, { bold: true, size: 11, color: C_ACC }],
@@ -6956,12 +7131,12 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     return a.angabeOhneWir || a.text || "";
   }
 
-  function buchungsFall(raw, i, loesung, pack, first, mitBeleg) {
+  function buchungsFall(raw, i, loesung, pack, first, mitBeleg, label) {
     const a = normFall(raw);
     a.punkteVergeben = raw && raw.punkteVergeben;
     const pkt = punkteDes(a, i, pack);
-    let s = aufgabeKopf(i + 1, pkt, first);
-    const txt = a.text || "";
+    let s = aufgabeKopf(label || labelsFuerFaelle([raw])[0] || ("Fall " + (i + 1)), pkt, first);
+    const txt = mitPersonenkonten(textOhneBuche(a.text || ""), a.loesung);
     if (txt) s += P(txt, { size: 10.5, after: 80, keepNext: true, keepLines: true });
     if (mitBeleg && a.beleg) s += belegRahmen(belegAlsText(a.beleg, "000000", 10));
     s += bookingTable(a.loesung, { fuellen: loesung, nr: "1." });
@@ -6970,9 +7145,9 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     return s;
   }
 
-  function frageFall(f, i, loesung, pack, first) {
+  function frageFall(f, i, loesung, pack, first, label) {
     const pkt = punkteDes(f, i, pack);
-    let s = aufgabeKopf(i + 1, pkt, first);
+    let s = aufgabeKopf(label || ("Frage " + (i + 1)), pkt, first);
     s += P(f.frage || f.text || "", { size: 10.5, after: 80, keepNext: true, keepLines: true });
     if (f.optionen && f.optionen.length) {
       const richtig = f.richtig || f.erwartung || f.antwort;
@@ -7019,6 +7194,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     const wirSatz = packW.wirSatz || (loesungFaelle[0] && loesungFaelle[0].fall && loesungFaelle[0].fall.wirSatz) || "";
     const dauer = !!(packW.mitDauer || packW.dauer);
     const ns = packW.notenschluessel;
+    const labels = labelsFuerFaelle(loesungFaelle);
     function body(istLoesung) {
       let s = kopf({
         loesung: istLoesung,
@@ -7029,10 +7205,10 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
         wirSatz: wirSatz
       });
       loesungFaelle.forEach(function (a, i) {
-        s += buchungsFall(a, i, istLoesung, packW, i === 0, false);
+        s += buchungsFall(a, i, istLoesung, packW, i === 0, false, labels[i]);
       });
       fragen.forEach(function (f, i) {
-        s += frageFall(f, nBuch + i, istLoesung, packW, nBuch === 0 && i === 0);
+        s += frageFall(f, nBuch + i, istLoesung, packW, nBuch === 0 && i === 0, "Frage " + (i + 1));
       });
       if (!istLoesung && ns) s += notenschluesselBlock(ns);
       return s;
@@ -7065,6 +7241,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     const mitBeleg = packH.mitBelegen !== false;
     const typ = packH.typId || (faelle[0] && faelle[0].typ && faelle[0].typ.id) || "HU";
     const thema = String(typ).replace(/^E(\d+)_/, "E $1 · ").replace(/_/g, " ");
+    const labels = labelsFuerFaelle(faelle);
     function body(istLoesung) {
       let s = kopf({
         loesung: istLoesung,
@@ -7074,7 +7251,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
         wirSatz: wirSatz
       });
       faelle.forEach(function (a, i) {
-        s += buchungsFall(a, i, istLoesung, packH, i === 0, mitBeleg);
+        s += buchungsFall(a, i, istLoesung, packH, i === 0, mitBeleg, labels[i]);
       });
       return s;
     }
@@ -7089,6 +7266,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
 
   function mitschriftDocs(journal) {
     const ein = journal || [];
+    const labels = labelsFuerFaelle(ein);
     function body(istLoesung) {
       let s = kopf({
         loesung: istLoesung,
@@ -7097,10 +7275,10 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
         summe: null
       });
       ein.forEach(function (e, i) {
-        s += aufgabeKopf(i + 1, null, i === 0);
-        const kurz = belegKurz(e);
-        if (kurz) s += P(kurz, { size: 10.5, after: 80, keepNext: true, keepLines: true });
+        s += aufgabeKopf(labels[i], null, i === 0);
         const n = normFall(e);
+        const kurz = mitPersonenkonten(textOhneBuche(belegKurz(e)), n.loesung);
+        if (kurz) s += P(kurz, { size: 10.5, after: 80, keepNext: true, keepLines: true });
         s += bookingTable(n.loesung, { fuellen: istLoesung, nr: "1." });
         if (istLoesung) s += begruendungZeile((n.gedankengang && n.gedankengang.begruendung) || "");
         s += leerzeile();
@@ -7253,8 +7431,9 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
   }
   function punkteWahlHtml() {
     return feldHtml("Punkte",
-      "<label><input type=\"radio\" name=\"bema-pkt\" value=\"vorschlag\"> automatisch</label>" +
-      "<label><input type=\"radio\" name=\"bema-pkt\" value=\"frei\" checked> frei lassen</label>");
+      "<label><input type=\"radio\" name=\"bema-pkt\" value=\"jefall\" checked> je Fall</label>" +
+      "<input type=\"number\" id=\"bema-pkt-je\" min=\"1\" max=\"10\" step=\"1\" value=\"3\" aria-label=\"Punkte je Fall\">" +
+      "<label><input type=\"radio\" name=\"bema-pkt\" value=\"frei\"> frei lassen</label>");
   }
   function exportWahlHtml() {
     return feldHtml("Ausgabe",
@@ -7271,9 +7450,62 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     return "<div class=\"actions\"><button type=\"button\" id=\"bema-go\"" + (goDisabled ? " disabled" : "") + ">" + (goLabel || "Word erstellen") + "</button>" +
       "<button type=\"button\" class=\"sec\" id=\"bema-cancel\">Abbrechen</button></div>";
   }
+  function pktJeFallWert(box) {
+    const el = box.querySelector("#bema-pkt-je");
+    let n = el ? Math.round(Number(el.value)) : 3;
+    if (!(n >= 1 && n <= 10)) n = 3;
+    return n;
+  }
   function pktModusIn(box) {
     if (box.querySelector("#bema-pkt-selbst") && box.querySelector("#bema-pkt-selbst").checked) return "gesetzt";
-    return ((box.querySelector("[name=\"bema-pkt\"]:checked") || {}).value) || "frei";
+    if (box.querySelector("#bema-pkt-auto") && box.querySelector("#bema-pkt-auto").checked) return "vorschlag";
+    return ((box.querySelector("[name=\"bema-pkt\"]:checked") || {}).value) || "jefall";
+  }
+  function bindPunkteSteuerung(box, onChange) {
+    function sync() {
+      const modus = pktModusIn(box);
+      const je = box.querySelector("#bema-pkt-je");
+      if (je) je.disabled = modus !== "jefall";
+      if (onChange) onChange();
+    }
+    box.querySelectorAll("[name=\"bema-pkt\"]").forEach(function (el) {
+      el.addEventListener("change", function () {
+        const auto = box.querySelector("#bema-pkt-auto");
+        const selbst = box.querySelector("#bema-pkt-selbst");
+        if (auto) auto.checked = false;
+        if (selbst) selbst.checked = false;
+        sync();
+      });
+    });
+    const je = box.querySelector("#bema-pkt-je");
+    if (je) {
+      je.addEventListener("focus", function () {
+        const r = box.querySelector("[name=\"bema-pkt\"][value=\"jefall\"]");
+        if (r) r.checked = true;
+        const auto = box.querySelector("#bema-pkt-auto");
+        const selbst = box.querySelector("#bema-pkt-selbst");
+        if (auto) auto.checked = false;
+        if (selbst) selbst.checked = false;
+        sync();
+      });
+      je.addEventListener("input", sync);
+    }
+    const auto = box.querySelector("#bema-pkt-auto");
+    if (auto) auto.addEventListener("change", function () {
+      if (auto.checked) {
+        const selbst = box.querySelector("#bema-pkt-selbst");
+        if (selbst) selbst.checked = false;
+      }
+      sync();
+    });
+    const selbst = box.querySelector("#bema-pkt-selbst");
+    if (selbst) selbst.addEventListener("change", function () {
+      if (selbst.checked) {
+        if (auto) auto.checked = false;
+      }
+      sync();
+    });
+    sync();
   }
   function starteExport(docs, box) {
     const status = box.querySelector("#bema-dl-status");
@@ -7569,6 +7801,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
         "<div class=\"row\"><label><input type=\"radio\" name=\"bema-bel\" value=\"mit\" checked> mit Belegen</label>" +
         "<label><input type=\"radio\" name=\"bema-bel\" value=\"text\"> nur Text</label>" +
         "<label><input type=\"checkbox\" id=\"bema-tw\"> ein Twist in einem Fall</label></div>" +
+        "<div class=\"row\"><label><input type=\"checkbox\" id=\"bema-pkt-auto\"> nach Satzlänge (2 P. + 1 P. pro Betrag)</label></div>" +
         "<div class=\"row\"><label><input type=\"checkbox\" id=\"bema-pkt-selbst\"> Punkte selbst festlegen</label></div>" +
         "<div id=\"bema-pkt-felder\" hidden></div>" +
         "<p id=\"bema-pkt-summe\" class=\"bema-hinweis\" hidden></p>"
@@ -7602,9 +7835,8 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       felder.querySelectorAll("input").forEach(function (inp) { inp.addEventListener("input", summe); });
       summe();
     }
-    box.querySelectorAll("[name=\"bema-pkt\"], #bema-n, #bema-pkt-selbst").forEach(function (el) {
-      el.addEventListener("change", renderHausPunkte);
-    });
+    box.querySelector("#bema-n").addEventListener("change", renderHausPunkte);
+    bindPunkteSteuerung(box, renderHausPunkte);
     renderHausPunkte();
     const go = box.querySelector("#bema-go");
     if (go) go.onclick = function () {
@@ -7617,6 +7849,11 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
           return;
         }
       }
+      if (modus === "jefall") {
+        const p = pktJeFallWert(box);
+        const n = +box.querySelector("#bema-n").value;
+        liste = Array.from({ length: n }, function () { return p; });
+      }
       const packH = BEMA.hausuebungErzeugen(typId, {
         anzahl: +box.querySelector("#bema-n").value,
         mitBelegen: box.querySelector("[name=\"bema-bel\"]:checked").value === "mit",
@@ -7625,7 +7862,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
         seed: Date.now() % 1e9
       });
       if (!packH.ok) { box.querySelector(".box").insertAdjacentHTML("beforeend", "<p class=\"bema-luecke\">" + packH.fehler + "</p>"); return; }
-      packH.punkteModus = modus;
+      packH.punkteModus = modus === "jefall" ? "gesetzt" : modus;
       packH.punkteJeAufgabe = liste;
       if (modus === "vorschlag" && BEMA.punkteDesFalls) {
         packH.punkteJeAufgabe = packH.faelle.map(function (f) { return BEMA.punkteDesFalls(f.fall).summe; });
@@ -7658,6 +7895,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
         "<label>Befriedigend ab <input type=\"number\" class=\"bema-ns\" id=\"bema-ns-b\" min=\"0\" max=\"100\" step=\"0.1\" value=\"62.6\"> %</label> " +
         "<label>Genügend ab <input type=\"number\" class=\"bema-ns\" id=\"bema-ns-n\" min=\"0\" max=\"100\" step=\"0.1\" value=\"50.1\"> %</label>" +
         "</div>" +
+        "<div class=\"row\"><label><input type=\"checkbox\" id=\"bema-pkt-auto\"> nach Satzlänge (2 P. + 1 P. pro Betrag)</label></div>" +
         "<div class=\"row\"><label><input type=\"checkbox\" id=\"bema-pkt-selbst\"> Punkte selbst festlegen</label></div>" +
         "<div id=\"bema-pkt-felder\" hidden></div>" +
         "<p id=\"bema-pkt-summe\" class=\"bema-hinweis\" hidden></p>"
@@ -7685,6 +7923,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
         gruppen: +box.querySelector("#bema-g").value,
         faelle: +box.querySelector("#bema-faelle").value,
         punkteModus: modus,
+        punkteJeFall: modus === "jefall" ? pktJeFallWert(box) : undefined,
         mitDauer: box.querySelector("#bema-dauer").checked,
         notenschluessel: liesNotenschluessel()
       };
@@ -7748,18 +7987,28 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       const profil = fragen === 3 ? "B" : (fragen === 2 ? "D" : (v.C ? "C" : "A"));
       const ok = v[profil];
       const el = box.querySelector("#bema-wh-verf");
-      el.textContent = ok
-        ? ("2 P. pro Buchungssatz + 1 P. pro Betrag" + (fragen ? ", Fragen je 1 P." : "") + ".")
-        : "Diese Kombination aus Einheiten und Fragen ist so nicht möglich.";
-      el.style.color = ok ? "" : "#8a1f1f";
+      const modus = pktModus();
+      if (!ok) {
+        el.textContent = "Diese Kombination aus Einheiten und Fragen ist so nicht möglich.";
+        el.style.color = "#8a1f1f";
+      } else if (modus === "jefall") {
+        const sum = (+box.querySelector("#bema-faelle").value) * pktJeFallWert(box) + (fragen || 0);
+        el.textContent = "Summe: " + sum + " P.";
+        el.style.color = "";
+      } else if (modus === "vorschlag") {
+        const vs = BEMA.whVorschlagListe(o);
+        el.textContent = (vs && vs.ok) ? ("Summe: " + vs.summe + " P.") : "";
+        el.style.color = "";
+      } else {
+        el.textContent = "";
+        el.style.color = "";
+      }
       box.querySelector("#bema-go").disabled = !ok;
     }
     ["#bema-e", "#bema-mix", "#bema-v", "#bema-faelle"].forEach(function (sel) {
       box.querySelector(sel).addEventListener("change", function () { updateVerf(); renderWhPunkte(); });
     });
-    box.querySelectorAll("[name=\"bema-pkt\"], #bema-pkt-selbst").forEach(function (el) {
-      el.addEventListener("change", renderWhPunkte);
-    });
+    bindPunkteSteuerung(box, function () { updateVerf(); renderWhPunkte(); });
     box.querySelector("#bema-ns").addEventListener("change", renderNs);
     updateVerf();
     renderWhPunkte();
