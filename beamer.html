@@ -6499,7 +6499,6 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
   const C_LGREY = "808080";
   const TEXT_CM = 17.8;
   const ROW_H = 510;   /* 0,9 cm */
-  const LQ_H = 454;    /* 0,8 cm */
   const BEFORE_H = 567; /* 1 cm vor weiterer Überschrift */
   const AFTER_H = 284;  /* ca. 0,5 cm nach der Überschrift */
 
@@ -6511,7 +6510,6 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
   const TEXTW = cm(TEXT_CM);
   const BOOK_COLS = [0.9, 6.4, 1.8, 6.9, 1.8].map(cm);
   const NAME_COLS = [cm(5.93), cm(5.93), TEXTW - 2 * cm(5.93)];
-  const LQ_COLS = [cm(5.5), cm(12.3)];
 
   function rPr(o) {
     o = o || {};
@@ -6876,50 +6874,6 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     return P(t, { size: 10, color: C_SOL, after: 80, before: 20 });
   }
 
-  function antwortenFuer(e) {
-    const n = (e && e.loesung !== undefined && e.gedankengang !== undefined) ? e : normFall(e);
-    const gg = n.gedankengang || {};
-    const z = n.loesung || [];
-    const konten = z.map(function (l) { return ktoKurz(l.konto, l.bezeichnung); }).join(", ");
-    const hatVst = z.some(function (l) { return String(l.konto) === "2500"; });
-    const hatUst = z.some(function (l) { return String(l.konto) === "3500"; });
-    let ust = gg.steuer || gg.ust || "";
-    if (!ust) {
-      if (hatVst && hatUst) ust = "Vorsteuer und Umsatzsteuer";
-      else if (hatVst) ust = "Vorsteuer (2500)";
-      else if (hatUst) ust = "Umsatzsteuer (3500)";
-      else ust = "keine USt/VSt in diesem Satz";
-    }
-    let art = gg.art_zu_abgang || "";
-    if (!art && z.length) {
-      art = z.map(function (l) { return (l.seite || "") + ": " + ktoKurz(l.konto, l.bezeichnung); }).join("; ");
-    }
-    return [
-      { q: "Was passiert?", a: gg.was_passiert || gg.was || belegKurz(e) },
-      { q: "Welche Konten?", a: gg.konten || konten },
-      { q: "Art und Zu-/Abgang → Soll/Haben", a: art },
-      { q: "USt/VSt", a: ust },
-      { q: "Beleggruppe", a: gg.beleggruppe || n.beleggruppe || "" }
-    ];
-  }
-
-  function leitfragenTabelle(items, fuellen) {
-    const rows = (items || []).map(function (it) {
-      return [
-        { text: it.q, size: 10, color: "000000" },
-        { text: fuellen ? (it.a || "") : "", size: 10, color: fuellen ? C_SOL : "000000" }
-      ];
-    });
-    if (!rows.length) return "";
-    return tableFixed(LQ_COLS, rows, {
-      borders: { all: singleBorder(8, "808080") },
-      rowH: LQ_H,
-      keep: true,
-      cellMargins: [40, 40, 60, 60],
-      vAlign: "center"
-    }) + spacer(80);
-  }
-
   function punkteDes(a, i, pack) {
     if (a && a.punkteVergeben != null && isFinite(a.punkteVergeben)) return Math.round(a.punkteVergeben);
     if (!pack || pack.punkteModus === "frei" || pack.punkteModus == null) return null;
@@ -6948,7 +6902,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     return a.angabeOhneWir || a.text || "";
   }
 
-  function buchungsFall(raw, i, loesung, pack, first, mitBeleg, mitLeitfragen) {
+  function buchungsFall(raw, i, loesung, pack, first, mitBeleg) {
     const a = normFall(raw);
     a.punkteVergeben = raw && raw.punkteVergeben;
     const pkt = punkteDes(a, i, pack);
@@ -6958,7 +6912,6 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     if (mitBeleg && a.beleg) s += belegRahmen(belegAlsText(a.beleg, "000000", 10));
     s += bookingTable(a.loesung, { fuellen: loesung, nr: "1.", leerExtra: !loesung });
     if (loesung) s += begruendungZeile((a.gedankengang && a.gedankengang.begruendung) || "");
-    if (mitLeitfragen) s += leitfragenTabelle(antwortenFuer(a), loesung);
     s += leerzeile();
     return s;
   }
@@ -7023,7 +6976,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
         wirSatz: wirSatz
       });
       loesungFaelle.forEach(function (a, i) {
-        s += buchungsFall(a, i, istLoesung, packW, i === 0, false, false);
+        s += buchungsFall(a, i, istLoesung, packW, i === 0, false);
       });
       fragen.forEach(function (f, i) {
         s += frageFall(f, nBuch + i, istLoesung, packW, nBuch === 0 && i === 0);
@@ -7057,7 +7010,6 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     const summe = summeDes(packH);
     const wirSatz = packH.wirSatz || (faelle[0] && faelle[0].fall && faelle[0].fall.wirSatz) || "";
     const mitBeleg = packH.mitBelegen !== false;
-    const mitLq = !!packH.leitfragen;
     const typ = packH.typId || (faelle[0] && faelle[0].typ && faelle[0].typ.id) || "HU";
     const thema = String(typ).replace(/^E(\d+)_/, "E $1 · ").replace(/_/g, " ");
     function body(istLoesung) {
@@ -7069,7 +7021,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
         wirSatz: wirSatz
       });
       faelle.forEach(function (a, i) {
-        s += buchungsFall(a, i, istLoesung, packH, i === 0, mitBeleg, mitLq);
+        s += buchungsFall(a, i, istLoesung, packH, i === 0, mitBeleg);
       });
       return s;
     }
@@ -7098,7 +7050,6 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
         const n = normFall(e);
         s += bookingTable(n.loesung, { fuellen: istLoesung, nr: "1.", leerExtra: !istLoesung });
         if (istLoesung) s += begruendungZeile((n.gedankengang && n.gedankengang.begruendung) || "");
-        s += leitfragenTabelle(antwortenFuer(n), istLoesung);
         s += leerzeile();
       });
       return s;
@@ -7477,7 +7428,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     if (!journal().length) { dlg("<h2>Mitschrift</h2><p>Noch keine gebuchten Fälle.</p><div class=\"actions\"><button type=\"button\" class=\"sec\" id=\"bema-cancel\">Schließen</button></div>").querySelector("#bema-cancel").onclick = schliesseDlg; return; }
     const box = dlg(
       "<h2>Mitschrift</h2>" +
-      "<p>Handout mit Belegkurzbeschreibung, Buchungsraster und Leitfragen. Die Lösung enthält die Antworten in Dunkelblau.</p>" +
+      "<p>Handout mit Belegkurzbeschreibung und Buchungsraster. Die Lösung enthält den ausgefüllten Satz in Dunkelblau und eine kurze Begründung.</p>" +
       exportWahlHtml() +
       "<div class=\"actions\"><button type=\"button\" id=\"bema-go\">DOCX erzeugen</button>" +
       "<button type=\"button\" class=\"sec\" id=\"bema-cancel\">Abbrechen</button></div>"
@@ -7542,7 +7493,6 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       "<label><input type=\"radio\" name=\"bema-bel\" value=\"mit\" checked> mit Belegen</label>" +
       "<label><input type=\"radio\" name=\"bema-bel\" value=\"text\"> nur Text</label>" +
       "<label><input type=\"checkbox\" id=\"bema-tw\"> ein Twist in einem Fall</label></div>" +
-      "<div class=\"row\"><label><input type=\"checkbox\" id=\"bema-lq\"> Leitfragen (standardmäßig aus)</label></div>" +
       "<div class=\"row\"><span>Punkte</span>" +
       "<label><input type=\"radio\" name=\"bema-pkt\" value=\"frei\" checked> freilassen (Standard)</label>" +
       "<label><input type=\"radio\" name=\"bema-pkt\" value=\"gesetzt\"> je Aufgabe festlegen</label></div>" +
@@ -7607,7 +7557,6 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       packH.punkteModus = modus;
       packH.punkteJeAufgabe = liste;
       if (liste) packH.punkteSumme = liste.reduce(function (s, v) { return s + Math.round(v); }, 0);
-      packH.leitfragen = !!(box.querySelector("#bema-lq") && box.querySelector("#bema-lq").checked);
       const docs = BEMA_DOCX.hausuebungDocs(packH);
       starteExport(docs, box);
     };
