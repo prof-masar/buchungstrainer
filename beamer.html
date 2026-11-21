@@ -647,44 +647,117 @@ html.beamer, body.beamer, #bmstage, #bmzoombar, #bmstern, #bmpop, #bmov, #vidmod
 #bmzoombar #bmzpct { font-size: 18px; }
 #bmzoombar button { min-height: 36px; padding: 4px 12px; }
 
-/* Beamer-UI: alles mindestens 18px, keine Verkleinerung in Media Queries */
-body.beamer .kchip, body.beamer .bchip,
-body.beamer .kchip .nr, body.beamer .slot, body.beamer .slot .nm,
-body.beamer .add, body.beamer .btn,
-.bm-bar .bm-titel, .bm-bar .bm-entwurf, .bm-entwurf, .bm-bar .pill,
-.bm-nav, .bm-erklaer-leiste .bm-hint, .bm-erklaer-leiste .btn,
-.bm-meta .wir, .bm-meta .fall, #buchung .bm-satz-h,
-body.beamer .msg, body.beamer .loesung, body.beamer .erkl,
-.bm-pick h3, .bm-wahl-kopf .lead, .bm-ecard .nr, .bm-ecard .ti, .bm-ecard .meta,
-.bm-ecard .vid, .bm-aufgabenbox h3, .bm-achip, .bm-wahl .footnote,
-button.bm-hit, button.bm-hit .bm-i,
-.bm-warum, .bm-kontrolle,
-.bm-stern-mitte .bm-sm-k, .bm-stern-mitte .bm-sm-t, .bm-arm h3,
-.bm-kklasse > button.kk, .bm-kklasse .kk .nr, .bm-kliste button,
-#bmpop h3, #bmpop p, #bmpop .bm-popx,
-#bmstage .small, #bmstage .sub, #bmstage .unit-title, #bmstage .unit-meta,
-#bmstage .stat, #bmstage footer.foot, #bmstage .pill, #bmstage .wir,
-#bmstage .fall, #bmstage .einheit-tag, #bmstage .side-h, #bmstage .slot,
-#bmstage .slot .nm, #bmstage .rowhint, #bmstage .sheet h3, #bmstage .an,
-#bmstage .serie, #bmstage .beste, #bmstage .stufe .pkt, #bmstage .stufe .pn,
-#bmstage .badge, #bmstage .badge small, #bmstage .tk-datum, #bmstage .tk-text,
-#bmstage .rzartbtn span, #bmstage .rzartbtn b, #bmstage .rz-formel,
-#bmstage .tippmore, #bmstage .tippmore .small, #bmstage details.tipp,
-#bmstage details.tipp summary, #bmstage details.tipp p, #bmstage details.tipp li,
-#bmstage .tkonten, #bmstage .muted, #bmstage .ph, #bmstage .linkbtn,
-#bmstage .btn.tippbtn, #vidmodal, #vidmodal .vidkopf b, #vidmodal .vidende .vetitel,
-#bmstage h2, #bmstage h3, #bmstage .lead {
+/* Beamer-UI: alles mindestens 18px, keine Verkleinerung in Media Queries. Belege ausgenommen. */
+body.beamer .kchip,
+body.beamer .bchip,
+body.beamer .kchip .nr,
+body.beamer .slot,
+body.beamer .slot .nm,
+body.beamer .add,
+body.beamer .btn,
+.bm-bar .bm-titel,
+.bm-bar .bm-entwurf,
+.bm-entwurf,
+.bm-bar .pill,
+.bm-nav,
+.bm-erklaer-leiste .bm-hint,
+.bm-erklaer-leiste .btn,
+.bm-meta .wir,
+.bm-meta .fall,
+#buchung .bm-satz-h,
+body.beamer .msg,
+body.beamer .loesung,
+body.beamer .erkl,
+.bm-pick h3,
+.bm-wahl-kopf .lead,
+.bm-ecard .nr,
+.bm-ecard .ti,
+.bm-ecard .meta,
+.bm-ecard .vid,
+.bm-aufgabenbox h3,
+.bm-achip,
+.bm-wahl .footnote,
+button.bm-hit:not(.bl *):not(.beleg-frame *),
+button.bm-hit .bm-i:not(.bl *):not(.beleg-frame *),
+.bm-warum,
+.bm-kontrolle,
+.bm-stern-mitte .bm-sm-k,
+.bm-stern-mitte .bm-sm-t,
+.bm-arm h3,
+.bm-kklasse > button.kk,
+.bm-kklasse .kk .nr,
+.bm-kliste button,
+#bmpop h3,
+#bmpop p,
+#bmpop .bm-popx,
+#bmstage .small:not(.bl *):not(.beleg-frame *),
+#bmstage .sub:not(.bl *):not(.beleg-frame *),
+#bmstage .unit-title:not(.bl *):not(.beleg-frame *),
+#bmstage .unit-meta:not(.bl *):not(.beleg-frame *),
+#bmstage .stat:not(.bl *):not(.beleg-frame *),
+#bmstage footer.foot:not(.bl *):not(.beleg-frame *),
+#bmstage .pill:not(.bl *):not(.beleg-frame *),
+#bmstage .wir:not(.bl *):not(.beleg-frame *),
+#bmstage .fall:not(.bl *):not(.beleg-frame *),
+#bmstage .einheit-tag:not(.bl *):not(.beleg-frame *),
+#bmstage .side-h:not(.bl *):not(.beleg-frame *),
+#bmstage .slot:not(.bl *):not(.beleg-frame *),
+#bmstage .slot .nm:not(.bl *):not(.beleg-frame *),
+#bmstage .rowhint:not(.bl *):not(.beleg-frame *),
+#bmstage .sheet h3:not(.bl *):not(.beleg-frame *),
+#bmstage .an:not(.bl *):not(.beleg-frame *),
+#bmstage .serie:not(.bl *):not(.beleg-frame *),
+#bmstage .beste:not(.bl *):not(.beleg-frame *),
+#bmstage .stufe .pkt:not(.bl *):not(.beleg-frame *),
+#bmstage .stufe .pn:not(.bl *):not(.beleg-frame *),
+#bmstage .badge:not(.bl *):not(.beleg-frame *),
+#bmstage .badge small:not(.bl *):not(.beleg-frame *),
+#bmstage .tk-datum:not(.bl *):not(.beleg-frame *),
+#bmstage .tk-text:not(.bl *):not(.beleg-frame *),
+#bmstage .rzartbtn span:not(.bl *):not(.beleg-frame *),
+#bmstage .rzartbtn b:not(.bl *):not(.beleg-frame *),
+#bmstage .rz-formel:not(.bl *):not(.beleg-frame *),
+#bmstage .tippmore:not(.bl *):not(.beleg-frame *),
+#bmstage .tippmore .small:not(.bl *):not(.beleg-frame *),
+#bmstage details.tipp:not(.bl *):not(.beleg-frame *),
+#bmstage details.tipp summary:not(.bl *):not(.beleg-frame *),
+#bmstage details.tipp p:not(.bl *):not(.beleg-frame *),
+#bmstage details.tipp li:not(.bl *):not(.beleg-frame *),
+#bmstage .tkonten:not(.bl *):not(.beleg-frame *),
+#bmstage .muted:not(.bl *):not(.beleg-frame *),
+#bmstage .ph:not(.bl *):not(.beleg-frame *),
+#bmstage .linkbtn:not(.bl *):not(.beleg-frame *),
+#bmstage .btn.tippbtn:not(.bl *):not(.beleg-frame *),
+#vidmodal,
+#vidmodal .vidkopf b,
+#vidmodal .vidende .vetitel,
+#bmstage h2:not(.bl *):not(.beleg-frame *),
+#bmstage h3:not(.bl *):not(.beleg-frame *),
+#bmstage .lead:not(.bl *):not(.beleg-frame *) {
   font-size: 18px !important;
-}
-.bm-wahl-kopf h2, .bm-ovkopf h2, .bm-formel .bm-z, .bm-formel .bm-op,
-#bmstage h1, body.beamer .rm { font-size: max(18px, 1.25rem) !important; }
-.bm-fall-gross { font-size: max(18px, 1.25rem) !important; }
+}.bm-wahl-kopf h2,
+.bm-ovkopf h2,
+.bm-formel .bm-z,
+.bm-formel .bm-op,
+#bmstage h1:not(.bl *):not(.beleg-frame *),
+body.beamer .rm { font-size: max(18px, 1.25rem) !important; }.bm-fall-gross { font-size: max(18px, 1.25rem) !important; }
 
-/* Belege: alle Fließtexte mindestens 18px */
-#bmstage .bl, #bmstage .bl * { font-size: 18px !important; line-height: 1.3; }
-#bmstage .bl h4, #bmstage .bl .wm, #bmstage .bl .fn,
-#bmstage .bl .tot td, #bmstage .bl.ka h4, #bmstage .bl.bon .tot td { font-size: 20px !important; }
-#bmstage .bl.a4 .ruecksende, #bmstage .bl.a4 .fuss, #bmstage .bl.ka .kfuss { font-size: 18px !important; }
+/* Klickbare Beträge und Felder im Beleg: keine zusätzliche Schrift, kein ?-Chip, kein Mehrplatz. */
+.bl button.bm-hit,
+.bl button.bm-bhit{
+  display:inline;margin:0;padding:0;border:0;background:transparent;color:inherit;
+  font:inherit;font-weight:inherit;font-size:inherit;line-height:inherit;
+  box-shadow:inset 0 -2px 0 rgba(31,122,118,.45);border-radius:2px;
+  cursor:pointer;text-align:inherit;white-space:inherit;gap:0;align-items:inherit;
+}
+.bl button.bm-hit .bm-i{display:none;}
+.bl button.bm-hit:hover, .bl button.bm-hit:focus,
+.bl button.bm-bhit:hover, .bl button.bm-bhit:focus{
+  background:var(--accent-soft);box-shadow:inset 0 -2px 0 var(--accent);outline:none;color:inherit;
+}
+/* Belege: Originalschrift der Schüleransicht. Keine 18-px-Regel,
+   keine erzwungenen Umbrüche. Vergrößerung nur proportional als Ganzes
+   über fitBelege / Einpassen, ohne Informationsverlust. */
 
 /* Media-Query darf Schrift nicht unter 18px drücken */
 @media (max-height:800px){
@@ -3178,6 +3251,8 @@ function minSchriftOk(wurzel) {
     [root, ...root.querySelectorAll("*")].forEach(el => {
       if (el.closest("[hidden]")) return;
       if (el.getAttribute("aria-hidden") === "true") return;
+      /* Beleg bleibt originalgetreu: Mindestschrift gilt nur für die übrige Oberfläche */
+      if (el.closest(".beleg-frame, .bl, #zoom")) return;
       const st = getComputedStyle(el);
       if (st.display === "none" || st.visibility === "hidden") return;
       const text = [...el.childNodes].filter(n => n.nodeType === 3 && n.textContent.trim()).map(n => n.textContent.trim()).join(" ");
