@@ -957,6 +957,10 @@ body.beamer .rm { font-size: max(18px, 1.25rem) !important; }.bm-fall-gross { fo
 .bema-dlg #bema-pkt-felder[hidden],.bema-dlg #bema-pkt-summe[hidden]{display:none}
 .bema-dlg input.bema-pkt{width:4.5em;font-size:18px;padding:2px 6px}
 
+.bema-dlg #bema-ns-felder{display:flex;flex-wrap:wrap;gap:8px 14px;margin:8px 0}
+.bema-dlg #bema-ns-felder[hidden]{display:none}
+.bema-dlg input.bema-ns{width:5em;font-size:18px;padding:2px 6px}
+
 </style>
 </head>
 <body class="beamer">
@@ -6103,6 +6107,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     if (profil === "A" && !verf.A)
       return { ok: false, fehler: "Keine Steuerfälle in den gewählten Einheiten für Profil A.", profil: "A" };
 
+    const faelleN = (opts.faelle === 2 || opts.faelle === 4) ? opts.faelle : 3;
     let typen = typenFuerEinheiten(einheiten).filter(t => t.id !== "E15_lkw_kauf" || newest === 15);
     function typenArt(pred, forceEinheit) {
       let list = typen.filter(t => pred(t.id));
@@ -6125,7 +6130,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     }
 
     if (profil === "A") {
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < faelleN; i++) {
         const t = nimm(istSteuerfall, i < 2);
         if (!t) return { ok: false, fehler: "Keine Steuerfälle in den gewählten Einheiten für Profil A." };
         buchungen.push(t);
@@ -6133,36 +6138,59 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     } else if (profil === "C") {
       const sk = nimm(istSkonto, true) || nimm(istSkonto, false);
       const st = nimm(istSteuerfall, true) || nimm(istSteuerfall, false);
-      const za = nimm(istZahlung, true) || nimm(istZahlung, false);
-      if (!sk || !st || !za) return { ok: false, fehler: "Profil C braucht Skonto-, Steuer- und Zahlungsfall in den gewählten Einheiten.", profil: "C" };
-      buchungen.push(sk, st, za);
+      if (!sk || !st) return { ok: false, fehler: "Profil C braucht mindestens Skonto- und Steuerfall in den gewählten Einheiten.", profil: "C" };
+      buchungen.push(sk, st);
+      if (faelleN >= 3) {
+        const za = nimm(istZahlung, true) || nimm(istZahlung, false);
+        if (!za) return { ok: false, fehler: "Profil C braucht Skonto-, Steuer- und Zahlungsfall in den gewählten Einheiten.", profil: "C" };
+        buchungen.push(za);
+      }
+      if (faelleN === 4) {
+        const extra = nimm(istSteuerfall, true) || nimm(istZahlung, true) || nimm(istSteuerfall, false) || nimm(istZahlung, false);
+        if (!extra) return { ok: false, fehler: "Profil C: Für 4 Fälle fehlt ein weiterer Steuer- oder Zahlungsfall (keine Lücke, keine Ausleihe).", profil: "C" };
+        buchungen.push(extra);
+      }
     } else if (profil === "B") {
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < faelleN; i++) {
         const t = nimm(istZahlung, i < 2);
         if (!t) return { ok: false, fehler: "Keine Zweizeiler in den gewählten Einheiten für Profil B.", profil: "B", nicht_anbieten: true };
         buchungen.push(t);
       }
     } else {
       const st = nimm(istSteuerfall, true) || nimm(istSteuerfall, false);
-      const z1 = nimm(istZahlung, true) || nimm(istZahlung, false);
-      const z2 = nimm(istZahlung, false);
-      if (!st || !z1 || !z2) return { ok: false, fehler: "Profil D in den gewählten Einheiten nicht darstellbar (1 Steuerfall und 2 Zweizeiler nötig, ohne Ausleihe).", profil: "D", nicht_anbieten: true };
-      buchungen.push(st, z1, z2);
+      if (!st) return { ok: false, fehler: "Profil D in den gewählten Einheiten nicht darstellbar (Steuerfall nötig, ohne Ausleihe).", profil: "D", nicht_anbieten: true };
+      buchungen.push(st);
+      for (let i = 1; i < faelleN; i++) {
+        const z = nimm(istZahlung, i < 2);
+        if (!z) return { ok: false, fehler: "Profil D in den gewählten Einheiten nicht darstellbar (weitere Zweizeiler nötig, ohne Ausleihe).", profil: "D", nicht_anbieten: true };
+        buchungen.push(z);
+      }
     }
 
-    /* neueste Einheit mindestens 2 der 3 Buchungsfälle, Punkteklasse beibehalten; keine Ausleihe */
+    /* Neueste Einheit mindestens 2 Fälle, soweit die Fallzahl das hergibt; Punkteklasse beibehalten; keine Ausleihe */
+    const brauchtNewest = Math.min(2, faelleN);
     const vonNewest = function () { return buchungen.filter(function (t) { return t.einheit === newest; }).length; };
-    if (einheiten.length > 1 && vonNewest() < 2) {
-      for (let i = 0; i < buchungen.length && vonNewest() < 2; i++) {
+    if (einheiten.length > 1 && vonNewest() < brauchtNewest) {
+      for (let i = 0; i < buchungen.length && vonNewest() < brauchtNewest; i++) {
         if (buchungen[i].einheit === newest) continue;
         const soll = erwartetePunkte(buchungen[i].id);
         const ersatz = typen.filter(function (t) { return t.einheit === newest && erwartetePunkte(t.id) === soll; });
         if (ersatz.length) buchungen[i] = pick(rng, ersatz);
       }
     }
-    if (einheiten.length > 1 && vonNewest() < 2)
-      return { ok: false, fehler: "Profil " + profil + ": Die neueste Einheit muss mindestens 2 der 3 Buchungsfälle stellen. In den gewählten Einheiten nicht darstellbar (keine Ausleihe).", profil: profil };
-    return { ok: true, profil: profil, einheiten: einheiten, buchungen: buchungen, fragenN: fragenN, luecke: null };
+    if (einheiten.length > 1 && vonNewest() < brauchtNewest)
+      return { ok: false, fehler: "Profil " + profil + ": Die neueste Einheit muss mindestens " + brauchtNewest + " der " + faelleN + " Buchungsfälle stellen. In den gewählten Einheiten nicht darstellbar (keine Ausleihe).", profil: profil };
+    return { ok: true, profil: profil, einheiten: einheiten, buchungen: buchungen, fragenN: fragenN, faelleN: faelleN, luecke: null };
+  }
+
+  function whVorschlagListe(opts, rng) {
+    opts = opts || {};
+    const plan = waehleWHFaelle(opts, rng || mulberry(1));
+    if (!plan.ok) return plan;
+    const liste = plan.buchungen.map(function (t) { return erwartetePunkte(t.id); });
+    for (let i = 0; i < plan.fragenN; i++) liste.push(1);
+    const summe = liste.reduce(function (s, v) { return s + v; }, 0);
+    return { ok: true, liste: liste, summe: summe, nFaelle: plan.buchungen.length, fragenN: plan.fragenN, profil: plan.profil, typen: plan.buchungen.map(function (t) { return t.id; }) };
   }
 
   function verstaendnisItems(einheiten, n, rng, gruppe) {
@@ -6241,22 +6269,26 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       }
       const fragen = plan.fragenN ? verstaendnisItems(plan.einheiten, plan.fragenN, rng, g) : [];
       const intern = faelle.reduce((s, f) => s + f.punkte.summe, 0) + fragen.length;
-      const modus = opts.punkteModus === "gesetzt" ? "gesetzt" : "frei";
+      const modus = opts.punkteModus === "gesetzt" ? "gesetzt" : (opts.punkteModus === "vorschlag" ? "vorschlag" : "frei");
       const liste = opts.punkteJeAufgabe || [];
       const nPos = faelle.length + fragen.length;
+      function ganzeZahl(v) { return typeof v === "number" && isFinite(v) && Math.round(v) === v && v >= 0; }
       if (modus === "gesetzt") {
         if (liste.length !== nPos)
-          return { ok: false, fehler: "Bitte für jede Aufgabe eine Punktzahl angeben (" + nPos + " Felder).", profil: plan.profil };
+          return { ok: false, fehler: "Bitte für jede Aufgabe eine ganze Punktzahl angeben (" + nPos + " Felder).", profil: plan.profil };
         for (let k = 0; k < nPos; k++) {
-          const v = Number(liste[k]);
-          if (!isFinite(v) || v < 0)
-            return { ok: false, fehler: "Punktzahlen müssen Zahlen ab 0 sein.", profil: plan.profil };
+          if (!ganzeZahl(Number(liste[k])))
+            return { ok: false, fehler: "Punktzahlen müssen ganze Zahlen ab 0 sein.", profil: plan.profil };
         }
       }
-      faelle.forEach(function (f, i) { f.punkteVergeben = modus === "gesetzt" ? Number(liste[i]) : null; });
-      fragen.forEach(function (q, i) { q.punkteVergeben = modus === "gesetzt" ? Number(liste[faelle.length + i]) : null; });
-      const vergeben = modus === "gesetzt"
-        ? liste.reduce(function (s, v) { return s + Number(v); }, 0)
+      faelle.forEach(function (f, i) {
+        f.punkteVergeben = modus === "gesetzt" ? Number(liste[i]) : (modus === "vorschlag" ? f.punkte.summe : null);
+      });
+      fragen.forEach(function (q, i) {
+        q.punkteVergeben = modus === "gesetzt" ? Number(liste[faelle.length + i]) : (modus === "vorschlag" ? 1 : null);
+      });
+      const vergeben = (modus === "gesetzt" || modus === "vorschlag")
+        ? (modus === "gesetzt" ? liste : faelle.map(function (f) { return f.punkteVergeben; }).concat(fragen.map(function (q) { return q.punkteVergeben; }))).reduce(function (s, v) { return s + Number(v); }, 0)
         : null;
       gruppen.push({
         name: gruppenN === 2 ? (g === 0 ? "A" : "B") : "A",
@@ -6268,7 +6300,10 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     const thema = "Einheiten " + plan.einheiten.map(function (e) { return "E " + e; }).join(", ");
     return {
       ok: true, profil: plan.profil, einheiten: plan.einheiten, thema: thema, gruppen: gruppen,
-      punkteModus: (opts.punkteModus === "gesetzt" ? "gesetzt" : "frei"),
+      punkteModus: (opts.punkteModus === "gesetzt" ? "gesetzt" : (opts.punkteModus === "vorschlag" ? "vorschlag" : "frei")),
+      mitDauer: !!opts.mitDauer,
+      notenschluessel: opts.notenschluessel || null,
+      faelleN: plan.faelleN || plan.buchungen.length,
       luecke: plan.luecke,
       buchungen: plan.buchungen.map(function (t) { return { id: t.id, einheit: t.einheit }; })
     };
@@ -6284,7 +6319,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       "Adressen und UIDs der Partner stammen aus den Trainer-Belegen, nicht aus dem WebApps-JSON.",
       "Kontoblatt-Eröffnungen bleiben 0, bis Stefan feste plausible Bestände (Bank, Kassa) vorgibt.",
       "Der Fragentyp „Zuordnen“ kommt erst in einer späteren Stufe (laut v3).",
-      "Kopf von WH und Hausübung ist schulneutral (leere Felder Schule, Klasse, Datum, Namen nur auf der Angabe, erreichte Punkte/Note). Die Punkte je Aufgabe lässt die Lehrkraft frei oder gibt sie selbst vor.",
+      "WH: Punkte freilassen (Standard), Vorschlag (2 P Konten/Seiten + 1 P je Betrag; Verständnis/MC 1) oder selbst setzen. Dauer und Notenschlüssel optional, standardmäßig aus. 2–4 Fälle, Standard 3 mit 15-Punkte-Profil, keine erzwungene Zielsumme.",
       "Laptops erscheinen nur im Verkauf (E2/E5/E7 Kunde), weil 33010/33020 keine Laptop-Lieferanten sind (laut RW zu v4 bestätigt).",
       "Verbrauchsmaterial in E16 und Outdoor/Möbel (Eigenverbrauch) nutzen eigene Spannen (laut RW zu v4 bestätigt); die verbindliche Liste gilt für Handelsware der Elektronik.",
       "Denkfragen in der Beamer-Ansicht kommen aus BEMA_Denkfragen_v2.json (Schlüssel = beleg.typ bzw. Textangabe; optional nur_aufgabentypen / nur_einheiten)."
@@ -6445,7 +6480,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     preisregeln: preisregeln, warenartVon: warenartVon, wareIstBarfaehig: wareIstBarfaehig,
     istGutschriftTyp: istGutschriftTyp, gutschriftRahmen: gutschriftRahmen,
     profilVerfuegbar: profilVerfuegbar, typenFuerEinheiten: typenFuerEinheiten,
-    typIstHandelsware: typIstHandelsware, waehleWHFaelle: waehleWHFaelle
+    typIstHandelsware: typIstHandelsware, waehleWHFaelle: waehleWHFaelle, whVorschlagListe: whVorschlagListe
   };
 })(typeof window !== "undefined" ? window : globalThis);
 
@@ -6563,6 +6598,9 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     return s;
   }
 
+  function punkteSindGesetzt(modus) {
+    return modus === "gesetzt" || modus === "vorschlag";
+  }
   function kopfNeutral(opts) {
     opts = opts || {};
     const color = opts.color || "000000";
@@ -6571,21 +6609,43 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     s += P(opts.titel || "", { bold: true, size: 14, after: 60, color: color });
     if (opts.thema) s += P(opts.thema, { size: 11, after: 40, color: color });
     s += P("Schule: ____________________    Klasse: ____________    Datum: ____________", o);
-    if (opts.mitName)
+    if (opts.mitName && !opts.loesung)
       s += P("Nachname: ____________________    Vorname: ____________________", o);
-    s += P("erreichte Punkte / Note: ____________________", { size: 11, after: 120, color: color });
+    if (opts.mitDauer && !opts.loesung)
+      s += P("Dauer: ________ Min.", o);
+    if (!opts.loesung)
+      s += P("erreichte Punkte / Note: ____________________", { size: 11, after: 120, color: color });
+    else
+      s += P("", { after: 80, color: color });
     return s;
   }
-  function punkteSuffix(wert, modus) {
-    if (modus === "gesetzt" && wert != null && wert !== "" && isFinite(Number(wert)))
+  function punkteSuffix(wert, modus, loesung) {
+    if (punkteSindGesetzt(modus) && wert != null && wert !== "" && isFinite(Number(wert)))
       return "  (" + Number(wert) + " P)";
+    if (loesung) return "";
     return "      ______ P";
   }
-  function summeZeile(modus, summe, color) {
+  function summeZeile(modus, summe, color, loesung) {
     const o = { size: 11, after: 0, color: color || "000000" };
-    if (modus === "gesetzt" && summe != null && isFinite(Number(summe)))
+    if (punkteSindGesetzt(modus) && summe != null && isFinite(Number(summe)))
       return P("Summe: " + Number(summe) + " Punkte", o);
+    if (loesung) return "";
     return P("Summe: ______ Punkte", o);
+  }
+  function fmtProzent(n) {
+    const v = Number(n);
+    if (!isFinite(v)) return "";
+    return String(Math.round(v * 10) / 10).replace(".", ",") + " %";
+  }
+  function notenschluesselZeile(ns, color) {
+    if (!ns) return "";
+    const teile = [
+      "Sehr gut ab " + fmtProzent(ns.sehrGut != null ? ns.sehrGut : 87.6),
+      "Gut ab " + fmtProzent(ns.gut != null ? ns.gut : 75.1),
+      "Befriedigend ab " + fmtProzent(ns.befriedigend != null ? ns.befriedigend : 62.6),
+      "Genügend ab " + fmtProzent(ns.genuegend != null ? ns.genuegend : 50.1)
+    ];
+    return P("Notenschlüssel: " + teile.join(", ") + ".", { size: 11, after: 40, before: 80, color: color || "000000" });
   }
   function kopfAngabe(titel, thema, dauer, punkte, mitName) {
     return kopfNeutral({ titel: titel, thema: thema, mitName: mitName });
@@ -6625,7 +6685,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     const o = { size: 11, after: 40, color: C_SOL, keepNext: true };
     const gg = fall.gedankengang || {};
     const punkte = optsFall.punkteModus
-      ? punkteSuffix(optsFall.punkte, optsFall.punkteModus)
+      ? punkteSuffix(optsFall.punkte, optsFall.punkteModus, true)
       : (optsFall.punkte != null ? "  (" + optsFall.punkte + " P)" : "");
     let s = "";
     if (!optsFall.ohneNummer) {
@@ -6721,13 +6781,13 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       ang += angabeFall(g.fall, g.aufgabe, i, packH.mitBelegen, 6, { ohneWir: true, punkte: pv, punkteModus: modus });
     });
     ang += summeZeile(modus, modus === "gesetzt" ? liste.reduce(function (s, v) { return s + Number(v); }, 0) : null);
-    let loe = kopfNeutral({ titel: titel, thema: thema, mitName: false, loesung: true, color: C_SOL });
+    let loe = kopfNeutral({ titel: titel, thema: thema, mitName: false, loesung: true, mitDauer: false, color: C_SOL });
     if (wirSatz) loe += P(wirSatz, { bold: true, size: 11, after: 80, color: C_SOL });
     packH.faelle.forEach(function (g, i) {
       const pv = modus === "gesetzt" ? liste[i] : null;
       loe += loesungFall(g.fall, g.aufgabe, i, { ohneWir: true, punkte: pv, punkteModus: modus });
     });
-    loe += summeZeile(modus, modus === "gesetzt" ? liste.reduce(function (s, v) { return s + Number(v); }, 0) : null, C_SOL);
+    loe += summeZeile(modus, (modus === "gesetzt" || modus === "vorschlag") ? liste.reduce(function (s, v) { return s + Number(v); }, 0) : null, C_SOL, true);
     return {
       angabe: pack("Hausuebung_Angabe.docx", ang, { title: titel + " Angabe" }),
       loesung: pack("Hausuebung_Loesung.docx", loe, { title: titel + " Lösung" })
@@ -6740,42 +6800,45 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       const titel = "Schriftliche Wiederholung";
       const thema = packW.thema + (packW.gruppen.length > 1 ? "  ·  Gruppe " + gr.name : "");
       const modus = (gr.punkteModus || packW.punkteModus || "frei");
-      const summe = modus === "gesetzt" ? (gr.punkteSumme != null ? gr.punkteSumme : null) : null;
-      let ang = kopfNeutral({ titel: titel, thema: thema, mitName: true });
+      const summe = punkteSindGesetzt(modus) ? (gr.punkteSumme != null ? gr.punkteSumme : null) : null;
+      const ns = packW.notenschluessel || null;
+      let ang = kopfNeutral({ titel: titel, thema: thema, mitName: true, mitDauer: !!packW.mitDauer });
       const wirSatz = gr.wirSatz || (gr.faelle[0] && gr.faelle[0].fall && gr.faelle[0].fall.wirSatz) || "";
       if (wirSatz) ang += P(wirSatz, { bold: true, size: 11, after: 80, keepNext: true });
       let nr = 1;
       gr.faelle.forEach(function (g) {
         const o = { size: 11, after: 40, keepNext: true, keepLines: true };
-        ang += P(nr + ".  Buchungssatz" + punkteSuffix(g.punkteVergeben, modus), { bold: true, size: 11, after: 20, keepNext: true });
+        ang += P(nr + ".  Buchungssatz" + punkteSuffix(g.punkteVergeben, modus, false), { bold: true, size: 11, after: 20, keepNext: true });
         ang += P(g.fall.angabeOhneWir || g.aufgabe.text || "", o);
         nr++;
       });
       gr.fragen.forEach(function (q) {
-        ang += P(nr + ".  " + (q.typ || "Verständnis") + punkteSuffix(q.punkteVergeben, modus), { bold: true, size: 11, after: 40, keepNext: true });
+        ang += P(nr + ".  " + (q.typ || "Verständnis") + punkteSuffix(q.punkteVergeben, modus, false), { bold: true, size: 11, after: 40, keepNext: true });
         ang += P(q.frage, { size: 11, after: 40, keepNext: true });
         if (q.optionen) q.optionen.forEach(function (op) { ang += P(op.k + ")  " + op.t, { size: 11, after: 20, keepNext: true }); });
         ang += leer();
         nr++;
       });
-      ang += summeZeile(modus, summe);
+      ang += summeZeile(modus, summe, "000000", false);
+      if (ns) ang += notenschluesselZeile(ns);
 
       let loe = kopfNeutral({ titel: titel, thema: thema, mitName: false, loesung: true, color: C_SOL });
       if (wirSatz) loe += P(wirSatz, { bold: true, size: 11, after: 80, color: C_SOL, keepNext: true });
       nr = 1;
       gr.faelle.forEach(function (g) {
-        loe += P(nr + ".  Buchungssatz" + punkteSuffix(g.punkteVergeben, modus), { bold: true, size: 11, after: 20, color: C_SOL, keepNext: true });
+        loe += P(nr + ".  Buchungssatz" + punkteSuffix(g.punkteVergeben, modus, true), { bold: true, size: 11, after: 20, color: C_SOL, keepNext: true });
         loe += loesungFall(g.fall, g.aufgabe, nr - 1, { ohneWir: true, ohneNummer: true });
         nr++;
       });
       gr.fragen.forEach(function (q) {
-        loe += P(nr + ".  " + (q.typ || "Verständnis") + punkteSuffix(q.punkteVergeben, modus), { bold: true, size: 11, after: 40, color: C_SOL, keepNext: true });
+        loe += P(nr + ".  " + (q.typ || "Verständnis") + punkteSuffix(q.punkteVergeben, modus, true), { bold: true, size: 11, after: 40, color: C_SOL, keepNext: true });
         loe += P(q.frage, { size: 11, after: 40, color: C_SOL, keepNext: true });
         if (q.optionen) q.optionen.forEach(function (op) { loe += P(op.k + ")  " + op.t, { size: 11, after: 20, color: C_SOL, keepNext: true }); });
         loe += P("Lösung: " + (q.erwartung || q.richtig || ""), { size: 11, after: 80, color: C_SOL, bold: true });
         nr++;
       });
-      loe += summeZeile(modus, summe, C_SOL);
+      loe += summeZeile(modus, summe, C_SOL, true);
+      if (ns) loe += notenschluesselZeile(ns, C_SOL);
       const suffix = packW.gruppen.length > 1 ? "_Gruppe" + gr.name : "_GruppeA";
       out.push({
         gruppe: gr.name,
@@ -6814,7 +6877,7 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
   global.BEMA_DOCX = {
     pack: pack, downloadBytes: downloadBytes,
     hausuebungDocs: hausuebungDocs, whDocs: whDocs, mitschriftDocs: mitschriftDocs,
-    kopfNeutral: kopfNeutral, punkteSuffix: punkteSuffix, euro: euro
+    kopfNeutral: kopfNeutral, punkteSuffix: punkteSuffix, notenschluesselZeile: notenschluesselZeile, euro: euro
   };
 })(typeof window !== "undefined" ? window : globalThis);
 
@@ -7269,64 +7332,108 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
     const e = (S.cur && S.cur.a && S.cur.a.einheit) || 5;
     const box = dlg(
       "<h2>Schriftliche Wiederholung</h2>" +
-      "<p>0 Verständnisfragen: Profil A bzw. C (wenn E 8 oder E 9 unter den gewählten Einheiten ist). 2 Fragen: Profil D, 3 Fragen: Profil B – nur wenn die gewählten Einheiten genug Zweizeiler enthalten (nicht in einer reinen Steuer-Einheit, nichts aus Nachbareinheiten). Der Kopf ist schulneutral. Namen nur auf der Angabe. Punkte je Aufgabe freilassen oder selbst festlegen – 15 Punkte werden nicht mehr fest vorgegeben.</p>" +
+      "<p>2–4 Buchungsfälle (Standard: 3, 15-Punkte-Profil). 0 Verständnisfragen: Profil A bzw. C (wenn E 8 oder E 9 dabei ist). 2 Fragen: Profil D, 3 Fragen: Profil B – nur wenn genug Zweizeiler in den gewählten Einheiten sind, nichts aus Nachbareinheiten. Punkte: freilassen, Vorschlag (2 P Konten/Seiten + 1 P je Betrag, Verständnis/MC 1) oder selbst festlegen (überschreibt den Vorschlag, nur ganze Punkte).</p>" +
       "<p id=\"bema-wh-verf\" class=\"bema-hinweis\"></p>" +
       "<div class=\"row\"><label>Aktuelle / neueste Einheit <select id=\"bema-e\">" +
       Array.from({ length: 17 }, function (_, i) { return "<option value=\"" + (i + 1) + "\"" + (i + 1 === e ? " selected" : "") + ">E " + (i + 1) + "</option>"; }).join("") +
-      "</select></label></div>" +
+      "</select></label>" +
+      "<label>Fälle <select id=\"bema-faelle\"><option value=\"2\">2</option><option value=\"3\" selected>3</option><option value=\"4\">4</option></select></label></div>" +
       "<div class=\"row\"><label>Einheiten mischen <select id=\"bema-mix\"><option value=\"1\">nur diese Einheit</option><option value=\"2\">letzte 2</option><option value=\"3\">letzte 3</option></select></label>" +
       "<label>Verständnis / MC <select id=\"bema-v\"><option value=\"0\">0</option><option value=\"2\">2</option><option value=\"3\">3</option></select></label>" +
       "<label>Gruppen <select id=\"bema-g\"><option value=\"1\">1</option><option value=\"2\">2</option></select></label></div>" +
       "<div class=\"row\"><span>Punkte</span>" +
       "<label><input type=\"radio\" name=\"bema-pkt\" value=\"frei\" checked> freilassen (Standard)</label>" +
+      "<label><input type=\"radio\" name=\"bema-pkt\" value=\"vorschlag\"> Vorschlag</label>" +
       "<label><input type=\"radio\" name=\"bema-pkt\" value=\"gesetzt\"> je Aufgabe festlegen</label></div>" +
       "<div id=\"bema-pkt-felder\" hidden></div>" +
       "<p id=\"bema-pkt-summe\" class=\"bema-hinweis\" hidden></p>" +
+      "<div class=\"row\"><label><input type=\"checkbox\" id=\"bema-dauer\"> Dauer-Feld im Kopf</label>" +
+      "<label><input type=\"checkbox\" id=\"bema-ns\"> Notenschlüssel</label></div>" +
+      "<div id=\"bema-ns-felder\" hidden>" +
+      "<label>Sehr gut ab <input type=\"number\" class=\"bema-ns\" id=\"bema-ns-sg\" min=\"0\" max=\"100\" step=\"0.1\" value=\"87.6\"> %</label> " +
+      "<label>Gut ab <input type=\"number\" class=\"bema-ns\" id=\"bema-ns-g\" min=\"0\" max=\"100\" step=\"0.1\" value=\"75.1\"> %</label> " +
+      "<label>Befriedigend ab <input type=\"number\" class=\"bema-ns\" id=\"bema-ns-b\" min=\"0\" max=\"100\" step=\"0.1\" value=\"62.6\"> %</label> " +
+      "<label>Genügend ab <input type=\"number\" class=\"bema-ns\" id=\"bema-ns-n\" min=\"0\" max=\"100\" step=\"0.1\" value=\"50.1\"> %</label>" +
+      "</div>" +
       "<div class=\"actions\"><button type=\"button\" id=\"bema-go\">DOCX erzeugen</button><button type=\"button\" class=\"sec\" id=\"bema-cancel\">Abbrechen</button></div>"
     );
     box.querySelector("#bema-cancel").onclick = schliesseDlg;
+    function pktModus() {
+      return (box.querySelector("[name=\"bema-pkt\"]:checked") || {}).value || "frei";
+    }
+    function liesNotenschluessel() {
+      if (!box.querySelector("#bema-ns").checked) return null;
+      return {
+        sehrGut: Number(box.querySelector("#bema-ns-sg").value),
+        gut: Number(box.querySelector("#bema-ns-g").value),
+        befriedigend: Number(box.querySelector("#bema-ns-b").value),
+        genuegend: Number(box.querySelector("#bema-ns-n").value)
+      };
+    }
     function optsWH() {
-      const modus = (box.querySelector("[name=\"bema-pkt\"]:checked") || {}).value || "frei";
+      const modus = pktModus();
       const opts = {
         einheit: +box.querySelector("#bema-e").value,
         mischen: +box.querySelector("#bema-mix").value,
         verstaendnis: +box.querySelector("#bema-v").value,
         gruppen: +box.querySelector("#bema-g").value,
-        punkteModus: modus
+        faelle: +box.querySelector("#bema-faelle").value,
+        punkteModus: modus,
+        mitDauer: box.querySelector("#bema-dauer").checked,
+        notenschluessel: liesNotenschluessel()
       };
-      if (modus === "gesetzt") {
-        opts.punkteJeAufgabe = [...box.querySelectorAll("#bema-pkt-felder input")].map(function (inp) {
+      if (modus === "gesetzt" || modus === "vorschlag") {
+        const vals = [...box.querySelectorAll("#bema-pkt-felder input")].map(function (inp) {
           return inp.value === "" ? NaN : Number(inp.value);
         });
+        if (vals.length) opts.punkteJeAufgabe = vals;
       }
       return opts;
     }
     function renderWhPunkte() {
       const felder = box.querySelector("#bema-pkt-felder");
       const sumEl = box.querySelector("#bema-pkt-summe");
-      const gesetzt = ((box.querySelector("[name=\"bema-pkt\"]:checked") || {}).value === "gesetzt");
-      felder.hidden = !gesetzt;
-      sumEl.hidden = !gesetzt;
-      if (!gesetzt) { felder.innerHTML = ""; sumEl.textContent = ""; return; }
+      const modus = pktModus();
+      const zeigen = modus === "gesetzt" || modus === "vorschlag";
+      felder.hidden = !zeigen;
+      sumEl.hidden = !zeigen;
+      if (!zeigen) { felder.innerHTML = ""; sumEl.textContent = ""; return; }
       const fragenN = +box.querySelector("#bema-v").value;
-      const nBuch = 3;
+      const nBuch = +box.querySelector("#bema-faelle").value;
+      const vorschlag = BEMA.whVorschlagListe({
+        einheit: +box.querySelector("#bema-e").value,
+        mischen: +box.querySelector("#bema-mix").value,
+        verstaendnis: fragenN,
+        faelle: nBuch
+      });
+      const soll = (vorschlag && vorschlag.ok) ? vorschlag.liste.slice() : [];
       const prev = [...felder.querySelectorAll("input")].map(function (inp) { return inp.value; });
+      const modusVorher = felder.getAttribute("data-modus") || "";
+      const uebernehmenUser = modus === "gesetzt" && modusVorher === "gesetzt" && prev.length;
       let html = "";
       for (let i = 0; i < nBuch; i++) {
-        html += "<label>Buchungssatz " + (i + 1) + " <input type=\"number\" min=\"0\" step=\"1\" class=\"bema-pkt\" value=\"" + (prev[i] || "") + "\"></label> ";
+        const val = uebernehmenUser && prev[i] !== "" ? prev[i] : (soll[i] != null ? String(soll[i]) : "");
+        html += "<label>Buchungssatz " + (i + 1) + " <input type=\"number\" min=\"0\" step=\"1\" class=\"bema-pkt\" value=\"" + val + "\"></label> ";
       }
       for (let i = 0; i < fragenN; i++) {
-        html += "<label>Frage " + (i + 1) + " <input type=\"number\" min=\"0\" step=\"1\" class=\"bema-pkt\" value=\"" + (prev[nBuch + i] || "") + "\"></label> ";
+        const idx = nBuch + i;
+        const val = uebernehmenUser && prev[idx] !== "" ? prev[idx] : (soll[idx] != null ? String(soll[idx]) : "1");
+        html += "<label>Frage " + (i + 1) + " <input type=\"number\" min=\"0\" step=\"1\" class=\"bema-pkt\" value=\"" + val + "\"></label> ";
       }
       felder.innerHTML = html;
+      felder.setAttribute("data-modus", modus);
       function summe() {
         const vals = [...felder.querySelectorAll("input")].map(function (inp) { return inp.value === "" ? null : Number(inp.value); });
-        const ok = vals.every(function (v) { return v != null && isFinite(v) && v >= 0; });
+        const ok = vals.every(function (v) { return v != null && isFinite(v) && v >= 0 && Math.round(v) === v; });
         const s = vals.reduce(function (a, v) { return a + (Number(v) || 0); }, 0);
-        sumEl.textContent = ok ? ("Summe: " + s + " Punkte") : "Summe erscheint, sobald alle Felder eine Zahl enthalten.";
+        const zusatz = (vorschlag && vorschlag.ok && modus === "vorschlag") ? " (Vorschlag)" : "";
+        sumEl.textContent = ok ? ("Summe: " + s + " Punkte" + zusatz) : "Summe erscheint, sobald alle Felder eine ganze Punktzahl enthalten.";
       }
       felder.querySelectorAll("input").forEach(function (inp) { inp.addEventListener("input", summe); });
       summe();
+    }
+    function renderNs() {
+      box.querySelector("#bema-ns-felder").hidden = !box.querySelector("#bema-ns").checked;
     }
     function updateVerf() {
       const o = optsWH();
@@ -7343,19 +7450,44 @@ var BEMA_VENDOR=(()=>{var jr=Object.create;var hr=Object.defineProperty;var qr=O
       el.style.color = ok ? "" : "#8a1f1f";
       box.querySelector("#bema-go").disabled = !ok;
     }
-    ["#bema-e", "#bema-mix", "#bema-v"].forEach(function (sel) {
-      box.querySelector(sel).addEventListener("change", updateVerf);
+    ["#bema-e", "#bema-mix", "#bema-v", "#bema-faelle"].forEach(function (sel) {
+      box.querySelector(sel).addEventListener("change", function () { updateVerf(); renderWhPunkte(); });
     });
-    box.querySelectorAll("[name=\"bema-pkt\"], #bema-v").forEach(function (el) {
+    box.querySelectorAll("[name=\"bema-pkt\"]").forEach(function (el) {
       el.addEventListener("change", renderWhPunkte);
     });
+    box.querySelector("#bema-ns").addEventListener("change", renderNs);
     updateVerf();
     renderWhPunkte();
+    renderNs();
     box.querySelector("#bema-go").onclick = function () {
       const o = Object.assign(optsWH(), { seed: Date.now() % 1e9 });
-      if (o.punkteModus === "gesetzt" && (!o.punkteJeAufgabe || o.punkteJeAufgabe.some(function (v) { return !isFinite(v) || v < 0; }))) {
-        box.querySelector(".box").insertAdjacentHTML("beforeend", "<p class=\"bema-luecke\">Bitte für jede Aufgabe eine Punktzahl ab 0 angeben.</p>");
-        return;
+      if (o.punkteModus === "vorschlag" || o.punkteModus === "gesetzt") {
+        const vorschlag = BEMA.whVorschlagListe(o);
+        const liste = o.punkteJeAufgabe || [];
+        if (!liste.length || liste.some(function (v) { return !isFinite(v) || v < 0 || Math.round(v) !== v; })) {
+          box.querySelector(".box").insertAdjacentHTML("beforeend", "<p class=\"bema-luecke\">Bitte für jede Aufgabe eine ganze Punktzahl ab 0 angeben.</p>");
+          return;
+        }
+        if (o.punkteModus === "vorschlag" && vorschlag.ok) {
+          const weichtAb = liste.length !== vorschlag.liste.length || liste.some(function (v, i) { return v !== vorschlag.liste[i]; });
+          if (weichtAb) {
+            o.punkteModus = "gesetzt";
+            o.punkteJeAufgabe = liste;
+          } else {
+            delete o.punkteJeAufgabe;
+          }
+        }
+      }
+      if (o.notenschluessel) {
+        const ns = o.notenschluessel;
+        const vals = [ns.sehrGut, ns.gut, ns.befriedigend, ns.genuegend];
+        const okNs = vals.every(function (v) { return isFinite(v) && v >= 0 && v <= 100; })
+          && ns.sehrGut > ns.gut && ns.gut > ns.befriedigend && ns.befriedigend > ns.genuegend;
+        if (!okNs) {
+          box.querySelector(".box").insertAdjacentHTML("beforeend", "<p class=\"bema-luecke\">Notenschlüssel: Die Grenzen müssen von Sehr gut nach Genügend streng fallen und zwischen 0 und 100 liegen.</p>");
+          return;
+        }
       }
       const packW = BEMA.schriftlicheWH(o);
       if (!packW.ok) { box.querySelector(".box").insertAdjacentHTML("beforeend", "<p class=\"bema-luecke\">" + packW.fehler + "</p>"); return; }
