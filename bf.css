@@ -33,7 +33,7 @@ html .qs0-zeile .zu{color:#5d6778}                         /* vorher #7a8394 auf
 .bf-knopf:hover{background:#eef1f4;color:#1d2430}
 .bf-knopf.an{color:#1d5f63;border-color:#b8d3d4;background:#eef6f6}
 .bf-knopf svg{flex:0 0 auto}
-header.top .wrap .bf-im-kopf{float:right;margin:-4px -6px 4px 12px}
+header.top .top-zeile .bf-im-kopf,header.top .wrap .bf-im-kopf{float:none;margin:0;flex:0 0 auto;align-self:center}
 #lehrerstart .ls-kopf .bf-ls{float:right;margin:0 0 6px 12px}
 .bf-chrome{color:#fff;background:#3a4760;min-height:40px;padding:4px 10px;flex:0 0 auto}
 .bf-chrome:hover{background:#4b5a78;color:#fff}
@@ -142,12 +142,11 @@ html.bf-gross body.beamer{font-size:21px}
 html.bf-kontrast #bmchrome .btn,html.bf-kontrast #bmchrome .linkbtn,html.bf-kontrast #bmchrome .bm-nav{border:2px solid #fff!important}
 html.bf-kontrast #bmchrome .btn:disabled,html.bf-kontrast #bmchrome .bm-nav:disabled{background:#3a4760!important;color:#fff!important;opacity:.75!important}
 
-/* Menü oben (Impressum, Datenschutz, Barrierefreiheit, Support) – von bf.js aus konfig.js gefüllt; auch auf lehrkraft.html und den Rechtsseiten */
-.top-zeile{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:8px 16px}
-.top-titel{min-width:0;flex:1 1 200px}
-.app-menu{display:flex;flex-wrap:wrap;gap:2px 14px;align-items:center;font-size:.88rem}
-.app-menu a{color:var(--accent,#1d5f63);font-weight:600;text-decoration:underline;text-underline-offset:2px;min-height:44px;display:inline-flex;align-items:center}
-.app-menu .bf-im-menue{float:none;margin:0}
+/* Kopf: nur Titel, Name und Schalter. Rechtslinks stehen im Fuß (nav.bf-rlinks bzw. footer nav). */
+.top-zeile{display:flex;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:8px 12px}
+.top-titel{min-width:0;flex:1 1 auto}
+.top-titel h1,.top-titel .sub,.top-titel .ort{overflow-wrap:anywhere}
+header.top{position:static}
 html.bf-kontrast .vidbox .ki-stimme{color:#fff}
 
 /* Rechtsseiten (impressum.html, datenschutz.html, barrierefreiheit.html): hoher Kontrast und größere Schrift gelten auch dort */

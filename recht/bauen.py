@@ -133,22 +133,18 @@ def seitenrahmen(title: str, body: str, *, aktuelle: str, variante: str, entwurf
     bf_skripte = f'<script src="konfig.js?v={buster()}"></script>\n<script src="bf.js?v={buster()}"></script>\n' if variante == "app" else ""
     robots = "noindex, nofollow" if entwurf else "noindex"
     banner_note = " – Entwurf" if entwurf else ""
-    nav = []
-    for href, label, key in (
-        ("impressum.html", "Impressum", "impressum"),
-        ("datenschutz.html", "Datenschutz", "datenschutz"),
-    ):
-        cur = ' aria-current="page"' if aktuelle == key else ""
-        nav.append(f'<a href="{href}"{cur}>{label}</a>')
+    def fuss_link(href, label, key=None):
+        cur = ' aria-current="page"' if key and aktuelle == key else ""
+        return f'<a href="{href}"{cur}>{label}</a>'
+    fuss = [fuss_link(home_href, home_text)]
+    fuss.append(fuss_link("impressum.html", "Impressum", "impressum"))
+    fuss.append(fuss_link("datenschutz.html", "Datenschutz", "datenschutz"))
     if variante == "app":
-        cur = ' aria-current="page"' if aktuelle == "produktbeschreibung" else ""
-        nav.append(f'<a href="produktbeschreibung.html"{cur}>Produktbeschreibung</a>')
+        fuss.append(fuss_link("produktbeschreibung.html", "Bedingungen", "produktbeschreibung"))
     if bf_url:
-        cur = ' aria-current="page"' if aktuelle == "barrierefreiheit" else ""
-        nav.append(f'<a href="{e(bf_url)}"{cur}>Barrierefreiheit</a>')
-    nav.append('<a href="mailto:kontakt@profmasar.at">Support</a>')
-    nav_html = "\n      ".join(nav)
-    bf_fuss = (f'<a href="produktbeschreibung.html">Bedingungen</a>\n      ' if variante == "app" else "") + (f'<a href="{e(bf_url)}">Barrierefreiheit</a>' if bf_url else "")
+        fuss.append(fuss_link(bf_url, "Barrierefreiheit", "barrierefreiheit"))
+    fuss.append('<a href="mailto:kontakt@profmasar.at">Support: kontakt@profmasar.at</a>')
+    fuss_html = "\n      ".join(fuss)
     return f"""<!DOCTYPE html>
 <html lang="de-AT">
 <head>
@@ -166,14 +162,12 @@ def seitenrahmen(title: str, body: str, *, aktuelle: str, variante: str, entwurf
 <a class="skip" href="#inhalt">Zum Inhalt springen</a>
 <header class="top">
   <div class="wrap">
-    <div>
-      <h1>{e(marke)}</h1>
-      <div class="ort">{e(ort)}</div>
+    <div class="top-zeile">
+      <div class="top-titel">
+        <h1>{e(marke)}</h1>
+        <div class="ort">{e(ort)}</div>
+      </div>
     </div>
-    <nav class="menu" aria-label="Menü">
-      {nav_html}
-      <a href="{e(home_href)}">{e(home_text)}</a>
-    </nav>
   </div>
 </header>
 <main id="inhalt" class="wrap">
@@ -182,10 +176,7 @@ def seitenrahmen(title: str, body: str, *, aktuelle: str, variante: str, entwurf
 <footer>
   <div class="wrap">
     <nav aria-label="Rechtliches und Support">
-      <a href="impressum.html">Impressum</a>
-      <a href="datenschutz.html">Datenschutz</a>
-      {bf_fuss}
-      <a href="mailto:kontakt@profmasar.at">Support: kontakt@profmasar.at</a>
+      {fuss_html}
     </nav>
     <span>Kein Tracking, keine Werbung.</span>
   </div>

@@ -533,11 +533,12 @@ details.lzzu[open] > summary{margin-bottom:8px}
 
 html:has(body.qs-start-sicht),body.qs-start-sicht{height:100%;}
 body.qs-start-sicht{display:flex;flex-direction:column;overflow:hidden;margin:0}
-body.qs-start-sicht header.top{flex:0 0 auto}
+body.qs-start-sicht .qs-scroll{flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch}
+body.qs-start-sicht header.top{position:static;flex:none}
 body.qs-start-sicht header.top .wrap{padding:8px 14px}
 body.qs-start-sicht h1{font-size:1.35rem;line-height:1.2}
 body.qs-start-sicht header.top .sub{font-size:0.85rem}
-body.qs-start-sicht #app.qs-start{flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto;overflow-clip-margin:0;isolation:isolate;contain:paint;max-width:1080px;width:100%;padding:6px 14px 20px}
+body.qs-start-sicht #app.qs-start{overflow:visible;contain:none;max-width:1080px;width:100%;padding:6px 14px 20px;box-sizing:border-box}
 body.qs-start-sicht > .sticky{position:relative;z-index:20;flex:0 0 auto;background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;padding:10px 14px calc(10px + env(safe-area-inset-bottom, 0px))}
 #app.qs-start{max-width:1080px}
 #app.qs-start .card{padding:8px 12px;margin:6px 0}
@@ -624,20 +625,22 @@ body.qs-start-sicht > .sticky{position:relative;z-index:20;flex:0 0 auto;backgro
 @media (max-width:480px){.qs-grid{grid-template-columns:1fr}.qs-stufe-titel{font-size:1.2rem}}
 .qs-stufe-titel{font-size:1.2rem}}
 </style>
-<link rel="stylesheet" href="bf.css?v=2026112821">
+<link rel="stylesheet" href="bf.css?v=2026112822">
 </head>
 <body>
 <a class="bf-skip" href="#app">Zum Inhalt springen</a>
-<header class="top"><div class="wrap"><div class="top-zeile"><div class="top-titel"><h1 id="titel">Buchungstrainer Rechnungswesen</h1><div class="sub" id="untertitel"></div></div><nav class="app-menu" aria-label="Menü"></nav></div></div></header>
+<div class="qs-scroll">
+<header class="top"><div class="wrap"><div class="top-zeile"><div class="top-titel"><h1 id="titel">Buchungstrainer Rechnungswesen</h1><div class="sub" id="untertitel"></div></div></div></div></header>
 <main class="wrap" id="app"><noscript>Bitte JavaScript aktivieren.</noscript></main>
+</div>
 <div class="sheet-bg" id="sheetbg"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
 <div class="vidmodal" id="vidmodal"></div>
-<script src="konfig.js?v=2026112821"></script>
-<script src="bf.js?v=2026112821"></script>
-<script src="bema-gen.js?v=2026112821"></script>
-<script src="startlektion.js?v=2026112821"></script>
-<script src="lizenz-test.js?v=2026112821"></script>
+<script src="konfig.js?v=2026112822"></script>
+<script src="bf.js?v=2026112822"></script>
+<script src="bema-gen.js?v=2026112822"></script>
+<script src="startlektion.js?v=2026112822"></script>
+<script src="lizenz-test.js?v=2026112822"></script>
 <script>
 /* =====================================================================
    CONFIG – hier anpassen (z. B. beim Kopieren für eine Parallelklasse)
@@ -1698,6 +1701,7 @@ const testHinweis = () => (typeof LZ === "object" && LZ.test && window.BT_TESTSE
 const testHinweisBinden = () => { if (typeof LZ === "object" && LZ.test && window.BT_TESTSERVER) window.BT_TESTSERVER.bannerBinden(); };
 function renderStart() {
   window.scrollTo(0, 0);
+  const sc = document.querySelector(".qs-scroll"); if (sc) sc.scrollTop = 0;
   if (typeof qsStartLeisteWeg === "function") qsStartLeisteWeg();
   speichereAuswahl();
   if (typeof KL === "object" && KL.imTempo && KL.imTempo()) {

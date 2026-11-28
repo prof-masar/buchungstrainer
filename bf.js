@@ -301,21 +301,16 @@
   }
   function linksHtml() {
     return '<button type="button" class="bf-linkknopf bf-oeffnen">Barrierefreiheit einstellen</button> · ' +
-      '<a href="' + LINKS.erklaerung + '" target="_blank" rel="noopener">Barrierefreiheit (Erklärung)</a> · ' +
-      '<a href="' + LINKS.impressum + '" target="_blank" rel="noopener">Impressum</a> · ' +
-      '<a href="' + LINKS.datenschutz + '" target="_blank" rel="noopener">Datenschutz</a> · ' +
-      '<a href="' + LINKS.produkt + '" target="_blank" rel="noopener">Bedingungen</a> · ' +
+      '<a href="' + LINKS.impressum + '">Impressum</a> · ' +
+      '<a href="' + LINKS.datenschutz + '">Datenschutz</a> · ' +
+      '<a href="' + LINKS.produkt + '">Bedingungen</a> · ' +
+      '<a href="' + LINKS.erklaerung + '">Barrierefreiheit</a> · ' +
       '<a href="mailto:' + LINKS.kontakt + '">Support: ' + LINKS.kontakt + '</a>';
   }
-  /* Menü oben (nav.app-menu / nav.menu): dieselben Ziele, jeder Link genau einmal */
+  /* Links stehen nur im Fuß, nicht im Kopf (Kopf: Titel, Name, Schalter). */
   function menueFuellen() {
-    document.querySelectorAll("nav.app-menu").forEach(function (n) {
-      if (n.dataset.bfMenue) return; n.dataset.bfMenue = "1";
-      n.innerHTML = '<a href="' + LINKS.impressum + '" target="_blank" rel="noopener">Impressum</a>' +
-        '<a href="' + LINKS.datenschutz + '" target="_blank" rel="noopener">Datenschutz</a>' +
-        '<a href="' + LINKS.produkt + '" target="_blank" rel="noopener">Produktbeschreibung</a>' +
-        '<a href="' + LINKS.erklaerung + '" target="_blank" rel="noopener">Barrierefreiheit</a>' +
-        '<a href="mailto:' + LINKS.kontakt + '">Support</a>';
+    document.querySelectorAll("header.top nav.app-menu, header.top nav.menu").forEach(function (n) {
+      n.remove();
     });
   }
   var ICON = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="6.6" r="1.6" fill="currentColor"/><path d="M6.8 9.4c1.7.5 3.4.8 5.2.8s3.5-.3 5.2-.8M12 10.2v3.6M12 13.8l-2.4 4.6M12 13.8l2.4 4.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -329,10 +324,12 @@
     return b;
   }
   function knoepfeEinbauen() {
-    var menue = document.querySelector("header.top nav.app-menu, header.top nav.menu");
+    var zeile = document.querySelector("header.top .top-zeile");
     var kopf = document.querySelector("header.top .wrap");
-    if (menue && !istBeamer) { if (!menue.querySelector(".bf-knopf")) menue.appendChild(knopf("bf-im-menue")); }
-    else if (kopf && !istBeamer && !kopf.querySelector(".bf-knopf")) kopf.insertBefore(knopf("bf-im-kopf"), kopf.firstChild);
+    if (!istBeamer) {
+      var ziel = zeile || kopf;
+      if (ziel && !document.querySelector("header.top .bf-knopf")) ziel.appendChild(knopf("bf-im-kopf"));
+    }
     var lk = document.querySelector("#lehrerstart .ls-kopf");
     if (lk && !lk.querySelector(".bf-knopf")) lk.insertBefore(knopf("bf-im-kopf bf-ls"), lk.firstChild);
     // Beamer: in der Zoom-Leiste (über „Zoom“ in der dunklen Leiste), damit die Kopfleiste für die Lehrkraft unverändert bleibt
