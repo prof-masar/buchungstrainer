@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="de-AT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>Lizenzseite für Lehrkräfte · Buchungstrainer</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232f6f73'/%3E%3Cpath d='M18 22h28M18 32h20M18 42h24' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--text:#1d2430;--muted:#5d6778;--line:#e3e6eb;--accent:#2f6f73;--accent-soft:#e6f1f1;--ok:#1f8a4c;--bad:#c2362f;--radius:14px;--shadow:0 1px 2px rgba(20,30,50,.06),0 4px 14px rgba(20,30,50,.06)}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+button,input{font:inherit;color:inherit}
+header.top{background:var(--card);border-bottom:1px solid var(--line)}
+.wrap{max-width:760px;margin:0 auto;padding:16px 14px 40px}
+header.top .wrap{padding:14px}
+h1{font-size:1.35rem;line-height:1.25;margin:0}
+.sub{color:var(--muted);font-size:.95rem;margin-top:2px}
+h2{font-size:1.1rem;margin:0 0 8px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin:12px 0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 16px;border-radius:10px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:600}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.rot{color:var(--bad);border-color:#efc9c6}
+.btn:focus-visible,.linkbtn:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #1f6feb;outline-offset:2px}
+.linkbtn{background:none;border:0;padding:6px 0;min-height:44px;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+a{color:var(--accent)}
+.zeile{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
+label.feld{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:.9rem;flex:1 1 220px}
+label.feld input{min-height:44px;padding:8px 12px;border:1px solid #cfd5dc;border-radius:10px;background:#fff;font-size:1.05rem}
+#schluessel{text-transform:uppercase;letter-spacing:.04em}
+.msg{margin:10px 0 0;font-weight:600}
+.msg:empty{display:none}
+.msg.ok{color:var(--ok)}
+.msg.err{color:var(--bad)}
+.plaetze{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.plaetze .zahl{font-size:2rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+.balken{height:10px;border-radius:99px;background:#e8ecef;overflow:hidden;margin:8px 0 4px}
+.balken i{display:block;height:100%;background:var(--accent)}
+.balken.voll i{background:var(--bad)}
+.klasse h2{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline}
+.klasse h2 small{font-weight:400;color:var(--muted);font-size:.9rem}
+.code{font-size:1.6rem;font-weight:800;letter-spacing:.12em;font-variant-numeric:tabular-nums;user-select:all}
+.code.versteckt{font-size:1.05rem;letter-spacing:.04em;font-weight:600;color:var(--muted)}
+.knoepfe{display:flex;gap:4px 18px;flex-wrap:wrap;margin-top:6px}
+details.themen{margin-top:8px;border-top:1px solid var(--line);padding-top:6px}
+details.themen summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center}
+fieldset{border:0;margin:0;padding:0}
+.wahl{display:flex;gap:6px 18px;flex-wrap:wrap;margin:4px 0 8px}
+.wahl label,.liste label{display:flex;gap:8px;align-items:center;min-height:36px;cursor:pointer}
+.liste{columns:2 16rem;column-gap:18px;margin:4px 0 8px}
+.liste label{break-inside:avoid}
+input[type=checkbox],input[type=radio]{width:20px;height:20px;accent-color:var(--accent)}
+.liste[aria-disabled=true]{opacity:.55}
+.tsbanner{border:2px dashed #b36b00;background:#fff8ec;padding:10px 14px}
+.tsbanner .tskopf b{color:#8a4b00;letter-spacing:.04em}
+.tsbanner summary{cursor:pointer;font-weight:600;min-height:32px;display:flex;align-items:center}
+.tsbanner table{border-collapse:collapse;margin-top:4px;font-size:.92rem}
+.tsbanner th{text-align:left;font-weight:400;color:var(--muted);padding:3px 12px 3px 0;vertical-align:top}
+.tsbanner code{font-weight:700;letter-spacing:.04em;user-select:all}
+.tsbanner .tsknoepfe{display:flex;gap:4px 16px;flex-wrap:wrap;margin-top:4px}
+.tsbanner .tsknoepfe .linkbtn{min-height:32px}
+.tsbanner .tsmsg{margin:4px 0 0;font-size:.9rem}
+.tsbanner .tsmsg:empty{display:none}
+legend.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.lokalhinweis{margin:6px 0 0}
+.vollhinweis{margin:8px 0 0;padding:8px 12px;border-left:4px solid var(--bad);background:#fdf1f0;border-radius:6px}
+.neuercode{border:2px solid var(--accent)}
+.zugang{margin:0 0 6px}
+footer{color:var(--muted);font-size:.88rem;margin-top:20px}
+@media (max-width:480px){.code{font-size:1.35rem}.wrap{padding:12px 10px 30px}}
+</style>
+<link rel="stylesheet" href="bf.css?v=2026112821">
+</head>
+<body>
+<a class="bf-skip" href="#app">Zum Inhalt springen</a>
+<header class="top"><div class="wrap"><div class="top-zeile"><div class="top-titel"><h1>Lizenzseite für Lehrkräfte</h1><div class="sub">Buchungstrainer Rechnungswesen · Klassen, Klassencodes und Plätze</div></div><nav class="app-menu" aria-label="Menü"></nav></div></div></header>
+<main class="wrap" id="app"></main>
+<noscript><p class="wrap">Diese Seite braucht JavaScript.</p></noscript>
+<script src="konfig.js?v=2026112821"></script>
+<script src="bf.js?v=2026112821"></script>
+<script src="lizenz-test.js?v=2026112821"></script>
+<script src="themen.js?v=2026112821"></script>
+<script src="lehrkraft.js?v=2026112821"></script>
+</body>
+</html>

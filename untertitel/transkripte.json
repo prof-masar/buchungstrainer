@@ -1,0 +1,667 @@
+{
+ "hinweis": "Transkripte und Untertitel zu den Erklärvideos (v2). Sprecherstimme computergeneriert. Erzeugt aus den Sprechtexten (timeline.json) mit mk_untertitel.py.",
+ "videos": {
+  "videos/erklaervideo_ausgangsfrachten_fiktiv_v2.mp4": {
+   "titel": "Versandkosten: Ausgangsfrachten",
+   "vtt": "untertitel/erklaervideo_ausgangsfrachten_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Innquell, eine Möbelmanufaktur, und buchen heute aus Sicht unseres Unternehmens. Ein Tisch ist verkauft und soll zum Kunden. Wir fahren nicht selbst, sondern beauftragen einen Spediteur. Diese Kosten heißen Versandkosten, hier die Fracht, wenn ein Spediteur die Ware zum Kunden bringt. Verwechsle sie nicht mit den Bezugskosten. Bezugskosten entstehen beim Einkauf, wenn die Ware zu uns kommt. Versandkosten entstehen beim Verkauf, wenn die Ware zum Kunden geht."
+    },
+    {
+     "titel": "Eigenes Aufwandskonto",
+     "text": "Versandkosten sind Aufwand für den Verkauf, nicht Teil des Einkaufs. Der Einstandspreis der Ware ändert sich nicht. Du buchst sie deshalb nicht auf 5000 Handelswareneinsatz. Für die Spedition oder den Frachtführer nimmst du 7300 Ausgangsfrachten."
+    },
+    {
+     "titel": "Spedition",
+     "text": "Wir schicken Möbel frei Haus, das heißt: Wir tragen die Fracht. Die Rechnung von Tauernlogistik lautet: 400 Euro netto plus 80 Euro Umsatzsteuer, zusammen 480 Euro, zahlbar später. Zuerst das Soll: 400 Euro auf 7300 Ausgangsfrachten und 80 Euro auf Vorsteuer. Dann das Haben: 480 Euro an Tauernlogistik, Konto 33030. Hätten wir bar an den Fahrer gezahlt, stünde im Haben die Kassa. Das Aufwandskonto bleibt 7300, es ändert sich nur die Zahlungsart. Der Einstandspreis der Möbel bleibt, wo er ist."
+    },
+    {
+     "titel": "Merksätze und Quiz",
+     "text": "Zum Merken: Versandkosten entstehen, wenn die Ware zum Kunden geht. Die Spedition buchst du auf 7300 mit Vorsteuer. Und nie auf 5000, denn die Ware ist schon verkauft. Und jetzt du! Fracht an den Kunden, bar an den Fahrer von Wachaustern: 180 Euro inklusive 20 Prozent Umsatzsteuer. Wie buchst du? Richtig: 180 geteilt durch 1,20 ergibt 150 Euro plus 30 Euro Vorsteuer. Ausgangsfrachten und Vorsteuer an die Kassa. Jetzt bist du dran im Buchungstrainer, Einheit E4, Versandkosten."
+    }
+   ]
+  },
+  "videos/erklaervideo_bankabschluss_habenzinsen_kest_fiktiv_v2.mp4": {
+   "titel": "Bankabschluss: Habenzinsen und KESt",
+   "vtt": "untertitel/erklaervideo_bankabschluss_habenzinsen_kest_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Gipfelgriff Sport, ein Sporthandel in Wien, und buchen als Einzelunternehmen. Am Bankabschluss stehen mehrere Dinge. Heute schauen wir uns die Habenzinsen und die Kapitalertragsteuer an, kurz KESt. Sollzinsen und Spesen kommen im nächsten Video."
+    },
+    {
+     "titel": "Habenzinsen und KESt",
+     "text": "Die Bank schreibt uns 80 Euro Zinsen gut. Habenzinsen buchst du immer brutto, also den vollen Betrag: Bank an Zinsenerträge aus Bankguthaben, 80 Euro. Davon behält die Bank 25 Prozent KESt, also 20 Euro. Nicht mit der Umsatzsteuer verwechseln: Die KESt beträgt 25 Prozent, nicht 20. Die KESt ist keine Betriebsausgabe. Bei uns als Einzelunternehmen buchst du sie über Privat: Privat an Bank, 20 Euro. Am Kontoauszug steht die Abbuchung mit Minus. Beide Schritte kannst du auch in einem Satz schreiben: Bank 60 Euro und Privat 20 Euro an Zinsenerträge aus Bankguthaben, 80 Euro. Auf der Bank bleiben nach der Steuer 60 Euro."
+    },
+    {
+     "titel": "Zinsgutschrift hochrechnen",
+     "text": "Manchmal steht am Kontoauszug nur die Zinsgutschrift, hier 30 Euro. Das ist der Betrag nach der KESt. 30 Euro sind 75 Prozent, also waren die Zinsen brutto 40 Euro. Die KESt beträgt 10 Euro. Du buchst trotzdem zuerst brutto: Bank an Zinsenerträge aus Bankguthaben, 40 Euro. Dann Privat an Bank, 10 Euro. In einem Satz: Bank 30 Euro und Privat 10 Euro an Zinsenerträge aus Bankguthaben, 40 Euro."
+    },
+    {
+     "titel": "Merksätze und Quiz",
+     "text": "Zwei Merksätze. Habenzinsen buchst du immer brutto. Die KESt buchst du über Privat. Quiz: Die Bank schreibt 80 Euro Habenzinsen gut und behält 25 Prozent KESt ein. Wie buchst du Zinsen und Steuer in einem Satz? Bank 60 Euro und Privat 20 Euro an Zinsenerträge aus Bankguthaben, 80 Euro. Jetzt bist du dran im Buchungstrainer, Einheit E12, Bankabschluss."
+    }
+   ]
+  },
+  "videos/erklaervideo_bankabschluss_sollzinsen_spesen_fiktiv_v2.mp4": {
+   "titel": "Bankabschluss: Sollzinsen und Spesen",
+   "vtt": "untertitel/erklaervideo_bankabschluss_sollzinsen_spesen_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Gipfelgriff Sport und buchen weiter am Bankabschluss. Habenzinsen und KESt hast du im anderen Video gesehen. Für geliehenes Geld zahlen wir Sollzinsen. Die Bank verrechnet außerdem Spesen. Am Kontoauszug erkennst du Abbuchungen am Minus. Den Saldo buchst du nicht."
+    },
+    {
+     "titel": "Sollzinsen",
+     "text": "Für geliehenes Geld zahlen wir Sollzinsen, hier 45 Euro. Am Kontoauszug steht der Betrag mit Minus. Wir buchen Zinsenaufwand für Bankkredite an Bank, 45 Euro. Das ist Aufwand, ohne Vorsteuer."
+    },
+    {
+     "titel": "Spesen",
+     "text": "Die Bank verrechnet Spesen: Kontoführung 15 Euro, Buchungsentgelte 4 Euro 20 und Porto 80 Cent, zusammen 20 Euro, wieder mit Minus. 15 plus 4 Euro 20 plus 80 Cent ergibt 20 Euro. Wir buchen Spesen des Geldverkehrs an Bank, 20 Euro. Auch hier gibt es keine Vorsteuer."
+    },
+    {
+     "titel": "Sammelauszug",
+     "text": "Zum Abschluss siehst du einen ganzen Kontoauszug der Saumland Bank. Mehrere Posten stehen auf einem Beleg. Alter Saldo 2.500 Euro, neuer Saldo 2.495 Euro: Den Saldo buchst du nicht. Du buchst nur die einzelnen Posten. Habenzinsen und KESt in einem Satz: Bank 60 Euro und Privat 20 Euro an Zinsenerträge aus Bankguthaben, 80 Euro. Dann Sollzinsen: Zinsenaufwand an Bank, 45 Euro. Dann die Spesen: Spesen des Geldverkehrs an Bank, 20 Euro. Denselben Auszug darfst du auch in einem zusammengesetzten Satz buchen. Im Haben stehen dann die Zinsenerträge mit 80 Euro und die Bank mit 5 Euro. Warum 5 Euro? Weil nach Zinsen, Steuer, Sollzinsen und Spesen das Konto um 5 Euro sinkt."
+    },
+    {
+     "titel": "Merksätze und Quiz",
+     "text": "Zwei Merksätze. Sollzinsen und Spesen sind Aufwand, ohne Vorsteuer. Den Saldo buchst du nicht. Quiz: Die Bank belastet 45 Euro Sollzinsen, am Kontoauszug mit Minus. Wie buchst du das? Du buchst Zinsenaufwand für Bankkredite an Bank, 45 Euro. Jetzt bist du dran im Buchungstrainer, Einheit E12, Bankabschluss."
+    }
+   ]
+  },
+  "videos/erklaervideo_bankueberweisung_fiktiv_v2.mp4": {
+   "titel": "Zahlung per Banküberweisung",
+   "vtt": "untertitel/erklaervideo_bankueberweisung_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Ohmreich, ein Elektrofachhandel in Wien, und buchen heute aus Sicht unseres Unternehmens. Heute geht es ums Überweisen: Wir zahlen offene Rechnungen, und Kunden zahlen uns. Die Rechnung selbst ist schon gebucht. Heute buchst du nur die Zahlung, immer den vollen Betrag, ohne Abzug. Die Steuer bleibt, wie sie ist. Du brauchst nur zwei Konten."
+    },
+    {
+     "titel": "Wir zahlen einen Lieferanten",
+     "text": "Zuerst zahlen wir. Auf dem Kontoauszug steht eine Überweisung an Nadelstrom, minus 3.120 Euro. Das ist der volle Rechnungsbetrag, ohne Abzug. Wir buchen Nadelstrom an Bank, 3.120 Euro. Im Soll wird die Verbindlichkeit kleiner. Im Haben geht das Geld von der Bank weg. Eine Steuer buchst du hier nicht noch einmal."
+    },
+    {
+     "titel": "Ein Kunde zahlt uns",
+     "text": "Nun zahlt ein Kunde uns. Auf dem Kontoauszug geht eine Überweisung von Kammfeder Fitness ein, 1.440 Euro. Bei einem Eingang steht kein Minus. Wir buchen Bank an Kammfeder, 1.440 Euro. Das Geld kommt auf die Bank, die Forderung an den Kunden erlischt. Wieder nur zwei Konten, wieder ohne Steuerkorrektur."
+    },
+    {
+     "titel": "Merksätze, Quiz, Abschluss",
+     "text": "Zwei Merksätze. Wir zahlen einen Lieferanten: Lieferant an Bank. Ein Kunde zahlt uns: Bank an Kunde. Immer den vollen Betrag, die Steuer bleibt unberührt. Quiz: Am Kontoauszug steht eine Überweisung an Schallkern, minus 2.592 Euro. Wie buchst du das? Du buchst Schallkern an Bank, 2.592 Euro. Jetzt bist du dran im Buchungstrainer, Einheit E6, Zahlung per Banküberweisung."
+    }
+   ]
+  },
+  "videos/erklaervideo_barbehebung_fiktiv_v2.mp4": {
+   "titel": "Barverkehr: Barbehebung",
+   "vtt": "untertitel/erklaervideo_barbehebung_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Gipfelgriff Sport und buchen weiter den Barverkehr mit Banken. Manchmal heben wir auch Wechselgeld ab und legen es in die Kassa. Auch hier gibt es zwei Belege, und beide buchst du über das Zwischenkonto 2870 Barverkehr mit Banken. Welcher Beleg zuerst kommt, ist egal. Sind beide gebucht, steht auf beiden Seiten von 2870 gleich viel."
+    },
+    {
+     "titel": "Kassabeleg",
+     "text": "Wir heben 300 Euro Wechselgeld vom Bankkonto ab und legen das Geld in die Kassa. Der Kassabeleg: Wohin geht das Geld? In die Kassa. Woher kommt es? Aus dem Zwischenkonto. Also 2700 Kassa an 2870 Barverkehr mit Banken, 300 Euro."
+    },
+    {
+     "titel": "Kontoauszug",
+     "text": "Der Bankbeleg: Wohin geht das Geld? Ins Zwischenkonto. Woher kommt es? Vom Bankkonto. Also 2870 an 2800 Bank, 300 Euro. Wieder ist das Zwischenkonto ausgeglichen. Merk dir den Weg: Bei der Einzahlung geht das Geld aus der Kassa über das Zwischenkonto auf die Bank. Bei der Behebung kommt es von der Bank über das Zwischenkonto in die Kassa."
+    },
+    {
+     "titel": "Merksätze",
+     "text": "Zum Merken: Bargeld zwischen Kassa und Bank hat zwei Belege und zwei Buchungen, immer über 2870. Sind beide gebucht, ist das Zwischenkonto ausgeglichen. Jetzt bist du dran im Buchungstrainer, Einheit E11, Barverkehr mit Banken."
+    }
+   ]
+  },
+  "videos/erklaervideo_bareinzahlung_fiktiv_v2.mp4": {
+   "titel": "Barverkehr: Bareinzahlung",
+   "vtt": "untertitel/erklaervideo_bareinzahlung_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Gipfelgriff Sport, ein Outdoor-Sporthandel in Wien, und buchen heute aus Sicht unseres Unternehmens. Am Abend liegt viel Bargeld in der Kassa. Das bringen wir zur Bank. Dafür gibt es immer zwei Belege: den Kassabeleg, den wir sofort schreiben, und den Bankbeleg, den Kontoauszug, der erst später kommt. Diese zwei Belege hast du nicht gleichzeitig in der Hand. Deshalb buchst du jeden Beleg für sich. Im Buchungstrainer kommt oft nur einer der beiden Belege. Dann machst du genau diesen einen Satz, der zweite folgt später."
+    },
+    {
+     "titel": "Zwischenkonto 2870",
+     "text": "Als Gegenkonto brauchst du ein Zwischenkonto: 2870 Barverkehr mit Banken. Dort parkt das Geld kurz, bis der zweite Beleg gebucht ist. Würdest du Kassa und Bank direkt gegeneinander buchen, wäre derselbe Betrag doppelt in den Büchern: einmal mit dem Kassabeleg und einmal mit dem Kontoauszug. Das Zwischenkonto verhindert das. Welcher Beleg zuerst kommt, ist egal. Sind beide gebucht, steht auf beiden Seiten von 2870 gleich viel. Der Saldo ist null, das Konto ist ausgeglichen. Bleibt ein Saldo übrig, fehlt ein Beleg oder es wurde falsch gebucht. Das Zwischenkonto ist also auch eine Kontrolle."
+    },
+    {
+     "titel": "Kassabeleg",
+     "text": "Erstes Beispiel: Wir zahlen die Tageslosung von 1.500 Euro aus der Kassa auf das Bankkonto ein. Zuerst der Kassabeleg. Wohin geht das Geld? Ins Zwischenkonto. Woher kommt es? Aus der Kassa. Also 2870 Barverkehr mit Banken an 2700 Kassa, 1.500 Euro."
+    },
+    {
+     "titel": "Kontoauszug",
+     "text": "Dann der Bankbeleg, der Kontoauszug. Wohin geht das Geld? Auf das Bankkonto. Woher kommt es? Aus dem Zwischenkonto. Also 2800 Bank an 2870 Barverkehr mit Banken, wieder 1.500 Euro. Jetzt steht auf beiden Seiten des Zwischenkontos 1.500 Euro. Es ist ausgeglichen. In der Kassa fehlen 1.500 Euro, auf der Bank sind sie angekommen."
+    },
+    {
+     "titel": "Merksätze und Quiz",
+     "text": "Zum Merken: Bargeld zwischen Kassa und Bank hat zwei Belege und zwei Buchungen, immer über 2870. Sind beide gebucht, ist das Zwischenkonto ausgeglichen. Und jetzt du! Wir bringen 2.250 Euro Bargeld aus der Kassa zur Bank und zahlen es ein. Wie buchst du den Kassabeleg? Richtig: Das Geld verlässt die Kassa und parkt im Zwischenkonto. Also 2870 Barverkehr mit Banken an 2700 Kassa, 2.250 Euro. Den Bankbeleg buchst du später, wenn der Kontoauszug kommt: Bank an Zwischenkonto. Jetzt bist du dran im Buchungstrainer, Einheit E11, Barverkehr mit Banken."
+    }
+   ]
+  },
+  "videos/erklaervideo_betriebssteuern_fiktiv_v2.mp4": {
+   "titel": "Steuern: Betriebssteuern",
+   "vtt": "untertitel/erklaervideo_betriebssteuern_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Gipfelgriff Sport, ein Outdoor-Sporthandel in Wien, ein Einzelunternehmen, und buchen heute aus Sicht unseres Unternehmens. In Österreich gibt es viele Steuern. Für die Buchhaltung reicht eine Frage: Wen betrifft die Steuer, den Betrieb oder den Inhaber privat? Danach gibt es vier Arten, und jede buchst du anders. Betriebssteuern sind Aufwand. Privatsteuern kommen auf 9600 Privat. Die Umsatzsteuer läuft nur durch den Betrieb. Und manche Steuern gehören zum Kauf einer Anlage."
+    },
+    {
+     "titel": "Grundsteuer",
+     "text": "Betriebssteuern zahlt der Betrieb, weil er arbeitet oder ein Grundstück besitzt. Sie sind Aufwand und machen den Gewinn kleiner. Die Grundsteuer geht an die Gemeinde, meist vierteljährlich. Für ein Betriebsgrundstück buchst du 7100 Grundsteuer. Wir zahlen 180 Euro für ein Vierteljahr vom Bankkonto: 7100 Grundsteuer an 2800 Bank, 180 Euro."
+    },
+    {
+     "titel": "Kammerumlage",
+     "text": "Die Kammerumlage zahlt jeder Betrieb als Mitglied der Wirtschaftskammer. Sie ist ebenfalls Aufwand, Konto 7780 Kammerumlage, und wird vierteljährlich an das Finanzamt abgeführt. Wir zahlen 96 Euro für das zweite Quartal: 7780 Kammerumlage an Bank, 96 Euro."
+    },
+    {
+     "titel": "Merksätze",
+     "text": "Zwei Merksätze. Zum Merken: Betriebssteuern sind Aufwand, zum Beispiel Grundsteuer und Kammerumlage. Sie machen den Gewinn kleiner. Jetzt bist du dran im Buchungstrainer, Einheit E13, Steuern."
+    }
+   ]
+  },
+  "videos/erklaervideo_bezugskosten_fiktiv_v2.mp4": {
+   "titel": "Bezugskosten",
+   "vtt": "untertitel/erklaervideo_bezugskosten_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Ohmreich, ein Elektrofachhandel in Wien, und buchen heute aus Sicht unseres Unternehmens. Die Ware ist gekauft, aber sie muss noch zu uns ins Lager. Oft übernimmt ein Spediteur den Transport, und wir bekommen dafür die Rechnung. Diese Kosten heißen Bezugskosten. Dazu gehören Fracht, Zoll oder eine Transportversicherung. Wir zahlen sie, wenn das mit dem Lieferanten so vereinbart ist, zum Beispiel wenn wir „ab Werk“ kaufen und den Transport selbst organisieren. Wichtig: Bezugskosten entstehen beim Einkauf, wenn die Ware zu uns kommt, nicht beim Verkauf an unsere Kunden."
+    },
+    {
+     "titel": "Wie ein Warenkauf",
+     "text": "Bezugskosten gehören zum Einkaufspreis der Ware. Sie erhöhen den Einstandspreis. Den merkst du dir so: Einstandspreis gleich Einkaufspreis netto plus Bezugskosten netto. Das ist der Betrag, der am Ende auf 5000 steht. Darum buchst du sie auf dasselbe Konto wie die Ware, also auf 5000 Handelswareneinsatz. Niemals auf 7300 Ausgangsfrachten. Das Konto 7300 ist erst für den Versand an unsere Kunden. Die Buchung ist wie ein Warenkauf: Handelswareneinsatz und Vorsteuer an den Spediteur, oder an die Kassa, wenn wir bar zahlen."
+    },
+    {
+     "titel": "Frachtrechnung",
+     "text": "Die Ware selbst ist schon gebucht. Jetzt kommt die Rechnung von Tauernlogistik: Fracht zu uns, 180 Euro netto plus 20 Prozent Umsatzsteuer, das sind 36 Euro, zusammen 216 Euro, zahlbar später. Zuerst das Soll: Die Fracht gehört zur Ware, also 180 Euro auf Handelswareneinsatz und 36 Euro auf Vorsteuer. Dann das Haben: 216 Euro an Tauernlogistik, Konto 33030. Jeder Spediteur hat sein eigenes Lieferantenkonto, nicht 3300."
+    },
+    {
+     "titel": "Bar an den Fahrer",
+     "text": "Zahlen wir bar an den Fahrer, bleibt das Soll gleich, nur das Haben wechselt. Beispiel: 90 Euro plus 18 Euro Umsatzsteuer, zusammen 108 Euro, an die Kassa. Wieder 5000 und Vorsteuer, nur bar."
+    },
+    {
+     "titel": "Ware und Fracht",
+     "text": "Manchmal steht die Fracht schon auf derselben Rechnung wie die Ware. Wir kaufen bei Nadelstrom Handelswaren um 2.000 Euro netto. Dazu Fracht zu uns, 100 Euro netto. Beides plus 20 Prozent Umsatzsteuer. Der Einstandspreis ist 2.000 plus 100, also 2.100 Euro. Die Vorsteuer beträgt 420 Euro, zu zahlen sind 2.520 Euro. Du buchst die 2.100 Euro in einem Betrag auf Handelswareneinsatz, nicht getrennt auf zwei Aufwandskonten. Die 420 Euro kommen auf Vorsteuer, im Haben 2.520 Euro an Nadelstrom, Konto 33010. Ware und Bezug gehören zusammen, auch wenn sie auf einer Rechnung in zwei Zeilen stehen."
+    },
+    {
+     "titel": "Merksätze und Quiz",
+     "text": "Zum Merken: Bezugskosten entstehen, wenn die Ware zu uns kommt. Sie erhöhen den Einstandspreis und landen auf 5000 Handelswareneinsatz, nie auf 7300. Gebucht wird wie ein Warenkauf, mit Vorsteuer. Und jetzt du! Fracht zu uns, Rechnung von Wachaustern auf Ziel: 450 Euro netto plus 20 Prozent Umsatzsteuer. Wie buchst du? Richtig: 450 Euro Handelswareneinsatz und 90 Euro Vorsteuer an Wachaustern, Konto 33040, zusammen 540 Euro. Wieder 5000, nicht 7300, weil die Ware zu uns kommt. Jetzt bist du dran im Buchungstrainer, Einheit E3, Bezugskosten."
+    }
+   ]
+  },
+  "videos/erklaervideo_einkauf_ruecksendung_zahlung_fiktiv_v2.mp4": {
+   "titel": "Einkauf: Rücksendung und Zahlung",
+   "vtt": "untertitel/erklaervideo_einkauf_ruecksendung_zahlung_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Ohmreich und buchen weiter den Einkauf von Handelswaren. Beim Einkauf buchst du Handelswareneinsatz und Vorsteuer an den Lieferanten. Jetzt schicken wir Ware zurück, und danach zahlen wir die offene Rechnung."
+    },
+    {
+     "titel": "Rücksendung",
+     "text": "Zwei Fernseher von Nadelstrom sind beschädigt. Wir schicken sie zurück. Die Gutschrift lautet 1.200 Euro netto plus 240 Euro Umsatzsteuer, zusammen 1.440 Euro. Der Einkaufssatz dreht sich einfach um. Im Soll wird unsere Schuld bei Nadelstrom kleiner, 1.440 Euro. Im Haben gehen 1.200 Euro vom Handelswareneinsatz und 240 Euro von der Vorsteuer runter, weil wir diese Ware nicht behalten."
+    },
+    {
+     "titel": "Zahlung per Bank",
+     "text": "Später überweisen wir die offene Rechnung von 2.400 Euro. Dann gilt: Nadelstrom, Konto 33010, an 2800 Bank, 2.400 Euro. Bei der Zahlung gibt es keine Steuer, die war schon beim Einkauf gebucht. Nur unsere Schuld und das Bankkonto ändern sich."
+    },
+    {
+     "titel": "Merksätze",
+     "text": "Zwei Merksätze. Eine Rücksendung ist der Einkauf rückwärts. Bei der Zahlung gibt es keine Steuer, du buchst nur Lieferant an Bank. Jetzt bist du dran im Buchungstrainer, Einheit E1, Einkauf und Rücksendung."
+    }
+   ]
+  },
+  "videos/erklaervideo_grundstueckkauf_fiktiv_v2.mp4": {
+   "titel": "Steuern: Grundstückkauf",
+   "vtt": "untertitel/erklaervideo_grundstueckkauf_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Gipfelgriff Sport und buchen weiter Steuern. Manche Steuern zahlt der Betrieb nur, weil er eine Anlage kauft. Ohne diese Steuer bekommt er die Anlage nicht. Darum gehören sie zu den Anschaffungskosten. Du buchst sie auf das Anlagekonto, das heißt aktivieren, nicht als Aufwand."
+    },
+    {
+     "titel": "Grunderwerbsteuer",
+     "text": "Wer ein Grundstück kauft, zahlt 3,5 Prozent Grunderwerbsteuer vom Kaufpreis. Beim Grundstückskauf gibt es keine Umsatzsteuer. Wir kaufen ein unbebautes Grundstück um 120.000 Euro und überweisen den Kaufpreis plus 3,5 Prozent, das sind 4.200 Euro. Zusammen 124.200 Euro, alles auf 0200 Unbebaute Grundstücke an Bank. Ein Betrag, ein Anlagekonto."
+    },
+    {
+     "titel": "Merksatz und Quiz",
+     "text": "Die Grunderwerbsteuer kommt auf das Anlagekonto. Und jetzt du! Wir kaufen ein unbebautes Grundstück um 80.000 Euro und überweisen den Kaufpreis plus 3,5 Prozent Grunderwerbsteuer. Wie buchst du? Richtig: 3,5 Prozent von 80.000 sind 2.800 Euro. Die Anschaffungskosten betragen 82.800 Euro, auf 0200 Unbebaute Grundstücke an Bank. Keine Umsatzsteuer. Jetzt bist du dran im Buchungstrainer, Einheit E13, Steuern."
+    }
+   ]
+  },
+  "videos/erklaervideo_kartenzahlung_firmenkarte_fiktiv_v2.mp4": {
+   "titel": "Kartenzahlung: Firmenkarte",
+   "vtt": "untertitel/erklaervideo_kartenzahlung_firmenkarte_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Ohmreich, ein Elektrofachhandel in Wien. Wenn ein Kunde mit Karte zahlt, hast du eine Forderung. Heute zahlen wir selbst mit unserer Firmenkarte. Dann entsteht eine Verbindlichkeit gegenüber dem Kartenunternehmen. Als Käufer buchen wir keine Kartengebühr."
+    },
+    {
+     "titel": "Firmen-Kreditkarte",
+     "text": "Zuerst die Firmen-Kreditkarte. Bei Nadelstrom kaufen wir Ware um 400 Euro plus 80 Euro Vorsteuer, zusammen 480 Euro. Wir buchen Handelswareneinsatz und Vorsteuer an Verbindlichkeiten Kreditkartenunternehmen, 480 Euro. Später zieht die Bank den Betrag ab, am Kontoauszug minus 480 Euro. Wir buchen die Verbindlichkeit an Bank, 480 Euro."
+    },
+    {
+     "titel": "Firmen-Debitkarte",
+     "text": "Genauso mit der Firmen-Debitkarte. Bei Schallkern kaufen wir Kopfhörer um 180 Euro plus 36 Euro Vorsteuer, zusammen 216 Euro. Der Beleg ist ein Kartenbeleg mit dem Symbol S, kein Kassabeleg. Wir buchen Handelswareneinsatz und Vorsteuer an Verbindlichkeiten Debitkarten, 216 Euro. Später bucht die Bank ab: dann Verbindlichkeiten Debitkarten an Bank."
+    },
+    {
+     "titel": "Merksätze und Quiz",
+     "text": "Zwei Merksätze. Mit der Firmenkarte entsteht eine Verbindlichkeit gegenüber dem Kartenunternehmen. Später buchst du die Verbindlichkeit an Bank, die Abbuchung steht am Kontoauszug mit Minus. Quiz: Wir kaufen bei Schallkern Ware um 150 Euro plus 20 Prozent Umsatzsteuer und zahlen mit der Firmen-Debitkarte. Wie buchst du den Einkauf? Du buchst Handelswareneinsatz 150 Euro und Vorsteuer 30 Euro an Verbindlichkeiten Debitkarten, 180 Euro. Jetzt bist du dran im Buchungstrainer, Einheit E7, Kartenzahlung."
+    }
+   ]
+  },
+  "videos/erklaervideo_kartenzahlung_kunde_fiktiv_v2.mp4": {
+   "titel": "Kartenzahlung: Kunde zahlt mit Karte",
+   "vtt": "untertitel/erklaervideo_kartenzahlung_kunde_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Ohmreich, ein Elektrofachhandel in Wien, und buchen heute aus Sicht unseres Unternehmens. Stell dir vor, du verkaufst bei Ohmreich einen Fernseher um 600 Euro. Der Kunde zahlt mit Kreditkarte. Er geht mit dem Fernseher hinaus, aber in deiner Kassa liegt kein Geld. Also: Von wem bekommst du die 600 Euro, wann kommen sie, und wie viel davon bleibt dir wirklich? Genau das klären wir jetzt. Das Geld bekommst du vom Kartenunternehmen, nicht bar vom Kunden. Es kommt später. Bis dahin hast du eine Forderung. Die Gebühr trägt der Händler, also wir. Das buchst du in drei Schritten, die du gleich auch im Bild siehst: erst der Verkauf, dann kommt das Geld auf die Bank, und dabei die Gebühr."
+    },
+    {
+     "titel": "Verkauf, Bank, Gebühr",
+     "text": "Schritt eins, der Verkauf: Fernseher, 600 Euro inklusive Umsatzsteuer, Zahlung mit Kreditkarte. Wir buchen eine Forderung gegenüber dem Kartenunternehmen, 600 Euro, an Handelswarenerlöse 500 Euro und Umsatzsteuer 100 Euro. Schritt zwei und drei stehen gemeinsam auf dem Kontoauszug. Auf die Gebühr von 9 Euro kommen noch 1,80 Euro Vorsteuer. Auf die Bank kommen 589 Euro 20. Rechne nach: 600 minus 9 minus 1,80 ergibt 589,20. Wir buchen Bank, Provisionen und Vorsteuer an Forderungen Kreditkartenunternehmen, 600 Euro. Die Forderung erlischt, die Gebühr ist unser Aufwand."
+    },
+    {
+     "titel": "Debitkarte",
+     "text": "Bei der Debitkarte gilt dieselbe Reihenfolge, aber ein anderes Forderungskonto als bei der Kreditkarte. Zuerst die Forderung, dann das Geld auf der Bank, die Gebühr erst später. Verkauf zwei Funk-Lautsprecher, 216 Euro inklusive Steuer: zuerst Forderungen Debitkarten an Handelswarenerlöse und Umsatzsteuer. Bald kommt der volle Betrag: Bank an Forderungen Debitkarten, 216 Euro. Die Gebühr kommt später, Abbuchung minus 21 Euro 60. Wir buchen Provisionen 18 Euro und Vorsteuer 3 Euro 60 an Bank."
+    },
+    {
+     "titel": "Merksätze und Quiz",
+     "text": "Zwei Merksätze. Bis das Geld auf der Bank ist, steht eine Forderung. Die Kartengebühr trägt der Verkäufer. Quiz: Ein Kunde zahlt mit Kreditkarte 900 Euro. Die Forderung ist schon gebucht. Die Gutschrift beträgt 883 Euro 80, Gebühr minus 13 Euro 50 und Vorsteuer minus 2 Euro 70. Wie buchst du die Gutschrift? Du buchst Bank, Provisionen und Vorsteuer an Forderungen Kreditkartenunternehmen, 900 Euro. Jetzt bist du dran im Buchungstrainer, Einheit E7, Kartenzahlung."
+    }
+   ]
+  },
+  "videos/erklaervideo_kfz_betriebskosten_lkw_fiktiv_v2.mp4": {
+   "titel": "Kfz-Betriebskosten: Lkw",
+   "vtt": "untertitel/erklaervideo_kfz_betriebskosten_lkw_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Gipfelgriff Sport und buchen weiter die laufenden Kosten unserer Fahrzeuge. Beim Pkw hast du den Bruttobetrag gebucht, ohne Vorsteuer. Jetzt kommt der Lkw."
+    },
+    {
+     "titel": "Lkw: mit Vorsteuer",
+     "text": "Beim Lkw darf der Betrieb die Vorsteuer abziehen. Du buchst den Nettobetrag als Aufwand und die Umsatzsteuer auf Vorsteuer. Wir tanken den Lkw um 84 Euro plus 16 Euro 80 Umsatzsteuer, zusammen 100 Euro 80, wieder mit der Debitkarte. Wir buchen Lkw-Betriebsaufwand 84 Euro und Vorsteuer 16 Euro 80 an Verbindlichkeiten Debitkarten, 100 Euro 80."
+    },
+    {
+     "titel": "Versicherung",
+     "text": "Die Versicherung hat keine Umsatzsteuer. Wir überweisen die Lkw-Versicherung mit motorbezogener Versicherungssteuer, 1.250 Euro. Am Kontoauszug steht die Abbuchung mit Minus. Wir buchen Lkw-Betriebsaufwand an Bank, 1.250 Euro."
+    },
+    {
+     "titel": "Merksätze",
+     "text": "Zwei Merksätze. Beim Lkw buchst du netto und die Vorsteuer. Die Versicherung hat keine Umsatzsteuer, du buchst den ganzen Betrag als Aufwand. Jetzt bist du dran im Buchungstrainer, Einheit E14, Kfz-Betriebskosten."
+    }
+   ]
+  },
+  "videos/erklaervideo_kfz_betriebskosten_pkw_fiktiv_v2.mp4": {
+   "titel": "Kfz-Betriebskosten: Pkw",
+   "vtt": "untertitel/erklaervideo_kfz_betriebskosten_pkw_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Gipfelgriff Sport, ein Outdoor-Sporthandel in Wien. Hinter dem Geschäft stehen unser Firmen-Pkw und unser Lkw. Heute buchen wir nur die laufenden Kosten: Tanken, Werkstatt, Versicherung. In diesem Video geht es um den Pkw, den Lkw zeigt das nächste Video. Den Kauf des Fahrzeugs zeigt ein eigenes Video. Die Abschreibung buchst du extra, die lassen wir heute weg."
+    },
+    {
+     "titel": "Pkw: Bruttobetrag",
+     "text": "Laufende Kfz-Kosten sind Aufwand. Beim Pkw kommen sie auf Pkw- und Kombi-Betriebsaufwand. Beim Pkw und Kombi mit Benzin oder Diesel darf der Betrieb keine Vorsteuer abziehen. Darum ist die ganze Rechnung Aufwand. Du buchst den Bruttobetrag. Wir tanken mit unserem Firmen-Pkw, einem Benziner: 60 Euro plus 20 Prozent Umsatzsteuer, 12 Euro, zusammen 72 Euro. Bezahlt wird mit der Firmen-Debitkarte. Wir buchen Pkw- und Kombi-Betriebsaufwand an Verbindlichkeiten Debitkarten, 72 Euro. Später zieht die Bank den Betrag ab, am Kontoauszug mit Minus 72 Euro. Dann buchen wir Verbindlichkeiten Debitkarten an Bank, 72 Euro."
+    },
+    {
+     "titel": "Merksätze und Quiz",
+     "text": "Zwei Merksätze. Beim Pkw und Kombi mit Benzin oder Diesel buchst du den Bruttobetrag, ohne Vorsteuer. Mit der Firmen-Debitkarte buchst du zuerst eine Verbindlichkeit, später an Bank. Quiz: Wir überweisen die Kfz-Versicherung für unseren Diesel-Pkw, 840 Euro. Wie buchst du das? Du buchst Pkw- und Kombi-Betriebsaufwand an Bank, 840 Euro. Keine Umsatzsteuer, und es ist ein Pkw. Jetzt bist du dran im Buchungstrainer, Einheit E14, Kfz-Betriebskosten."
+    }
+   ]
+  },
+  "videos/erklaervideo_kfz_kauf_fiktiv_v2.mp4": {
+   "titel": "Kfz-Kauf",
+   "vtt": "untertitel/erklaervideo_kfz_kauf_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Gipfelgriff Sport, ein Outdoor-Sporthandel in Wien. Heute kaufen wir ein Fahrzeug. Das ist keine laufende Ausgabe, sondern eine Anlage. Die laufenden Kosten hast du im Video zu den Kfz-Betriebskosten gesehen."
+    },
+    {
+     "titel": "Pkw-Kauf",
+     "text": "Wir kaufen einen neuen Pkw, einen Benziner, und überweisen. Netto 32.000 Euro, plus 20 Prozent Umsatzsteuer 6.400 Euro, plus NoVA 1.600 Euro. Zusammen 40.000 Euro. Die Normverbrauchsabgabe, kurz NoVA, steht auf der Rechnung. Auf die NoVA gibt es keine Umsatzsteuer. Beim Pkw gehört auch die Umsatzsteuer zu den Anschaffungskosten, weil es keine Vorsteuer gibt. Wir buchen Pkw und Kombis an Bank, 40.000 Euro."
+    },
+    {
+     "titel": "Anmeldegebühr",
+     "text": "Dann die Anmeldung: 200 Euro, ohne Umsatzsteuer. Auch das gehört zu den Anschaffungskosten. Wir buchen Pkw und Kombis an Bank, 200 Euro."
+    },
+    {
+     "titel": "Lkw-Kauf",
+     "text": "Beim Lkw kommt nur der Nettobetrag auf das Anlagekonto. Die Umsatzsteuer landet auf Vorsteuer. Wir kaufen einen neuen Lkw und überweisen: 40.000 Euro netto plus 8.000 Euro Umsatzsteuer, zusammen 48.000 Euro. Wir buchen Lkw 40.000 Euro und Vorsteuer 8.000 Euro an Bank, 48.000 Euro."
+    },
+    {
+     "titel": "Merksätze und Quiz",
+     "text": "Zwei Merksätze. Beim Pkw mit Benzin oder Diesel gehören Umsatzsteuer und NoVA zu den Anschaffungskosten. Beim Lkw buchst du netto auf das Anlagekonto und die Vorsteuer. Quiz: Wir kaufen einen neuen Diesel-Pkw: 25.000 Euro netto, plus 20 Prozent Umsatzsteuer, plus NoVA 2.000 Euro. Wir überweisen. Wie buchst du das? Du buchst Pkw und Kombis an Bank, 32.000 Euro. 25.000 plus 5.000 plus 2.000 ergibt 32.000. Jetzt bist du dran im Buchungstrainer, Einheit E15, Kfz-Kauf."
+    }
+   ]
+  },
+  "videos/erklaervideo_kunden_nachlaesse_fiktiv_v2.mp4": {
+   "titel": "Rabatte: Nachlass an Kunden",
+   "vtt": "untertitel/erklaervideo_kunden_nachlaesse_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Ohmreich und buchen weiter Rabatte, diesmal für unsere Kunden. Jetzt geben wir selbst einen Nachlass."
+    },
+    {
+     "titel": "Nachlass an Kunden",
+     "text": "Innquell behält die Ware und bekommt 300 Euro netto plus 60 Euro Umsatzsteuer, zusammen 360 Euro, als Gutschrift. Hier nimmst du nicht 4000 Handelswarenerlöse, sondern das eigene Konto 4400 Erlösberichtigungen. So siehst du später, wie viel Rabatt wir hergegeben haben. Im Soll: 300 Euro auf 4400 und 60 Euro Umsatzsteuer. Im Haben sinkt die Forderung an Innquell, Konto 20030. Merk den Unterschied gut, er kommt oft in Übungen: Bleibt die Ware beim Kunden, Konto 4400. Kommt die Ware zurück, Konto 4000. Bei jedem Nachlass korrigierst du die Steuer mit."
+    },
+    {
+     "titel": "Merksätze und Quiz",
+     "text": "Ein Nachlass an den Kunden landet auf 4400, wenn die Ware beim Kunden bleibt. Kommt die Ware zurück, Konto 4000. Und jetzt du! Kammfeder schickt einen defekten Lautsprecher zurück. Gutschrift 300 Euro inklusive 20 Prozent Umsatzsteuer. Die Ware kommt zurück. Wie buchst du? Richtig: 300 geteilt durch 1,20 ergibt 250 Euro plus 50 Euro Umsatzsteuer. Weil die Ware zurückkommt, stehen die Handelswarenerlöse im Soll, nicht die Erlösberichtigungen, an Kammfeder, Konto 20010. Jetzt bist du dran im Buchungstrainer, Einheit E5, Rabatte."
+    }
+   ]
+  },
+  "videos/erklaervideo_kundenskonto_fiktiv_v2.mp4": {
+   "titel": "Kundenskonto",
+   "vtt": "untertitel/erklaervideo_kundenskonto_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Ohmreich und buchen weiter Skonto. Skonto rechnest du vom Bruttobetrag und teilst ihn durch 1,20 in Netto und Steuer. Jetzt verkaufen wir."
+    },
+    {
+     "titel": "Kunde zahlt mit Skonto",
+     "text": "Innquell schuldet uns 1.200 Euro, das sind 1.000 Euro netto plus 200 Euro Umsatzsteuer, und überweist pünktlich mit 2 Prozent Skonto. 2 Prozent von 1.200 Euro sind 24 Euro, geteilt durch 1,20 ergibt 20 Euro netto und 4 Euro Umsatzsteuer. Auf unserem Konto kommen 1.176 Euro an. Im Soll stehen drei Konten: 2800 Bank mit 1.176 Euro, 4410 Kundenskonti mit 20 Euro und 3500 Umsatzsteuer mit 4 Euro. Im Haben wird die Forderung an Innquell, Konto 20030, mit den vollen 1.200 Euro ausgeglichen. Wir bekommen weniger Geld, darum schulden wir auch weniger Umsatzsteuer."
+    },
+    {
+     "titel": "Merksätze",
+     "text": "Zwei Merksätze. Zahlt ein Kunde, stehen Bank, Skonto und Umsatzsteuer im Soll, der Kunde voll im Haben. Skonto gibt es nur bei Vereinbarung und in der Frist. Jetzt bist du dran im Buchungstrainer, Einheit E9, Kundenskonto."
+    }
+   ]
+  },
+  "videos/erklaervideo_lieferantenrabatt_fiktiv_v2.mp4": {
+   "titel": "Rabatte: Lieferantenrabatt",
+   "vtt": "untertitel/erklaervideo_lieferantenrabatt_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Ohmreich und buchen weiter Rabatte. Beim Sofortrabatt steht der Nachlass schon auf der Rechnung. Kommt er später als Gutschrift, ist es ein nachträglicher Rabatt. Heute gewährt uns ein Lieferant so einen nachträglichen Rabatt."
+    },
+    {
+     "titel": "Rabatt vom Lieferanten",
+     "text": "Nadelstrom gewährt uns später einen Preisnachlass. Die Ware bleibt bei uns. Die Gutschrift lautet 200 Euro netto plus 40 Euro Umsatzsteuer, zusammen 240 Euro. Der Satz ist derselbe wie bei einer Rücksendung an den Lieferanten. Der einzige Unterschied: Die Kartons bleiben in unserem Lager. Im Soll wird unsere Schuld bei Nadelstrom kleiner, 240 Euro. Im Haben gehen Handelswareneinsatz 200 Euro und Vorsteuer 40 Euro zurück. Die Ware wird für uns einfach billiger. Die Vorsteuer muss mit runter, weil die Ware weniger kostet."
+    },
+    {
+     "titel": "Merksätze",
+     "text": "Zwei Merksätze. Ein späterer Nachlass vom Lieferanten geht gegen den Handelswareneinsatz, die Ware bleibt. Die Vorsteuer korrigierst du immer mit. Jetzt bist du dran im Buchungstrainer, Einheit E5, Rabatte."
+    }
+   ]
+  },
+  "videos/erklaervideo_lieferantenskonto_fiktiv_v2.mp4": {
+   "titel": "Lieferantenskonto",
+   "vtt": "untertitel/erklaervideo_lieferantenskonto_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Ohmreich, ein Elektrofachhandel in Wien, und buchen heute aus Sicht unseres Unternehmens. Skonto ist ein Nachlass dafür, dass rasch gezahlt wird, zum Beispiel 2 Prozent innerhalb von 14 Tagen. Es gibt ihn nicht automatisch. Er muss vereinbart sein, meist in den Zahlungsbedingungen, und wir müssen in der Frist zahlen. Anders als ein Sofortrabatt steht der Skonto nicht in den Rechnungszeilen. Er wird erst bei der Zahlung abgezogen. Durch den Skonto wird die Ware nachträglich billiger. Weniger Entgelt heißt auch weniger Steuer. Die Steuer musst du deshalb immer mitkorrigieren."
+    },
+    {
+     "titel": "Skonto rechnen",
+     "text": "So rechnest du. Nimm immer den Bruttobetrag der Rechnung, also inklusive Umsatzsteuer. Davon berechnest du den Skontosatz. Die Rechnung von Nadelstrom lautet 2.400 Euro, das sind 2.000 Euro netto plus 400 Euro Umsatzsteuer. Vereinbart sind 2 Prozent Skonto. 2 Prozent von 2.400 Euro sind 48 Euro. Überwiesen werden 2.400 minus 48, also 2.352 Euro. Die 48 Euro teilst du durch 1,20. Das ergibt 40 Euro netto und 8 Euro Steuer. Merk dir den Weg: Skonto vom Bruttobetrag, dann durch 1,20 in Netto und Steuer teilen. Diese Zahlen brauchst du gleich für die Buchung."
+    },
+    {
+     "titel": "Wir zahlen mit Skonto",
+     "text": "Wir zahlen die Nadelstrom-Rechnung pünktlich und ziehen 2 Prozent Skonto ab. Im Soll steht der Lieferant mit dem vollen Rechnungsbetrag, 2.400 Euro, Konto 33010. Die Schuld soll ganz verschwinden. Im Haben stehen drei Beträge: 40 Euro auf 5880 Lieferantenskonti auf Wareneinkauf, 8 Euro auf 2500 Vorsteuer, und 2.352 Euro an 2800 Bank. Die Vorsteuer geht mit runter, weil die Ware für uns billiger geworden ist. Zahlen wir erst nach der Frist, dürfen wir keinen Skonto abziehen. Dann gilt nur: Nadelstrom an Bank, 2.400 Euro, ohne 5880 und ohne Steuerkorrektur."
+    },
+    {
+     "titel": "Merksätze und Quiz",
+     "text": "Zum Merken: Skonto nur bei Vereinbarung und in der Frist. Du rechnest vom Brutto und teilst durch 1,20. Zahlen wir, steht der Lieferant voll im Soll, Skonto, Vorsteuer und Bank im Haben. Und jetzt du! Rechnung von Schallkern über 1.200 Euro. Wir zahlen in der Frist und ziehen 3 Prozent Skonto ab. Wie buchst du? Richtig: 3 Prozent von 1.200 sind 36 Euro, durch 1,20 gleich 30 Euro plus 6 Euro Vorsteuer. Wir überweisen 1.164 Euro. Schallkern, Konto 33020, an Lieferantenskonti, Vorsteuer und Bank. Jetzt bist du dran im Buchungstrainer, Einheit E8, Lieferantenskonto."
+    }
+   ]
+  },
+  "videos/erklaervideo_lkw_kauf_fiktiv_v2.mp4": {
+   "titel": "Lkw-Kauf",
+   "vtt": "untertitel/erklaervideo_lkw_kauf_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Gipfelgriff Sport, ein Outdoor-Sporthandel in Wien. Heute kaufen wir ein Fahrzeug. Das ist keine laufende Ausgabe, sondern eine Anlage. Wir kaufen einen Lkw, er kommt auf das Anlagekonto Lkw."
+    },
+    {
+     "titel": "Lkw-Kauf",
+     "text": "Beim Lkw kommt nur der Nettobetrag auf das Anlagekonto. Die Umsatzsteuer landet auf Vorsteuer. Wir kaufen einen neuen Lkw und überweisen: 40.000 Euro netto plus 8.000 Euro Umsatzsteuer, zusammen 48.000 Euro. Wir buchen Lkw 40.000 Euro und Vorsteuer 8.000 Euro an Bank, 48.000 Euro."
+    },
+    {
+     "titel": "Merksatz",
+     "text": "Zum Merken. Beim Lkw buchst du netto auf das Anlagekonto und die Vorsteuer. Jetzt bist du dran im Buchungstrainer, Einheit E15, Kfz-Kauf."
+    }
+   ]
+  },
+  "videos/erklaervideo_paketgebuehren_fiktiv_v2.mp4": {
+   "titel": "Versandkosten: Paketgebühren",
+   "vtt": "untertitel/erklaervideo_paketgebuehren_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Innquell und buchen weiter Versandkosten. Kleine Teile schicken wir nicht mit der Spedition, sondern als Paket mit Raschfracht. Raschfracht ist im Buchungstrainer unser Paketdienst. Für ein Paket gibt es zwei Konten, weil die Steuer vom Gewicht abhängt: 7310 Paketgebühren mit 20 Prozent Umsatzsteuer und 7311 Paketgebühren mit 0 Prozent, also ohne Vorsteuer."
+    },
+    {
+     "titel": "Paket 14 kg",
+     "text": "Bei Raschfracht kommt es auf das Gewicht an. Über 10 Kilogramm buchst du mit Vorsteuer, unter 10 Kilogramm ohne. Erstes Paket: 14 Kilogramm, also über 10 Kilogramm. Wir zahlen 25 Euro netto plus 20 Prozent Umsatzsteuer, das sind 5 Euro, zusammen 30 Euro, bar. Also 7310 Paketgebühren mit 25 Euro und Vorsteuer 5 Euro an die Kassa, 30 Euro."
+    },
+    {
+     "titel": "Paket 3 kg",
+     "text": "Zweites Paket: nur 3 Kilogramm, also unter 10 Kilogramm, wieder mit Raschfracht. Der Beleg lautet 8,50 Euro, ohne Umsatzsteuer. Dann nur 7311 Paketgebühren an die Kassa, 8,50 Euro. Keine Vorsteuer, und du darfst auch keine herausrechnen."
+    },
+    {
+     "titel": "Merksätze",
+     "text": "Zwei Merksätze. Ein Paket über 10 Kilogramm kommt auf 7310 mit Vorsteuer, eines unter 10 Kilogramm auf 7311, ohne Umsatzsteuer. Merke dir die Waage: über 10 Kilogramm mit Steuer, unter 10 Kilogramm ohne Steuer. Jetzt bist du dran im Buchungstrainer, Einheit E4, Versandkosten."
+    }
+   ]
+  },
+  "videos/erklaervideo_privatsteuern_zahllast_fiktiv_v2.mp4": {
+   "titel": "Steuern: Privatsteuern und USt-Zahllast",
+   "vtt": "untertitel/erklaervideo_privatsteuern_zahllast_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Gipfelgriff Sport und buchen weiter Steuern. Betriebssteuern sind Aufwand. Jetzt geht es um die Steuern des Inhabers und um die Umsatzsteuer."
+    },
+    {
+     "titel": "Einkommensteuer",
+     "text": "Die Einkommensteuer zahlt der Inhaber für seinen Gewinn, als Person, nicht der Betrieb. Sie ist kein Aufwand. Zahlt der Betrieb sie vom Bankkonto, ist das eine Privatentnahme: 9600 Privat an 2800 Bank. Wir überweisen die Vorauszahlung, 2.500 Euro."
+    },
+    {
+     "titel": "USt-Zahllast",
+     "text": "Die Umsatzsteuer ist eine Durchlaufsteuer. Sie zahlt am Ende der Konsument. Der Betrieb sammelt sie nur ein. Beim Verkauf steht sie auf 3500, beim Einkauf die Vorsteuer auf 2500. Umsatzsteuer minus Vorsteuer ergibt die Zahllast. Die überweist du an das Finanzamt, fällig am 15. des übernächsten Monats. Die Zahllast selbst ist kein Aufwand, du gleichst nur die Schuld beim Finanzamt aus. Für September beträgt sie 2.150 Euro, fällig am 15. November: 3520 USt-Zahllast an Bank, 2.150 Euro."
+    },
+    {
+     "titel": "Merksätze",
+     "text": "Zwei Merksätze. Privatsteuern des Inhabers buchst du auf 9600. Die Zahllast überweist du mit 3520 an die Bank. Jetzt bist du dran im Buchungstrainer, Einheit E13, Steuern."
+    }
+   ]
+  },
+  "videos/erklaervideo_sofortrabatt_fiktiv_v2.mp4": {
+   "titel": "Rabatte: Sofortrabatt",
+   "vtt": "untertitel/erklaervideo_sofortrabatt_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Ohmreich, ein Elektrofachhandel in Wien, und buchen heute aus Sicht unseres Unternehmens. Ein Rabatt ist ein Nachlass auf den Listenpreis. Bevor du buchst, stell dir eine Frage: Steht der Rabatt schon auf der Rechnung? Ja, dann ist es ein Sofortrabatt. Kommt er später als Gutschrift, ist es ein nachträglicher Rabatt. In diesem Video geht es um den Sofortrabatt."
+    },
+    {
+     "titel": "Netto nach Rabatt",
+     "text": "Beim Sofortrabatt rechnest du zuerst Listenpreis minus Rabatt. Die Umsatzsteuer nimmst du erst vom neuen Netto, nicht vom Listenpreis. Gebucht wird nur dieser Betrag nach Rabatt, der Rabatt selbst erscheint nicht als eigener Buchungssatz."
+    },
+    {
+     "titel": "Einkauf",
+     "text": "Einkauf: Wir kaufen bei Nadelstrom Fernseher, Listenpreis 4.000 Euro, 10 Prozent Sofortrabatt, das sind 400 Euro Nachlass. Netto nach Rabatt 3.600 Euro, plus 20 Prozent Umsatzsteuer 720 Euro, zusammen 4.320 Euro. Also Handelswareneinsatz 3.600 und Vorsteuer 720 an Nadelstrom, Konto 33010."
+    },
+    {
+     "titel": "Verkauf",
+     "text": "Verkauf: An Innquell, Listenpreis 6.000 Euro, 5 Prozent Sofortrabatt, also 300 Euro weniger. Netto 5.700 Euro plus 1.140 Euro Umsatzsteuer, zusammen 6.840 Euro. Im Soll der Kunde Innquell, Konto 20030, mit 6.840 Euro, im Haben Erlöse 5.700 und Umsatzsteuer 1.140 Euro."
+    },
+    {
+     "titel": "Merksätze",
+     "text": "Zwei Merksätze. Sofortrabatt heißt, nur das Netto nach Rabatt zu buchen. Die Umsatzsteuer rechnest du vom Netto nach Rabatt. Jetzt bist du dran im Buchungstrainer, Einheit E5, Rabatte."
+    }
+   ]
+  },
+  "videos/erklaervideo_sonstiges_material_inventur_fiktiv_v2.mp4": {
+   "titel": "Inventur und Bestandsveränderung",
+   "vtt": "untertitel/erklaervideo_sonstiges_material_inventur_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Gipfelgriff Sport, ein Sporthandel in Wien. Beim Kauf hast du sonstiges Material gleich als Aufwand gebucht. Heute schauen wir, was am Jahresende noch im Lager liegt, und buchen die Bestandsveränderung."
+    },
+    {
+     "titel": "Endbestand − Anfangsbestand",
+     "text": "Am 31. Dezember machen wir Inventur. Wir zählen, messen und wiegen, was noch übrig ist. Das steht in der Inventurliste, das ist der Endbestand. Den Anfangsbestand findest du in der Inventurliste vom Vorjahr, mit dem Stand 31. Dezember 2025. Dann rechnen wir: Endbestand minus Anfangsbestand. Ein Plus heißt Vermehrung, ein Minus heißt Verminderung. Gebucht wird nur dieser Unterschied, nicht der ganze Bestand. Es gibt keine Umsatzsteuer, weil nichts gekauft wird."
+    },
+    {
+     "titel": "Vermehrung: Heizöl",
+     "text": "Heizöl: In der Inventurliste vom Vorjahr stehen 800 Euro, das ist der Anfangsbestand. Heuer liegen noch 1.200 Euro im Tank. 1.200 minus 800 ergibt plus 400, also eine Vermehrung. Der Vorrat wird größer. Wir buchen Vorrat Heizöl an Heizölverbrauch, 400 Euro. Der Aufwand wird kleiner, weil wir nicht alles verheizt haben, was wir gekauft haben."
+    },
+    {
+     "titel": "Verminderung: Verpackung",
+     "text": "Verpackungsmaterial: Anfangsbestand 600 Euro, Endbestand nur noch 350 Euro. 350 minus 600 ergibt minus 250, also eine Verminderung. Wir haben mehr verbraucht, als wir heuer gekauft haben. Wir buchen Verpackungsmaterialverbrauch an Vorrat Verpackungsmaterial, 250 Euro. Der Vorrat wird kleiner."
+    },
+    {
+     "titel": "Merksätze und Quiz",
+     "text": "Zwei Merksätze. Vermehrung heißt Vorrat an Aufwand. Verminderung heißt Aufwand an Vorrat. Quiz: Büromaterial, Anfangsbestand 400 Euro, Endbestand 250 Euro. Wie buchst du die Bestandsveränderung? 250 minus 400 ergibt minus 150, eine Verminderung. Du buchst Büromaterial an Vorrat Büromaterial, 150 Euro. Jetzt bist du dran im Buchungstrainer, Einheit E17, Inventur und Bestandsveränderung."
+    }
+   ]
+  },
+  "videos/erklaervideo_sonstiges_material_kauf_fiktiv_v2.mp4": {
+   "titel": "Kauf sonstiges Material",
+   "vtt": "untertitel/erklaervideo_sonstiges_material_kauf_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Gipfelgriff Sport, ein Sporthandel in Wien, und buchen aus Sicht unseres Unternehmens. In unserem Lager liegen zwei verschiedene Dinge. Manche verkaufen wir unverändert weiter, zum Beispiel die Trinkflaschen im Regal. Das ist Handelsware. Anderes verbrauchen wir selbst im Betrieb: Produktkartons, Reiniger, Heizöl oder Kopierpapier. Genau das ist sonstiges Material."
+    },
+    {
+     "titel": "Vier Materialarten",
+     "text": "Sonstiges Material gibt es in vier Arten: Verpackungsmaterial, Reinigungsmaterial, Heizmaterial und Büromaterial. Jede Art hat ein Aufwandskonto für den Verbrauch und ein Vorratskonto für den Bestand im Lager. Beim Kauf buchst du immer auf das Aufwandskonto, nicht auf den Vorrat. Das Vorratskonto brauchst du erst bei der Inventur."
+    },
+    {
+     "titel": "Kauf auf Ziel",
+     "text": "Wir kaufen 500 Produktkartons bei Kammerstapel, auf Ziel. Netto 400 Euro, plus 20 Prozent Umsatzsteuer 80 Euro, zusammen 480 Euro, zahlbar in 30 Tagen. Wir buchen Verpackungsmaterialverbrauch 400 Euro und Vorsteuer 80 Euro an Kammerstapel, 480 Euro. Zahlen wir bar, steht im Haben die Kassa. Überweisen wir gleich, steht die Bank im Haben."
+    },
+    {
+     "titel": "Später überweisen",
+     "text": "Später überweisen wir die 480 Euro. Den Aufwand buchst du nicht noch einmal. Wir buchen Kammerstapel an Bank, 480 Euro. Am Kontoauszug steht die Abbuchung mit Minus."
+    },
+    {
+     "titel": "Heizöl",
+     "text": "Wir kaufen Heizöl und überweisen gleich: 1.500 Euro plus 300 Euro Umsatzsteuer, zusammen 1.800 Euro. Wieder Aufwand und Vorsteuer, diesmal an die Bank. Wir buchen Heizölverbrauch und Vorsteuer an Bank, 1.800 Euro."
+    },
+    {
+     "titel": "Merksätze und Quiz",
+     "text": "Zwei Merksätze. Sonstiges Material verbrauchen wir selbst, wir verkaufen es nicht. Beim Kauf buchst du Aufwand und Vorsteuer an Lieferant, Bank oder Kassa. Quiz: Wir kaufen Kopierpapier, Ordner und Kugelschreiber um 100 Euro plus 20 Euro Umsatzsteuer und zahlen bar. Wie buchst du das? Du buchst Büromaterial 100 Euro und Vorsteuer 20 Euro an Kassa, 120 Euro. Jetzt bist du dran im Buchungstrainer, Einheit E16, Kauf sonstiges Material."
+    }
+   ]
+  },
+  "videos/erklaervideo_verkauf_ruecksendung_privatentnahme_fiktiv_v2.mp4": {
+   "titel": "Verkauf: Rücksendung und Privatentnahme",
+   "vtt": "untertitel/erklaervideo_verkauf_ruecksendung_privatentnahme_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Gipfelgriff Sport und buchen weiter den Verkauf von Handelswaren. Beim Verkauf buchst du Kunde oder Kassa an Erlöse und Umsatzsteuer. Jetzt kommt Ware zurück, und danach nimmt der Inhaber Ware für sich privat mit. Auch das musst du richtig buchen, denn die Umsatzsteuer fällt trotzdem an."
+    },
+    {
+     "titel": "Rücksendung",
+     "text": "Kammfeder schickt eine falsch gelieferte Hantelbank zurück. Die Gutschrift: 200 Euro netto plus 40 Euro Umsatzsteuer, zusammen 240 Euro. Der Verkaufssatz dreht sich um. Im Soll werden Erlöse und Umsatzsteuer kleiner, 200 Euro und 40 Euro. Im Haben sinkt die Forderung an Kammfeder, Konto 20010, um 240 Euro. Die Ware kommt zurück, darum korrigierst du die Erlöse selbst, nicht ein anderes Konto."
+    },
+    {
+     "titel": "Privatentnahme",
+     "text": "Ein Sonderfall: Der Inhaber nimmt Wanderschuhe für sich, Warenwert 150 Euro netto plus 20 Prozent Umsatzsteuer, also 30 Euro, zusammen 180 Euro. Das ist wie ein Verkauf an uns selbst, nur dass niemand eine Kundenrechnung bekommt. Im Soll steht 9600 Privat mit 180 Euro. Im Haben stehen 4900 Eigenverbrauch mit 150 Euro und die Umsatzsteuer mit 30 Euro. Eigenverbrauch ist ein Ertragskonto. Die Steuer fällt trotzdem an."
+    },
+    {
+     "titel": "Merksätze",
+     "text": "Zwei Merksätze. Eine Rücksendung ist der Verkauf rückwärts. Nimmt der Inhaber Ware privat, buchst du Privat an Eigenverbrauch und Umsatzsteuer. Jetzt bist du dran im Buchungstrainer, Einheit E2, Verkauf und Rücksendung."
+    }
+   ]
+  },
+  "videos/erklaervideo_verzugszinsen_mahnspesen_fiktiv_v2.mp4": {
+   "titel": "Verzugszinsen und Mahnspesen",
+   "vtt": "untertitel/erklaervideo_verzugszinsen_mahnspesen_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Ohmreich, ein Elektrofachhandel in Wien, und buchen heute Verzugszinsen und Mahnspesen. Wenn eine Rechnung zu spät bezahlt wird, darf der Gläubiger oft Mahnspesen und Verzugszinsen verlangen. Mahnspesen sind das Entgelt für die Mahnung selbst, Verzugszinsen der Preis fürs zu späte Zahlen. In Österreich gelten sie als Schadenersatz, nicht als Leistung. Deshalb fällt keine Umsatzsteuer an. Am Beleg steht keine Steuer, und du setzt auch keine dazu. Zuerst sind wir selbst im Verzug. Was uns der Lieferant in der Mahnung verrechnet, ist für uns Aufwand. Danach drehen wir die Sicht um: Dieselben Posten sind für uns Ertrag, wenn unsere Kunden zu spät zahlen. Die ursprüngliche Rechnung bleibt jeweils unberührt. Wir buchen nur die zusätzlichen Beträge. Solange nur gemahnt wird, fließt noch kein Geld. Heute buchen wir nur die Mahnung selbst."
+    },
+    {
+     "titel": "Wir sind im Verzug",
+     "text": "Zuerst wir als säumige Zahler. Nadelstrom mahnt uns und verlangt 12 Euro Mahnspesen. Die offene Lieferantenrechnung bleibt stehen, wir buchen nur diese 12 Euro zusätzlich. Wir buchen Mahnspesen an Nadelstrom, 12 Euro. Nicht auf ein Sammelkonto, sondern direkt auf das Lieferantenkonto. Damit steigt unsere Verbindlichkeit gegenüber Nadelstrom um 12 Euro. Schallkern berechnet uns 18 Euro Verzugszinsen. Wir buchen Verzugszinsenaufwand an Schallkern, 18 Euro. Beides ist Aufwand. Achte auf die Kontonamen: Als Schuldner buchst du Mahnspesen und Verzugszinsenaufwand."
+    },
+    {
+     "titel": "Kunden im Verzug",
+     "text": "Jetzt die andere Seite: Wir sind der Verkäufer. Ein Kunde, Kammfeder Fitness, zahlt zu spät. Wir stellen 15 Euro Mahnspesen in Rechnung, wieder ohne Umsatzsteuer. Die offene Kundenrechnung bleibt stehen. Neu ist nur der Ertrag aus der Mahnung. Wir buchen Kammfeder an Mahnspesenvergütungen, 15 Euro. Damit steigt unsere Forderung gegenüber Kammfeder um 15 Euro. Ein zweiter Kunde, Atemweide, schuldet uns 25 Euro Verzugszinsen. Wir buchen Atemweide an Verzugszinsenerträge, 25 Euro. Dieselben Begriffe wie zuvor, nur diesmal als Ertrag: Mahnspesenvergütungen und Verzugszinsenerträge."
+    },
+    {
+     "titel": "Beides auf einer Mahnung",
+     "text": "Manchmal stehen beide Beträge auf derselben Mahnung. Kammfeder schuldet uns 10 Euro Mahnspesen und 14 Euro Verzugszinsen, zusammen 24 Euro. Wir buchen Kammfeder, 24 Euro, an Mahnspesenvergütungen 10 Euro und Verzugszinsenerträge 14 Euro. Eine Forderung, zwei Ertragskonten, keine Steuer. Umgekehrt, wenn uns Nadelstrom beides verrechnet: 12 Euro Mahnspesen und 8 Euro Verzugszinsen, zusammen 20 Euro. Wir buchen Mahnspesen und Verzugszinsenaufwand an Nadelstrom, 20 Euro. Zwei Aufwandskonten, eine Verbindlichkeit, ebenfalls ohne Steuer."
+    },
+    {
+     "titel": "Merksätze und Quiz",
+     "text": "Zwei Merksätze. Was uns der Lieferant verrechnet, ist Aufwand. Was wir dem Kunden verrechnen, ist Ertrag. In beiden Fällen ohne Umsatzsteuer. Ob Aufwand oder Ertrag, hängt nur davon ab, wer mahnt. Quiz: Wir mahnen unseren Kunden Innquell und verlangen 20 Euro Mahnspesen. Wie buchst du das? Du buchst Innquell an Mahnspesenvergütungen, 20 Euro. Wieder Ertrag, wieder ohne Steuer. Jetzt bist du dran im Buchungstrainer, Einheit E10, Verzugszinsen und Mahnspesen."
+    }
+   ]
+  },
+  "videos/erklaervideo_wareneinkauf_fiktiv_v2.mp4": {
+   "titel": "Wareneinkauf",
+   "vtt": "untertitel/erklaervideo_wareneinkauf_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Ohmreich, ein Elektrofachhandel in Wien, und buchen heute aus Sicht unseres Unternehmens. Die Kopfhörer und Kameras in unserem Lager verkaufen wir später weiter. Genau das sind Handelswaren. Wir kaufen sie ein, um sie unverändert wieder zu verkaufen. Heute geht es um den Einkauf: Wie buchst du, wenn die Ware zu uns kommt? Rechne immer zuerst die 20 Prozent Umsatzsteuer und prüfe, ob Soll und Haben gleich groß sind."
+    },
+    {
+     "titel": "Konten beim Einkauf",
+     "text": "Beim Einkauf fragst du zuerst: Wohin geht die Ware, und woher kommt das Geld? Im Soll stehen immer zwei Konten: 5000 Handelswareneinsatz für die Ware und 2500 Vorsteuer. Diese Vorsteuer holen wir uns später vom Finanzamt zurück. Im Haben steht, wem wir das Geld schulden. Kaufen wir auf Ziel, also auf Rechnung, kommt der Lieferant ins Haben. Jeder Lieferant hat sein eigenes Konto, zum Beispiel 33010 für Nadelstrom und 33020 für Schallkern. Du buchst nie auf ein Sammelkonto 3300. Zahlen wir sofort bar, steht statt des Lieferanten die 2700 Kassa im Haben."
+    },
+    {
+     "titel": "Zielkauf",
+     "text": "Erstes Beispiel: Wir kaufen bei Nadelstrom 20 Kopfhörer auf Ziel. Netto 2.000 Euro, plus 20 Prozent Umsatzsteuer, das sind 400 Euro, zusammen 2.400 Euro. Zuerst das Soll, und wir fragen: Wohin geht das Geld? In die Ware und in die Vorsteuer. Also 2.000 Euro auf Handelswareneinsatz, 400 Euro auf Vorsteuer. Dann das Haben: Woher kommt das Geld? Von Nadelstrom, wir zahlen erst später. Also 2.400 Euro an Nadelstrom, Konto 33010."
+    },
+    {
+     "titel": "Barkauf",
+     "text": "Zweites Beispiel: Ein Barkauf bei Schallkern. Handelswaren 300 Euro netto plus 60 Euro Umsatzsteuer, zusammen 360 Euro. Das Soll bleibt gleich: 300 Euro Aufwand und 60 Euro Vorsteuer. Im Haben steht jetzt 2700 Kassa, 360 Euro. Kein Lieferantenkonto, weil wir sofort zahlen."
+    },
+    {
+     "titel": "Merksätze und Quiz",
+     "text": "Zum Merken: Beim Einkauf buchst du Handelswareneinsatz und Vorsteuer an den Lieferanten oder an die Kassa. Jeder Lieferant hat sein eigenes Konto, niemals ein Sammelkonto 3300. Und jetzt du! Zielkauf bei Nadelstrom: 8 Kameras zu je 450 Euro netto, plus 20 Prozent Umsatzsteuer. Wie buchst du? Richtig: 8 mal 450 sind 3.600 Euro, plus 720 Euro Umsatzsteuer, zusammen 4.320 Euro. Handelswareneinsatz und Vorsteuer an Nadelstrom, Konto 33010. Jetzt bist du dran im Buchungstrainer, Einheit E1, Einkauf und Rücksendung."
+    }
+   ]
+  },
+  "videos/erklaervideo_warenverkauf_fiktiv_v2.mp4": {
+   "titel": "Warenverkauf",
+   "vtt": "untertitel/erklaervideo_warenverkauf_fiktiv_v2.vtt",
+   "szenen": [
+    {
+     "titel": "Einstieg",
+     "text": "Wir sind Gipfelgriff Sport, ein Outdoor-Sporthandel in Wien, und buchen heute aus Sicht unseres Unternehmens. Die Ware im Geschäft verkaufen wir weiter: auf Rechnung oder bar an der Kassa. Wir gehen die Fälle der Reihe nach durch, immer zuerst das Soll, dann das Haben."
+    },
+    {
+     "titel": "Konten beim Verkauf",
+     "text": "Beim Verkauf fragst du: Wer zahlt uns, und was geben wir her? Im Soll steht die Forderung: das Kundenkonto, wenn der Kunde später zahlt, oder die Kassa, wenn er sofort bar zahlt. Im Haben stehen immer zwei Konten: 4000 Handelswarenerlöse und 3500 Umsatzsteuer. Die Erlöse sind unser Ertrag, sie stehen im Haben und erhöhen den Gewinn. Die Umsatzsteuer schulden wir dem Finanzamt, darum steht auch sie im Haben. Merk dir den Gegensatz zum Einkauf: Einkauf bringt Vorsteuer im Soll, Verkauf bringt Umsatzsteuer im Haben."
+    },
+    {
+     "titel": "Zielverkauf",
+     "text": "Erstes Beispiel: Wir verkaufen Trainingsgeräte an Kammfeder Fitness auf Ziel. Netto 1.500 Euro, plus 20 Prozent Umsatzsteuer, das sind 300 Euro, zusammen 1.800 Euro. Zuerst das Soll: Wer schuldet uns das Geld? Der Kunde Kammfeder, Konto 20010, mit 1.800 Euro. Dann das Haben: 1.500 Euro Erlöse und 300 Euro Umsatzsteuer."
+    },
+    {
+     "titel": "Barverkauf",
+     "text": "Zweites Beispiel: Ein Barverkauf im Geschäft. Rucksäcke um 480 Euro inklusive 20 Prozent Umsatzsteuer. Achtung, der Betrag ist inklusive Steuer. 480 geteilt durch 1,20 ergibt 400 Euro netto und 80 Euro Umsatzsteuer. Im Soll kommt das Bargeld in die Kassa, 480 Euro. Das Haben bleibt gleich: 400 Euro Erlöse und 80 Euro Umsatzsteuer."
+    },
+    {
+     "titel": "Merksätze und Quiz",
+     "text": "Zum Merken: Verkauf heißt Kunde oder Kassa an Erlöse und Umsatzsteuer. Steht ein Betrag inklusive Steuer, teilst du durch 1,20. Und jetzt du! Die Tageslosung, also unsere Barverkäufe, beträgt 1.250 Euro netto plus 250 Euro Umsatzsteuer. Wie buchst du? Richtig: In die Kassa kommen 1.250 plus 250, also 1.500 Euro. Im Haben stehen Handelswarenerlöse 1.250 Euro und Umsatzsteuer 250 Euro. Es ist derselbe Satz wie beim einzelnen Barverkauf, nur für den ganzen Tag. Jetzt bist du dran im Buchungstrainer, Einheit E2, Verkauf und Rücksendung."
+    }
+   ]
+  }
+ }
+}

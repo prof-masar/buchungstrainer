@@ -1,0 +1,198 @@
+/* =====================================================================
+   Barrierefreiheit – Buchungstrainer (index.html, beamer.html)
+   Teil 1: immer an (Kontraste WCAG 2.1 AA, sichtbarer Fokus, Sprunglink)
+   Teil 2: nur mit Schalter (html.bf-gross, .bf-kontrast, .bf-ruhig, .bf-untertitel)
+   ===================================================================== */
+
+/* ---------- Teil 1: immer an ---------- */
+.bf-sr{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important}
+.bf-skip{position:fixed;left:12px;top:-200px;z-index:10050;background:#fff;color:#1d2430;border:3px solid #1d5f63;border-radius:10px;padding:10px 16px;font:700 16px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;text-decoration:underline}
+.bf-skip:focus{top:12px;outline:3px solid #1d2430;outline-offset:2px}
+#app:focus,#app [tabindex="-1"]:focus{outline:none}
+#app [tabindex="-1"]:focus-visible{outline:3px solid #1d5f63;outline-offset:3px;border-radius:4px}
+
+/* Sichtbarer Fokus für die Tastatur (nur :focus-visible, Maus/Touch sieht unverändert aus) */
+:focus-visible{outline:3px solid #1d5f63!important;outline-offset:2px!important}
+input:focus-visible,textarea:focus-visible,select:focus-visible{outline-width:2px!important;outline-offset:1px!important}
+#bmchrome :focus-visible,.vidmodal :focus-visible,#lkbar :focus-visible,.bf-dark :focus-visible{outline-color:#fff!important}
+
+/* Kontraste auf mindestens 4,5:1 (Text) bzw. 3:1 (Bedienelemente) */
+:root{--ok:#1a7741;--tipp:#875e00}
+.slot .ph{color:#5d6778}                                  /* vorher #8a94a3 (3,1:1) */
+.rm{color:#5d6778}                                        /* vorher #8a94a3 */
+.lz input::placeholder{color:#5d6778}                     /* vorher #98a1ad (2,6:1) */
+#lehrerstart .ls-name::placeholder{color:#5d6778}         /* vorher #8a93a0 */
+html .qs0-beleg .fikt{color:#5d6778}                       /* vorher #8a93a3 */
+html .qs0-zeile .zu{color:#5d6778}                         /* vorher #7a8394 auf #f1f3f6 */
+.folge,.neu li svg{color:#9a5a0c}                          /* vorher #b4690e (4,2:1) */
+.bl.a4 .ruecksende,.bl.a4 .fuss,.bl.ka .kinfo td:nth-child(odd),.bl.ka .kfuss{color:#666}   /* vorher #777 (4,48:1) */
+#bmchrome-mitte .btn.primary,#bmchrome-mitte #start,#lehrerstart #ls-los,#lkbar button.lk-b.prim,#bmchrome-mitte .bm-satzlage button.an,#bmzoombar #bmzfit[aria-pressed="true"]{background:#18766b!important;border-color:#18766b!important}  /* vorher #1f9d8f mit Weiß 3,4:1 */
+
+/* Knopf „Barrierefreiheit“ */
+.bf-knopf{display:inline-flex;align-items:center;gap:6px;min-height:44px;min-width:44px;padding:6px 10px;border:1px solid transparent;border-radius:10px;background:transparent;color:#4a5568;font:600 .9rem/1.2 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.bf-knopf:hover{background:#eef1f4;color:#1d2430}
+.bf-knopf.an{color:#1d5f63;border-color:#b8d3d4;background:#eef6f6}
+.bf-knopf svg{flex:0 0 auto}
+header.top .wrap .bf-im-kopf{float:right;margin:-4px -6px 4px 12px}
+#lehrerstart .ls-kopf .bf-ls{float:right;margin:0 0 6px 12px}
+.bf-chrome{color:#fff;background:#3a4760;min-height:40px;padding:4px 10px;flex:0 0 auto}
+.bf-chrome:hover{background:#4b5a78;color:#fff}
+.bf-chrome.an{background:#2f6f6d;color:#fff;border-color:transparent}
+@media (max-width:520px){ .bf-knopf .bf-knopf-txt{display:none} .bf-knopf{padding:6px} }
+#bmzoombar .bf-chrome{margin-left:10px}
+
+/* Links in der Fußzeile */
+.bf-rlinks{display:block;margin-top:8px;line-height:2}
+.bf-rlinks a,.bf-linkknopf{color:inherit;text-decoration:underline;white-space:nowrap}
+.bf-linkknopf{background:none;border:0;padding:0;font:inherit;cursor:pointer}
+
+/* Dialog */
+body.bf-dlg-offen{overflow:hidden}
+.bf-dlg{position:fixed;inset:0;z-index:10000;background:rgba(15,20,30,.45);display:flex;align-items:center;justify-content:center;padding:12px;overflow:auto}
+.bf-dlg[hidden]{display:none}
+.bf-dlg-box{background:#fff;color:#1d2430;width:100%;max-width:520px;max-height:calc(100vh - 24px);overflow:auto;border-radius:16px;box-shadow:0 10px 40px rgba(15,20,30,.3);padding:18px 18px 16px;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;text-align:left}
+.bf-dlg-kopf{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bf-dlg-kopf h2{margin:0;font-size:1.25rem}
+.bf-zu{min-height:44px;padding:6px 12px;border:1px solid #c9d0d8;border-radius:10px;background:#fff;color:#1d2430;font:600 .95rem system-ui,sans-serif;cursor:pointer}
+.bf-hilfe{color:#4a5568;font-size:.92rem;margin:8px 0}
+.bf-schalter{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;margin:10px 0 6px;padding:10px 14px;border:2px solid #1d5f63;border-radius:12px;background:#fff;color:#1d2430;font:700 1.05rem system-ui,sans-serif;cursor:pointer;text-align:left}
+.bf-schalter-txt{flex:1 1 auto}
+.bf-bahn{position:relative;flex:0 0 52px;height:30px;border-radius:99px;background:#6b7584;transition:background .15s}
+.bf-punkt{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .15s}
+.bf-schalter[aria-checked="true"] .bf-bahn{background:#1d5f63}
+.bf-schalter[aria-checked="true"] .bf-punkt{transform:translateX(22px)}
+.bf-zustand{min-width:2.2em;font-size:.95rem}
+.bf-teile{border:1px solid #d5dbe2;border-radius:12px;margin:8px 0;padding:6px 12px 8px}
+.bf-teile legend{font-weight:700;font-size:.92rem;padding:0 4px}
+.bf-teil{display:flex;gap:10px;align-items:flex-start;padding:8px 0;cursor:pointer}
+.bf-teil input{width:22px;height:22px;margin:2px 0 0;flex:0 0 auto;accent-color:#1d5f63}
+.bf-teil b{display:block}
+.bf-teil .bf-hilfe{display:block;margin:2px 0 0}
+.bf-tasten{margin:8px 0;font-size:.92rem}
+.bf-tasten summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center}
+.bf-tasten ul{margin:0;padding-left:20px}
+.bf-tasten kbd{border:1px solid #b9c1cc;border-bottom-width:2px;border-radius:5px;padding:0 5px;font:600 .85rem ui-monospace,monospace;background:#f6f7f9}
+.bf-dlg-links{display:flex;flex-wrap:wrap;gap:4px 16px;margin:10px 0 4px;font-size:.92rem}
+.bf-dlg-links a{color:#1d5f63;text-decoration:underline;min-height:32px;display:inline-flex;align-items:center}
+.bf-dlg-fuss{display:flex;justify-content:flex-end;margin-top:10px}
+.bf-dlg-fuss .bf-fertig{min-height:48px;padding:10px 22px;border-radius:12px;border:1px solid #1d5f63;background:#1d5f63;color:#fff;font:700 1rem system-ui,sans-serif;cursor:pointer}
+
+/* Erklärvideos: Hinweis Computerstimme und Transkript-Knopf (immer) */
+.vidmodal.bf-mit-transkript{align-items:flex-start;overflow:auto}   /* Transkript offen: oben beginnen und scrollen, damit „Schließen“ nie aus dem Bild rutscht */
+.vidmodal.bf-mit-transkript .vidbox{max-width:min(960px,calc((100vh - 300px) * 16 / 9));min-width:min(100%,560px);margin:0 auto}
+.bf-transkript{margin-top:8px;color:#d5dbe2;padding:0}
+.bf-transkript[open]{background:#fff;color:#1d2430;border-radius:10px;padding:4px 14px 10px}
+.bf-transkript summary{cursor:pointer;font-weight:600;min-height:44px;display:inline-flex;align-items:center;text-decoration:underline;text-underline-offset:2px;padding:0 8px;border-radius:8px;background:rgba(20,24,30,.92);color:#d5dbe2}
+.bf-transkript[open] summary{display:flex;font-weight:700;text-decoration:none}
+.bf-transkript-text{max-height:32vh;overflow:auto;padding-right:6px;color:#1d2430}
+.bf-transkript-text h3{font-size:1rem;margin:10px 0 2px}
+.bf-transkript-text p{margin:0 0 6px}
+.bf-ki-klein{color:#4a5568;font-size:.88rem}
+video::cue{font-size:1.1em;background:rgba(0,0,0,.82);color:#fff}
+
+/* Systemeinstellung „Bewegung reduzieren“ wird immer beachtet */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+  #konfetti,#lkkonfetti{display:none!important}
+}
+
+/* ---------- Teil 2: Schalter „Barrierefreiheit“ ---------- */
+/* größere Schrift (etwa +20 %) */
+html.bf-gross{font-size:118.75%}
+html.bf-gross body{font-size:19px;line-height:1.55}
+html.bf-gross .small,html.bf-gross .unit-meta,html.bf-gross footer.foot{font-size:.95rem}
+html.bf-gross .qs-video,html.bf-gross .ls-video{font-size:14px;padding:5px 10px}
+html.bf-gross .bf-dlg-box{font-size:19px;max-width:600px}
+
+/* hoher Kontrast */
+html.bf-kontrast{--bg:#fff;--card:#fff;--text:#000;--muted:#262626;--line:#595959;--accent:#0b4f53;--accent-soft:#dcefef;--soll:#163c85;--soll-soft:#e6edfa;--haben:#6e3410;--haben-soft:#f8ebe2;--ok:#0b5a2c;--ok-soft:#e1f3e7;--bad:#9b1b15;--bad-soft:#fbe6e5;--tipp:#5c4000;--tipp-soft:#fff3d1}
+html.bf-kontrast body{background:#fff;color:#000}
+html.bf-kontrast .card,html.bf-kontrast .qs-kachel,html.bf-kontrast .ls-karte,html.bf-kontrast .ls-thema{box-shadow:none!important;border:2px solid #333!important}
+html.bf-kontrast .slot{border:2px dashed #333!important}
+html.bf-kontrast .slot.filled{border-style:solid!important}
+html.bf-kontrast .slot .ph,html.bf-kontrast .rm,html.bf-kontrast .muted,html.bf-kontrast .sub,html.bf-kontrast .unit-meta,html.bf-kontrast footer.foot{color:#262626!important}
+html.bf-kontrast .btn,html.bf-kontrast .add,html.bf-kontrast .tippmore,html.bf-kontrast .qs-video,html.bf-kontrast .linkbtn{border:2px solid #000!important}
+html.bf-kontrast .linkbtn{padding-left:10px;padding-right:10px;border-radius:10px}
+html.bf-kontrast .btn.primary{background:#0b4f53!important;color:#fff!important}
+html.bf-kontrast .btn:disabled,html.bf-kontrast .btn.primary:disabled{opacity:1!important;background:#e4e4e4!important;color:#333!important;border-style:dashed!important}
+html.bf-kontrast a{color:#0b3f73!important;text-decoration:underline!important}
+html.bf-kontrast input,html.bf-kontrast textarea,html.bf-kontrast select{border:2px solid #333!important;color:#000!important}
+html.bf-kontrast ::placeholder{color:#444!important;opacity:1}
+html.bf-kontrast .pill,html.bf-kontrast .stat{border:1px solid currentColor}
+html.bf-kontrast .progress{background:#bdbdbd}
+html.bf-kontrast .sterne .stern:not(.an),html.bf-kontrast .fbstern{color:#6b6b6b!important}
+html.bf-kontrast .sterne{color:#8a5a00!important}
+html.bf-kontrast .bl.a4 .ruecksende,html.bf-kontrast .bl.a4 .fuss,html.bf-kontrast .bl.ka .kinfo td:nth-child(odd),html.bf-kontrast .bl.ka .kfuss,html.bf-kontrast .fiktiv-hinweis,html.bf-kontrast .uebungsbeleg-vermerk{color:#333!important}
+html.bf-kontrast .sticky{background:#fff;border-top:2px solid #000}
+html.bf-kontrast :focus-visible{outline:4px solid #000!important;outline-offset:2px!important;box-shadow:0 0 0 6px #ffd400!important}
+html.bf-kontrast .bf-knopf{color:#000;border-color:#000}
+html.bf-kontrast .bf-chrome{color:#fff;border-color:#fff;background:#1f2a3a}
+html.bf-kontrast .vidmodal{background:#000}
+
+/* weniger Bewegung */
+html.bf-ruhig *,html.bf-ruhig *::before,html.bf-ruhig *::after{animation-duration:.001ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.001ms!important;transition-delay:0s!important;scroll-behavior:auto!important}
+html.bf-ruhig #konfetti,html.bf-ruhig #lkkonfetti,html.bf-ruhig .konfetti{display:none!important}
+.bf-transkript :focus-visible{outline-color:#1d5f63!important}
+html.bf-gross .qs-kachel p{font-size:15.5px}
+.bf-tasten summary::before{content:"";width:8px;height:8px;margin-right:10px;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(-45deg)}
+.bf-tasten[open] summary::before{transform:rotate(45deg)}
+/* Zoom bis 200 % / 320 px Breite: Kopfzeile der Aufgabe darf umbrechen statt seitlich zu scrollen */
+#app > .bar{flex-wrap:wrap;row-gap:6px}
+html.bf-gross body.beamer{font-size:21px}
+html.bf-kontrast #bmchrome .btn,html.bf-kontrast #bmchrome .linkbtn,html.bf-kontrast #bmchrome .bm-nav{border:2px solid #fff!important}
+html.bf-kontrast #bmchrome .btn:disabled,html.bf-kontrast #bmchrome .bm-nav:disabled{background:#3a4760!important;color:#fff!important;opacity:.75!important}
+
+/* Menü oben (Impressum, Datenschutz, Barrierefreiheit, Support) – von bf.js aus konfig.js gefüllt; auch auf lehrkraft.html und den Rechtsseiten */
+.top-zeile{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:8px 16px}
+.top-titel{min-width:0;flex:1 1 200px}
+.app-menu{display:flex;flex-wrap:wrap;gap:2px 14px;align-items:center;font-size:.88rem}
+.app-menu a{color:var(--accent,#1d5f63);font-weight:600;text-decoration:underline;text-underline-offset:2px;min-height:44px;display:inline-flex;align-items:center}
+.app-menu .bf-im-menue{float:none;margin:0}
+html.bf-kontrast .vidbox .ki-stimme{color:#fff}
+
+/* Rechtsseiten (impressum.html, datenschutz.html, barrierefreiheit.html): hoher Kontrast und größere Schrift gelten auch dort */
+html.bf-kontrast main,html.bf-kontrast .kontakt,html.bf-kontrast article.doc{box-shadow:none!important}
+html.bf-kontrast main{border:2px solid #333}
+html.bf-kontrast .entwurf,html.bf-kontrast .entwurf-banner,html.bf-kontrast .angabe-offen{color:#000!important;border-color:#000!important}
+html.bf-kontrast .stand,html.bf-kontrast .sub,html.bf-kontrast .ort,html.bf-kontrast footer{color:#262626!important}
+html.bf-kontrast kbd{border-color:#000;background:#fff}
+html.bf-gross footer{font-size:1rem}
+html.bf-gross main.wrap h1,html.bf-gross main.wrap p,html.bf-gross main.wrap li,html.bf-gross main.wrap td{overflow-wrap:anywhere;hyphens:auto}
+html.bf-gross main.wrap h1{font-size:clamp(1.5rem,7vw,2.1rem)}
+
+/* ---------- Teil 3 (immer an): Leisten deckend und scharf, auf schmalen Schirmen umbrechen ---------- */
+/* Keine Transparenz, kein Weichzeichner hinter Leisten (unscharfe Kanten auf iPhone/iPad) */
+.sticky{background:#fff!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+#bmchrome,#bmzoombar{background:#1f2a3a!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;opacity:1!important}
+/* Unter Statusleiste/Notch (viewport-fit=cover) nichts durchscheinen lassen: Leiste füllt den sicheren Bereich selbst */
+#bmchrome{padding-top:max(4px,env(safe-area-inset-top))!important;padding-left:max(6px,env(safe-area-inset-left))!important;padding-right:max(8px,env(safe-area-inset-right))!important}
+#bmchrome .bm-chrome-lab,#bmzoombar .bmz-lab{opacity:1!important;color:#d5dbe6}
+/* Titel nie mit „…“ abschneiden, sondern umbrechen */
+#bmchrome-mitte .bm-titel,.bm-bar .bm-titel{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:break-word;hyphens:auto;line-height:1.2}
+@media (max-width:760px){
+  #bmchrome{flex-wrap:wrap!important;row-gap:6px!important;align-items:center}
+  /* Inhalt der Mitte wird Teil der Leiste: Zeile 1 Start · Titel, darunter alle übrigen Knöpfe und Zoom */
+  #bmchrome-mitte,#bmchrome-mitte .bm-wahl-aktionen{display:contents!important}
+  #bmhome{order:1}
+  #bmchrome-mitte .bm-titel{order:2;flex:1 1 0!important;min-width:0!important;font-size:16px}
+  /* Zoom bleibt wie im Quelltext am Ende: sichtbare Reihenfolge = Tab-Reihenfolge */
+  #bmzklapp,#bmchrome .bm-chrome-lab{order:6;margin-left:auto}
+  #bmchrome::after{content:"";order:4;flex:0 0 100%;height:0}
+  #bmchrome > :not(#bmhome):not(#bmzklapp):not(#bmchrome-mitte):not(.bm-chrome-lab),
+  #bmchrome-mitte > :not(.bm-titel):not(.bm-wahl-aktionen),
+  #bmchrome-mitte .bm-wahl-aktionen > :not(.bm-titel){order:5}
+  #bmchrome-mitte .bm-navbox,#bmchrome-mitte .bm-satzlage,#bmchrome-mitte .bema-tools,#lkbar{flex-wrap:wrap;margin-left:0!important}
+  #bmchrome-mitte #ende{margin-left:auto}
+  #bmzoombar{flex-wrap:wrap;row-gap:6px}
+  #bmchrome-mitte button,#bmchrome-mitte .pill,#bmchrome-mitte .serie{font-size:15px!important}
+  html.bf-gross #bmchrome-mitte button,html.bf-gross #bmchrome-mitte .pill,html.bf-gross #bmchrome-mitte .serie,html.bf-gross #bmchrome-mitte .bm-titel{font-size:18px!important}
+}
+/* Berührungsziele mindestens 44 × 44 px auf Handy/Tablet */
+@media (max-width:760px),(pointer:coarse){
+  #bmhome,#bmzklapp,#bmchrome-mitte .btn,#bmchrome-mitte .linkbtn,#bmchrome-mitte .bm-nav,#bmchrome-mitte #ende,#bmchrome-mitte #start,
+  #bmchrome-mitte .btn-video,#bmchrome-mitte .bm-satzlage button,#bmchrome-mitte .bema-tools button,#lkbar button.lk-b,#bmzoombar button{min-height:44px!important;min-width:44px!important}
+  #lkbar .lk-qr-klein{min-width:44px;min-height:44px}
+}
+
+/* Gewählte Themen nicht nur über Farbe: Haken vor dem Titel (für Bildschirmleser stumm, Zustand kommt aus aria-pressed) */
+.qs-kachel.an .qs-kachel-wahl h3::before,#lehrerstart .ls-thema.an .ls-thema-wahl h3::before{content:"✓" / "";display:inline-flex;align-items:center;justify-content:center;width:1.25em;height:1.25em;margin-right:.35em;border-radius:50%;background:#1d5f63;color:#fff;font-size:.8em;font-weight:800;vertical-align:.1em}

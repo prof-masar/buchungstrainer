@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
 <meta name="robots" content="noindex">
-<!-- cache-buster ?v=2026112815 -->
+<!-- cache-buster ?v=2026112821 -->
 <title>Buchungstrainer · Präsentationsansicht</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232f6f73'/%3E%3Cpath d='M18 22h28M18 32h20M18 42h24' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
@@ -60,6 +60,12 @@ details.theorie li{margin:6px 0}
 .linkbtn{background:none;border:0;color:var(--accent);font-weight:600;padding:10px 4px;min-height:44px}
 footer.foot{color:var(--muted);font-size:.82rem;text-align:center;margin-top:28px}
 footer.foot a{color:inherit;text-decoration:underline}
+
+/* Rechtstexte: Menü, Fuß, Hinweis zur Computerstimme */
+.unit-foot{flex-wrap:wrap}
+.ki-stimme{margin:0;padding:0 16px 8px 16px;font-size:.82rem;line-height:1.4;color:var(--muted);font-weight:500}
+.vidbox .ki-stimme{padding:0}
+.vidbox .ki-stimme{color:#d7dde3;font-size:.9rem;margin:0 0 8px;flex:none}
 /* Übung */
 .bar{display:flex;align-items:center;gap:10px;justify-content:space-between}
 .progress{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:10px}
@@ -1214,6 +1220,9 @@ body.lk-tabelle-offen #bmchrome-mitte .bm-navbox{display:none !important}
 #lkbar button.lk-b{font:inherit;font-size:14px;font-weight:700;padding:4px 10px;border-radius:8px;min-height:32px;border:1px solid #7a8799;background:#3a4760;color:#fff;cursor:pointer;white-space:nowrap}
 #lkbar button.lk-b.prim{background:#1f9d8f;border-color:#1f9d8f;color:#fff}
 #lkbar .lkz{font-variant-numeric:tabular-nums;font-size:14px;font-weight:600;color:#c5ccd6;white-space:nowrap}
+#lkbar .lk-code-leiste button.lk-b{font-size:14px;padding:4px 10px;border-radius:10px}
+#lehrerstart .ls-person-knopf{font:inherit;font-size:16px;font-weight:700;padding:8px 14px;margin:6px 0 2px;border-radius:12px;border:2px solid #1F4E79;background:#fff;color:#1F4E79;cursor:pointer}
+#lehrerstart .ls-person-knopf:focus-visible{outline:3px solid #1F4E79;outline-offset:2px}
 #lkbar .lk-code-leiste{display:flex;align-items:center;gap:6px;padding:0 8px 0 0;margin:0 2px 0 0;border-right:1px solid #4a5668;flex:0 0 auto;white-space:nowrap}
 #lkbar .lk-qr-klein{appearance:none;border:1px solid #9aa7c0;background:#fff;padding:2px;border-radius:6px;cursor:pointer;line-height:0}
 #lkbar .lk-qr-klein:hover,#lkbar .lk-qr-klein:focus-visible{border-color:#fff;outline:2px solid #9aa7c0;outline-offset:1px}
@@ -1573,9 +1582,32 @@ body.ls-hub #bmstage{inset:0 !important;width:100% !important;height:100% !impor
 @media (max-width:800px){
   #lehrerstart .ls-stufe-titel{font-size:18px}
 }
+/* Klassenwahl (Gemeinsam üben, Eigenes Tempo, Lernzielkontrolle): eigene Klasse wählen oder anlegen */
+#lehrerstart.ls-kw-schirm{max-width:860px;margin:0 auto;padding:12px 18px 28px}
+#lehrerstart .ls-kw-h1:focus{outline:none}
+#lehrerstart .ls-kw-liste{border:0;margin:14px 0 0;padding:0;display:grid;gap:10px}
+#lehrerstart .ls-kw-liste legend{font-size:20px;font-weight:700;margin-bottom:8px;padding:0}
+#lehrerstart .ls-kw-option{display:flex;align-items:center;gap:14px;padding:14px 18px;border:3px solid var(--line);border-radius:16px;background:#fff;cursor:pointer;font-size:20px}
+#lehrerstart .ls-kw-option:has(input:checked){border-color:var(--accent);background:#f3fafa}
+#lehrerstart .ls-kw-option:focus-within{outline:3px solid var(--accent);outline-offset:2px}
+#lehrerstart .ls-kw-option input{width:24px;height:24px;accent-color:var(--accent);flex:0 0 auto}
+#lehrerstart .ls-kw-option .ls-kw-meta{margin-left:auto;font-size:16px;color:var(--muted)}
+#lehrerstart .ls-kw-zeile{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+#lehrerstart .ls-kw-zwei{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
+@media (max-width:640px){#lehrerstart .ls-kw-zwei{grid-template-columns:1fr}}
+#lehrerstart .ls-kw-zwei .ls-karte{min-height:170px;text-decoration:none}
+#lehrerstart .ls-kw-zwei .ls-karte h2{margin:0;font-size:26px}
+#lehrerstart .ls-kw-msg{margin-top:12px;font-weight:600;min-height:1.4em}
+#lehrerstart .ls-kw-msg.bad{color:#a4262c}
+#lehrerstart .ls-kw-form label{display:block;font-size:20px;font-weight:700;margin-top:14px}
+#lehrerstart .ls-kw-form input{display:block;width:100%;max-width:420px;margin-top:6px;font-size:22px;padding:10px 12px;border:2px solid var(--line);border-radius:12px}
+#lehrerstart .ls-kw-form input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+#lehrerstart .ls-klasse-name{font-size:30px;font-weight:800;margin:2px 0 6px;text-align:center;overflow-wrap:anywhere}
 </style>
+<link rel="stylesheet" href="bf.css?v=2026112821">
 </head>
 <body class="beamer ls-hub bm-am-start">
+<a class="bf-skip" href="#app">Zum Inhalt springen</a>
 <div id="bmchrome">
   <button type="button" id="bmhome" class="bm-home">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 3.2 2.5 11.2h2.2v9.1h6.2v-6.2h2.2v6.2h6.2v-9.1h2.2L12 3.2z"/></svg>
@@ -1595,12 +1627,17 @@ body.ls-hub #bmstage{inset:0 !important;width:100% !important;height:100% !impor
   <button type="button" id="bmzfit">Einpassen</button>
 </div>
 <div id="bmport"><div id="bmspacer" aria-hidden="true"></div><div id="bmstage">
-<header class="top"><div class="wrap"><h1 id="titel">Buchungstrainer Rechnungswesen</h1><div class="sub" id="untertitel"></div></div></header>
+<header class="top"><div class="wrap"><div class="top-zeile"><div class="top-titel"><h1 id="titel">Buchungstrainer Rechnungswesen</h1><div class="sub" id="untertitel"></div></div><nav class="app-menu" aria-label="Menü"></nav></div></div></header>
 <main class="wrap" id="app"><noscript>Bitte JavaScript aktivieren.</noscript></main>
 </div></div>
 <div class="sheet-bg" id="sheetbg"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
 <div class="vidmodal" id="vidmodal"></div>
+<script src="konfig.js?v=2026112821"></script>
+<script src="bf.js?v=2026112821"></script>
+<script src="startlektion.js?v=2026112821"></script>
+<script src="lizenz-test.js?v=2026112821"></script>
+<script src="klassenwahl.js?v=2026112821"></script>
 <script>
 /* =====================================================================
    CONFIG – hier anpassen (z. B. beim Kopieren für eine Parallelklasse)
@@ -1614,8 +1651,8 @@ const CONFIG = {
   kontenAuswahl: 8,                          // Anzahl Konten-Chips pro Aufgabe (Lösung + Ablenker + weitere)
   falschBetraege: 2,                         // Anzahl zusätzlicher plausibler Falschbeträge (1–2)
   kontenplanPdf: "docs/Kontenplan_Buchungstrainer.pdf", // eigener Kontenplan, Link im Footer
-  klassenLive: { aktiv: true, server: "https://profmasar.at/live" }, // LIVE-LEHRERANSICHT: Server-Ordner mit sitzung.php/fall.php/klasse.php. aktiv:false = kein Knopf, kein Netzwerk
-  lizenz: {"aktiv":  false, "pflicht":  false, "server":  "https://profmasar.at/lizenz", "schluessel":  "hPIe9Y7wg5qx37fb3G+RdsA+BcdGa4Sx/+KOrFzhvjU="}, // LIZENZ-CONFIG: aktiv:false = App wie bisher, kein Netzwerk. pflicht:true = Buchen nur mit Schlüssel. schluessel = öffentlicher Ed25519-Schlüssel vom Lizenzserver
+  klassenLive: { aktiv: !!(window.BT_KONFIG && window.BT_KONFIG.liveServer), server: (window.BT_KONFIG && window.BT_KONFIG.liveServer) || "" }, // LIVE-LEHRERANSICHT: Adresse nur in konfig.js (liveServer). Ohne Adresse: kein Knopf, kein Netzwerk
+  lizenz: { aktiv: false, pflicht: false, server: "", schluessel: "" }, // Beamer: keine Lizenzprüfung (Adressen stehen in konfig.js)
   // v10: selbst gehostete Erklärvideos (Datei im Repo, kein externer Dienst). Kleines Vorschaubild in der Einheitenkarte (vorEinheit), ohne Beschreibungszeile. Neue Aufnahmen mit fiktiven Firmen.
   erklaervideos: [
     { datei: "videos/erklaervideo_wareneinkauf_fiktiv_v2.mp4", vorschaubild: "videos/erklaervideo_wareneinkauf_fiktiv_v2.jpg", titel: "Wareneinkauf", dauer: "3:09", vorEinheit: 1, einheiten: [1] },
@@ -1660,6 +1697,11 @@ const QR = {"W12-2026-08812":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQA
 /* ---------- Hilfsfunktionen ---------- */
 const $ = (s, el = document) => el.querySelector(s);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+const KI_STIMME_SATZ = 'Die Stimme in diesem Erklärvideo ist computergenerierte (KI-)Sprache, es spricht keine reale Person.';
+function kiStimmeHtml() {
+  return `<p class="ki-stimme">${KI_STIMME_SATZ}</p>`;
+}
 /* ===== Lizenz-Modul Buchungstrainer v2 (Schlüssel + Demo-Zähler) =====
    Schalter in CONFIG.lizenz: { aktiv, pflicht, server, schluessel }
    - aktiv:false  -> Modul tut nichts: kein Feld, kein Netzwerk, kein localStorage, nichts gesperrt.
@@ -1903,7 +1945,7 @@ const LZ = (() => {
       if (zustand.gesperrt) return `<div class="card lz" id="lz"><p class="lzmsg err" id="lzstatus">${escH(statusText())}</p>
         <div class="lzlinks"><button type="button" class="linkbtn" id="lzcheck">Jetzt prüfen</button></div></div>`;
       return `<div class="card lz" id="lz">${meldung ? m : ""}<p class="lzmsg ok" id="lzstatus">${escH(statusText())}</p>
-        <div class="lzlinks"><button type="button" class="linkbtn" id="lzneu">Anderen Schlüssel eingeben</button>${istDemo() ? "" : `<button type="button" class="linkbtn" id="lzab">Gerät abmelden</button>`}</div></div>`;
+        <div class="lzlinks"><button type="button" class="linkbtn" id="lzneu">Anderen Schlüssel eingeben</button>${istDemo() ? "" : `<button type="button" class="linkbtn" id="lzab">Abmelden</button>`}</div></div>`;
     }
     return `<div class="card lz" id="lz"><form id="lzform" novalidate>
       <label for="lzcode">Schlüssel eingeben</label>
@@ -2482,6 +2524,7 @@ function oeffneVideo(btn) {
   const knoepfe = cls => nrs.map(n => `<button type="button" class="btn ${cls}" data-ueben="${n}">Einheit ${n} üben</button>`).join("");
   m.innerHTML = `<div class="vidbox" role="dialog" aria-modal="true" aria-label="${esc(V.titel)}">
     <div class="vidkopf"><b>${esc(V.titel)}</b><button type="button" class="vidzu" id="vidzu" aria-label="Video schließen">Schließen ✕</button></div>
+    ${kiStimmeHtml()}
     <div class="vidbuehne"><video id="vid" controls preload="none" playsinline${V.vorschaubild ? ` poster="${esc(V.vorschaubild)}"` : ""} src="${esc(V.datei)}">Dein Browser kann dieses Video nicht abspielen.</video>
       <div class="vidende" id="vidende" hidden><div class="vetitel">Fertig angeschaut! Was möchtest du üben?</div><div class="vebtns">${knoepfe("primary big")}</div>
         <button type="button" class="linkbtn venochmal" id="vidnochmal">Video noch einmal ansehen</button></div></div>
@@ -2786,7 +2829,9 @@ const MOT = (() => {
     const d = leer(); Object.keys(d).forEach(k => { if (m[k] == null || typeof m[k] !== typeof d[k]) m[k] = d[k]; });
     return m;
   }
-  function speichern() { if (!CONFIG.fortschrittSpeichern) return; try { localStorage.setItem(KEY, JSON.stringify(M)); } catch (e) { } }
+  // Gespeichert wird nur der Lernstand (Punkte je Aufgabe, Sterne je Einheit). Beste Serie, Tagesziel und Ziel-Folge gelten nur bis zum Schließen
+  // (§ 165 Abs 3 TKG 2021: im Gerät nur, was für die gewünschte App unbedingt nötig ist).
+  function speichern() { if (!CONFIG.fortschrittSpeichern) return; try { localStorage.setItem(KEY, JSON.stringify({ v: M.v, punkte: M.punkte, einheiten: M.einheiten })); } catch (e) { } }
   let M = null; M = laden();
 
   /* Sterne: 60 / 80 / 100 % der Punkte einer Einheit (richtig = 1, mit Tipp = ½), je Aufgabe zählt das beste Ergebnis */
@@ -2942,7 +2987,7 @@ const MOT = (() => {
    Der Endpoint ist derselbe Ordner wie die Live-Klasse (CONFIG.klassenLive.server).
    ===================================================================== */
 const FEEDBACK_CONFIG = {
-  nachEinheiten: 3,        // automatisch fragen, sobald so viele Einheiten vollständig gelöst sind (einmal pro Browser)
+  nachEinheiten: 3,        // derzeit ohne Wirkung: Die App fragt nicht mehr von selbst (kein Merker im Browser), Feedback nur über den Link in der Fußzeile
   fragen: [                // keine Pflichtfragen
     { name: "gefallen",     frage: "Wie gefällt dir die App?",      typ: "text" },
     { name: "schwer",       frage: "Wie schwer ist sie?",           typ: "wahl", optionen: ["zu leicht", "passt", "zu schwer"] },
@@ -2962,13 +3007,14 @@ const FB = (() => {
     C.fragen.every(q => /^[a-z]{2,20}$/.test(q.name || "") && q.frage && (q.typ === "text" || (q.typ === "wahl" && Array.isArray(q.optionen) && q.optionen.length)));
   const NACH = (C && C.nachEinheiten) || 3;
   const KEY = SKEY + ":feedback";
-  const lade = () => { try { return localStorage.getItem(KEY) || ""; } catch (e) { return ""; } };   // "" | gefragt | uebersprungen | gesendet | fehler
-  const setze = st => { try { localStorage.setItem(KEY, st); } catch (e) { } };
+  // Nichts im Browser speichern (§ 165 Abs 3 TKG 2021): Der Stand gilt nur bis zum Schließen, und die App fragt nie von selbst nach Feedback.
+  let fbStand = "";
+  try { localStorage.removeItem(KEY); } catch (e) { }   // alter Merker aus früheren Versionen
+  const lade = () => fbStand;   // "" | uebersprungen | gesendet | fehler
+  const setze = st => { fbStand = st; };
   const fertigeEinheiten = () => EINHEITEN.filter(e => { const auf = DATA.aufgaben.filter(a => a.einheit === e.nr); return auf.length && auf.every(a => progress[a.id]); }).length;
   let offen = null, vorher = null;
-  function pruefen() {   // am Ergebnisbildschirm
-    if (aktiv && !offen && !lade() && fertigeEinheiten() >= NACH) { setze("gefragt"); zeige(); }
-  }
+  function pruefen() { }   // früher: automatische Frage nach 3 Einheiten. Entfällt (kein Merker im Browser); Feedback über den Link in der Fußzeile.
   function footerHtml() {
     if (!aktiv) return "";
     return lade() === "gesendet" ? `<br><span class="fbfoot" id="fbdank">Danke für dein Feedback</span>` : `<br><button type="button" class="linkbtn fbfoot" id="fblink">Feedback geben</button>`;
@@ -3476,7 +3522,7 @@ drawAufgabe = function () {
     ? weiterAktionen()
     : `<button class="btn tippbtn" data-tipp ${c.tipps >= 3 ? "disabled" : ""} aria-label="Tipp anzeigen">${BULB}<span>${c.tipps === 0 ? "Tipp" : c.tipps < 3 ? "Tipp " + (c.tipps + 1) : "Tipps"}</span></button><button class="btn primary" id="pruefen" ${bereit() ? "" : "disabled"}>Prüfen</button>`;
   const vids = videosDerEinheit(a.einheit);
-  const videoBtns = vids.map((V, i) => `<button type="button" class="btn btn-video" data-video="${esc(V.datei)}" data-vor="${V.vorEinheit}">${vids.length > 1 ? "Video " + (i + 1) : "Video"}</button>`).join("");
+  const videoBtns = vids.map((V, i) => `<button type="button" class="btn btn-video" data-video="${esc(V.datei)}" data-vor="${V.vorEinheit}" aria-label="${vids.length > 1 ? "Video " + (i + 1) : "Video"}: ${esc(V.titel || "Erklärvideo")}${V.dauer ? " (" + esc(V.dauer) + ")" : ""}" title="${esc(V.titel || "Erklärvideo")}">${vids.length > 1 ? "Video " + (i + 1) : "Video"}</button>`).join("");
 
   app().innerHTML = `<div class="bm" id="aufgabe" data-id="${esc(a.id)}">
     <div class="bm-bar">
@@ -4335,8 +4381,8 @@ const BM_TYP_TITEL = {
 };
 
 /* ---------- Quick-Start-Themen v2 (28.11.2026) ---------- */
-const QS_STUFEN = [{"id":"kern","titel":"Kern","reihenfolge":1,"leitidee":"Zuerst üben: der Warenkreislauf von Einkauf und Verkauf bis zur Zahlung ohne Skonto, inklusive der ersten Umkehrungen und der typischen Bezugskosten."},{"id":"aufbau","titel":"Aufbau","reihenfolge":2,"leitidee":"Danach: Zahlungswege und Nachlässe mit eigenem Konto (Karten, Skonto, Mahnungen) sowie der Barverkehr mit der Bank."},{"id":"vertiefung","titel":"Vertiefung","reihenfolge":3,"leitidee":"Zuletzt: Periodenabschluss, Steuern, Anlagevermögen, sonstiges Material und Inventur."}];
-const QS_KACHELN = [{"nr":1,"id":"qs-01","titel":"Wareneinkauf","stufe":"kern","faelle":["E1-01","E1-02","E1-03","E1-08","E1-09","E1-10","E1-12"],"kapitel":[1],"gedanke":"Handelsware kommt hinein: immer 5000 und Vorsteuer, Ziel und bar ändern nur die Zahlungsseite.","video":{"src":"videos/erklaervideo_wareneinkauf_fiktiv_v2.mp4","titel":"Wareneinkauf","dauer":"3:09","vorschaubild":"videos/erklaervideo_wareneinkauf_fiktiv_v2.jpg"}},{"nr":2,"id":"qs-02","titel":"Rücksendung Einkauf","stufe":"kern","faelle":["E1-04","E1-06"],"kapitel":[1],"gedanke":"Der Einkaufssatz kehrt sich um: Lieferant, 5000 und Vorsteuer gehen zurück.","video":{"src":"videos/erklaervideo_einkauf_ruecksendung_zahlung_fiktiv_v2.mp4","titel":"Einkauf: Rücksendung und Zahlung","dauer":"1:30","vorschaubild":"videos/erklaervideo_einkauf_ruecksendung_zahlung_fiktiv_v2.jpg"}},{"nr":3,"id":"qs-03","titel":"Warenverkauf","stufe":"kern","faelle":["E2-01","E2-02","E2-03","E2-04","E2-09","E2-10","E2-12"],"kapitel":[2],"gedanke":"Handelsware geht hinaus: immer 4000 und Umsatzsteuer; die Tageslosung ist der gesammelte Barverkauf.","video":{"src":"videos/erklaervideo_warenverkauf_fiktiv_v2.mp4","titel":"Warenverkauf","dauer":"2:49","vorschaubild":"videos/erklaervideo_warenverkauf_fiktiv_v2.jpg"}},{"nr":4,"id":"qs-04","titel":"Rücksendung Verkauf","stufe":"kern","faelle":["E2-05","E2-06","E2-11"],"kapitel":[2],"gedanke":"Der Verkaufssatz kehrt sich um, weil die Ware vom Kunden zurückkommt.","video":{"src":"videos/erklaervideo_verkauf_ruecksendung_privatentnahme_fiktiv_v2.mp4","titel":"Verkauf: Rücksendung und Privatentnahme","dauer":"1:49","vorschaubild":"videos/erklaervideo_verkauf_ruecksendung_privatentnahme_fiktiv_v2.jpg"}},{"nr":5,"id":"qs-05","titel":"Privatentnahme Waren","stufe":"kern","faelle":["E2-07","E2-08"],"kapitel":[2],"gedanke":"Der Inhaber entnimmt Ware: 9600 gegen 4900 und Umsatzsteuer, nicht gegen 4000.","video":{"src":"videos/erklaervideo_verkauf_ruecksendung_privatentnahme_fiktiv_v2.mp4","titel":"Verkauf: Rücksendung und Privatentnahme","dauer":"1:49","vorschaubild":"videos/erklaervideo_verkauf_ruecksendung_privatentnahme_fiktiv_v2.jpg"}},{"nr":6,"id":"qs-06","titel":"Bezugskosten","stufe":"kern","faelle":["E3-01","E3-02","E3-03","E3-04","E3-05","E3-06","E3-07","E3-08","E3-09","E3-10","E3-11"],"kapitel":[3],"gedanke":"Fracht beim Einkauf erhöht 5000 und die Vorsteuer, unabhängig davon ob sie auf der Warenrechnung steht oder gesondert kommt.","video":{"src":"videos/erklaervideo_bezugskosten_fiktiv_v2.mp4","titel":"Bezugskosten","dauer":"3:55","vorschaubild":"videos/erklaervideo_bezugskosten_fiktiv_v2.jpg"}},{"nr":7,"id":"qs-07","titel":"Ausgangsfrachten","stufe":"kern","faelle":["E4-01","E4-02","E4-03","E4-08","E4-09","E4-11"],"kapitel":[4],"gedanke":"Fracht beim Verkauf ist Aufwand 7300 mit Vorsteuer, nicht Wareneinsatz.","video":{"src":"videos/erklaervideo_ausgangsfrachten_fiktiv_v2.mp4","titel":"Versandkosten: Ausgangsfrachten","dauer":"2:17","vorschaubild":"videos/erklaervideo_ausgangsfrachten_fiktiv_v2.jpg"}},{"nr":8,"id":"qs-08","titel":"Paketgebühren","stufe":"kern","faelle":["E4-04","E4-05","E4-06","E4-07","E4-10"],"kapitel":[4],"gedanke":"Beim Universaldienstbetreiber entscheidet das Gewicht über 20 % mit Vorsteuer oder 0 % ohne Vorsteuer.","video":{"src":"videos/erklaervideo_paketgebuehren_fiktiv_v2.mp4","titel":"Versandkosten: Paketgebühren","dauer":"1:45","vorschaubild":"videos/erklaervideo_paketgebuehren_fiktiv_v2.jpg"}},{"nr":9,"id":"qs-09","titel":"Sofortrabatt","stufe":"kern","faelle":["E5-01","E5-02","E5-03","E5-04","E5-11","E5-12"],"kapitel":[5],"gedanke":"Es wird nur der Nettobetrag nach Abzug des Sofortrabatts gebucht, kein eigenes Rabattkonto.","video":{"src":"videos/erklaervideo_sofortrabatt_fiktiv_v2.mp4","titel":"Rabatte: Sofortrabatt","dauer":"1:58","vorschaubild":"videos/erklaervideo_sofortrabatt_fiktiv_v2.jpg"}},{"nr":10,"id":"qs-10","titel":"Lieferantenrabatt","stufe":"kern","faelle":["E5-05","E5-06","E5-10","E5-13"],"kapitel":[5],"gedanke":"Nachträglicher Nachlass, die Ware bleibt: 5000 und Vorsteuer mindern sich.","video":{"src":"videos/erklaervideo_lieferantenrabatt_fiktiv_v2.mp4","titel":"Rabatte: Lieferantenrabatt","dauer":"1:15","vorschaubild":"videos/erklaervideo_lieferantenrabatt_fiktiv_v2.jpg"}},{"nr":11,"id":"qs-11","titel":"Kunden-Nachlässe","stufe":"kern","faelle":["E5-07","E5-08","E5-09","E5-14"],"kapitel":[5],"gedanke":"Bleibt die Ware beim Kunden, berichtigt 4400 den Erlös; kommt sie zurück, kehrt 4000 den Verkauf um.","video":{"src":"videos/erklaervideo_kunden_nachlaesse_fiktiv_v2.mp4","titel":"Rabatte: Nachlass an Kunden","dauer":"1:42","vorschaubild":"videos/erklaervideo_kunden_nachlaesse_fiktiv_v2.jpg"}},{"nr":12,"id":"qs-12","titel":"Zahlung Lieferant","stufe":"kern","faelle":["E1-05","E1-07","E1-11","E3-12","E4-12","E6-01","E6-03","E6-06","E6-08","E6-10","E16-02"],"kapitel":[1,3,4,6,16],"gedanke":"Die offene Lieferantenverbindlichkeit geht ohne Abzug gegen die Bank.","video":{"src":"videos/erklaervideo_bankueberweisung_fiktiv_v2.mp4","titel":"Zahlung per Banküberweisung","dauer":"1:52","vorschaubild":"videos/erklaervideo_bankueberweisung_fiktiv_v2.jpg"}},{"nr":13,"id":"qs-13","titel":"Zahlung Kunde","stufe":"kern","faelle":["E2-13","E6-02","E6-04","E6-05","E6-07","E6-09","E6-11"],"kapitel":[2,6],"gedanke":"Die offene Kundenforderung geht ohne Abzug auf die Bank.","video":{"src":"videos/erklaervideo_bankueberweisung_fiktiv_v2.mp4","titel":"Zahlung per Banküberweisung","dauer":"1:52","vorschaubild":"videos/erklaervideo_bankueberweisung_fiktiv_v2.jpg"}},{"nr":14,"id":"qs-14","titel":"Kartenzahlung Kunden","stufe":"aufbau","faelle":["E7-01","E7-03","E7-09","E7-10"],"kapitel":[7],"gedanke":"Der Kundenumsatz steht zuerst auf 2880 (Kreditkarte) oder 2885 (Debitkarte), noch nicht auf der Bank.","video":{"src":"videos/erklaervideo_kartenzahlung_kunde_fiktiv_v2.mp4","titel":"Kartenzahlung: Kunde zahlt mit Karte","dauer":"2:57","vorschaubild":"videos/erklaervideo_kartenzahlung_kunde_fiktiv_v2.jpg"}},{"nr":15,"id":"qs-15","titel":"Kartengutschrift","stufe":"aufbau","faelle":["E7-02","E7-04","E7-05","E7-11","E7-12","E7-13"],"kapitel":[7],"gedanke":"Das Geld kommt auf die Bank: mit Gebühr im selben Satz, ohne Gebühr oder mit späterer Abbuchung der Debitgebühren (7792 plus Vorsteuer).","video":{"src":"videos/erklaervideo_kartenzahlung_kunde_fiktiv_v2.mp4","titel":"Kartenzahlung: Kunde zahlt mit Karte","dauer":"2:57","vorschaubild":"videos/erklaervideo_kartenzahlung_kunde_fiktiv_v2.jpg"}},{"nr":16,"id":"qs-16","titel":"Firmenkarte","stufe":"aufbau","faelle":["E7-06","E7-07","E7-08","E7-14","E7-15"],"kapitel":[7],"gedanke":"Der Einkauf steht im Haben auf 3180 (Kredit) oder 3190 (Debitkarte), nie auf der Kassa; später gleicht die Bank die Verbindlichkeit aus.","video":{"src":"videos/erklaervideo_kartenzahlung_firmenkarte_fiktiv_v2.mp4","titel":"Kartenzahlung: Firmenkarte","dauer":"2:00","vorschaubild":"videos/erklaervideo_kartenzahlung_firmenkarte_fiktiv_v2.jpg"}},{"nr":17,"id":"qs-17","titel":"Lieferantenskonto","stufe":"aufbau","faelle":["E8-01","E8-02","E8-03","E8-04","E8-05","E8-06","E8-07","E8-09","E8-11","E8-13"],"kapitel":[8],"gedanke":"Bei pünktlicher Zahlung mindern 5880 und die Vorsteuerkorrektur die Zahlung; nach der Frist geht der volle Betrag an die Bank.","video":{"src":"videos/erklaervideo_lieferantenskonto_fiktiv_v2.mp4","titel":"Lieferantenskonto","dauer":"3:11","vorschaubild":"videos/erklaervideo_lieferantenskonto_fiktiv_v2.jpg"}},{"nr":18,"id":"qs-18","titel":"Kundenskonto","stufe":"aufbau","faelle":["E9-01","E9-02","E9-03","E9-04","E9-05","E9-06","E9-07","E9-09","E9-11","E9-13"],"kapitel":[9],"gedanke":"Der Kunde zieht Skonto: 4410 und Umsatzsteuerkorrektur; zahlt er zu spät, kommt der volle Betrag.","video":{"src":"videos/erklaervideo_kundenskonto_fiktiv_v2.mp4","titel":"Kundenskonto","dauer":"1:23","vorschaubild":"videos/erklaervideo_kundenskonto_fiktiv_v2.jpg"}},{"nr":19,"id":"qs-19","titel":"Mahnspesen","stufe":"aufbau","faelle":["E10-01","E10-02","E10-05","E10-08"],"kapitel":[10],"gedanke":"Nur Mahnspesen, ohne Umsatzsteuer: an den Kunden über 4890, vom Lieferanten über 8321.","video":{"src":"videos/erklaervideo_verzugszinsen_mahnspesen_fiktiv_v2.mp4","titel":"Verzugszinsen und Mahnspesen","dauer":"3:48","vorschaubild":"videos/erklaervideo_verzugszinsen_mahnspesen_fiktiv_v2.jpg"}},{"nr":20,"id":"qs-20","titel":"Verzugszinsen","stufe":"aufbau","faelle":["E10-03","E10-04","E10-06","E10-11","E10-07","E10-09","E10-10"],"kapitel":[10],"gedanke":"Nur Verzugszinsen, ohne Umsatzsteuer: an den Kunden über 8055, vom Lieferanten über 8320.","video":{"src":"videos/erklaervideo_verzugszinsen_mahnspesen_fiktiv_v2.mp4","titel":"Verzugszinsen und Mahnspesen","dauer":"3:48","vorschaubild":"videos/erklaervideo_verzugszinsen_mahnspesen_fiktiv_v2.jpg"}},{"nr":22,"id":"qs-22","titel":"Bareinzahlung","stufe":"aufbau","faelle":["E11-01","E11-02","E11-05","E11-07","E11-08","E11-10"],"kapitel":[11],"gedanke":"Bargeld wandert über 2870 von der Kassa zur Bank; Kassen- und Bankbeleg sind zwei Buchungen desselben Weges.","video":{"src":"videos/erklaervideo_bareinzahlung_fiktiv_v2.mp4","titel":"Barverkehr: Bareinzahlung","dauer":"3:04","vorschaubild":"videos/erklaervideo_bareinzahlung_fiktiv_v2.jpg"}},{"nr":23,"id":"qs-23","titel":"Barbehebung","stufe":"aufbau","faelle":["E11-03","E11-04","E11-06","E11-09","E11-11"],"kapitel":[11],"gedanke":"Bargeld wandert über 2870 von der Bank in die Kassa; wieder sind beide Belege zu buchen.","video":{"src":"videos/erklaervideo_barbehebung_fiktiv_v2.mp4","titel":"Barverkehr: Barbehebung","dauer":"1:38","vorschaubild":"videos/erklaervideo_barbehebung_fiktiv_v2.jpg"}},{"nr":24,"id":"qs-24","titel":"Habenzinsen","stufe":"vertiefung","faelle":["E12-01","E12-02","E12-05","E12-06","E12-08","E12-09"],"kapitel":[12],"gedanke":"Habenzinsen werden brutto auf 8050 gebucht, die KESt privat auf 9600, nie als Aufwand.","video":{"src":"videos/erklaervideo_bankabschluss_habenzinsen_kest_fiktiv_v2.mp4","titel":"Bankabschluss: Habenzinsen und KESt","dauer":"2:17","vorschaubild":"videos/erklaervideo_bankabschluss_habenzinsen_kest_fiktiv_v2.jpg"}},{"nr":25,"id":"qs-25","titel":"Bankaufwand","stufe":"vertiefung","faelle":["E12-03","E12-04","E12-07","E12-10","E12-11","E12-12"],"kapitel":[12],"gedanke":"Sollzinsen stehen auf 8310, Bankspesen auf 7790, beide ohne Vorsteuer.","video":{"src":"videos/erklaervideo_bankabschluss_sollzinsen_spesen_fiktiv_v2.mp4","titel":"Bankabschluss: Sollzinsen und Spesen","dauer":"2:29","vorschaubild":"videos/erklaervideo_bankabschluss_sollzinsen_spesen_fiktiv_v2.jpg"}},{"nr":26,"id":"qs-26","titel":"Betriebssteuern","stufe":"vertiefung","faelle":["E13-01","E13-02","E13-07","E13-09","E13-12"],"kapitel":[13],"gedanke":"Grundsteuer (7100) und Kammerumlage (7780) sind Betriebsaufwand.","video":{"src":"videos/erklaervideo_betriebssteuern_fiktiv_v2.mp4","titel":"Steuern: Betriebssteuern","dauer":"1:45","vorschaubild":"videos/erklaervideo_betriebssteuern_fiktiv_v2.jpg"}},{"nr":27,"id":"qs-27","titel":"Privatsteuern","stufe":"vertiefung","faelle":["E13-03","E13-08","E13-11"],"kapitel":[13],"gedanke":"Die Einkommensteuer des Inhabers geht auf 9600, sie darf den Gewinn nicht mindern.","video":{"src":"videos/erklaervideo_privatsteuern_zahllast_fiktiv_v2.mp4","titel":"Steuern: Privatsteuern und USt-Zahllast","dauer":"1:34","vorschaubild":"videos/erklaervideo_privatsteuern_zahllast_fiktiv_v2.jpg"}},{"nr":28,"id":"qs-28","titel":"USt-Zahllast","stufe":"vertiefung","faelle":["E13-04","E13-10"],"kapitel":[13],"gedanke":"Die Zahllast auf 3520 wird an das Finanzamt überwiesen und schließt den Steuerkreislauf aus 2500 und 3500.","video":{"src":"videos/erklaervideo_privatsteuern_zahllast_fiktiv_v2.mp4","titel":"Steuern: Privatsteuern und USt-Zahllast","dauer":"1:34","vorschaubild":"videos/erklaervideo_privatsteuern_zahllast_fiktiv_v2.jpg"}},{"nr":29,"id":"qs-29","titel":"Grundstückkauf","stufe":"vertiefung","faelle":["E13-05","E13-06"],"kapitel":[13],"gedanke":"Kaufpreis und Grunderwerbsteuer stehen gemeinsam auf 0200, die GrESt ist keine Steueraufwandbuchung.","video":{"src":"videos/erklaervideo_grundstueckkauf_fiktiv_v2.mp4","titel":"Steuern: Grundstückkauf","dauer":"1:32","vorschaubild":"videos/erklaervideo_grundstueckkauf_fiktiv_v2.jpg"}},{"nr":30,"id":"qs-30","titel":"Pkw-Kosten","stufe":"vertiefung","faelle":["E14-01","E14-02","E14-06","E14-07","E14-09","E14-12"],"kapitel":[14],"gedanke":"Pkw-Betriebskosten (Benzin oder Diesel) stehen brutto auf 7320, ohne Vorsteuer, Zahlung oft über die Firmen-Debitkarte 3190 oder die Bank.","video":{"src":"videos/erklaervideo_kfz_betriebskosten_pkw_fiktiv_v2.mp4","titel":"Kfz-Betriebskosten: Pkw","dauer":"2:00","vorschaubild":"videos/erklaervideo_kfz_betriebskosten_pkw_fiktiv_v2.jpg"}},{"nr":31,"id":"qs-31","titel":"Lkw-Kosten","stufe":"vertiefung","faelle":["E14-04","E14-05","E14-08","E14-10","E14-11","E14-13"],"kapitel":[14],"gedanke":"Lkw-Betriebskosten stehen auf 7330; Tanken und Service haben Vorsteuer, die Versicherung mit motorbezogener Versicherungssteuer nicht.","video":{"src":"videos/erklaervideo_kfz_betriebskosten_lkw_fiktiv_v2.mp4","titel":"Kfz-Betriebskosten: Lkw","dauer":"1:21","vorschaubild":"videos/erklaervideo_kfz_betriebskosten_lkw_fiktiv_v2.jpg"}},{"nr":32,"id":"qs-32","titel":"Lkw-Kauf","stufe":"vertiefung","faelle":["E15-04","E15-11"],"kapitel":[15],"gedanke":"Der Lkw kommt mit Vorsteuer auf 0640; Pkw mit NoVA und Elektro-Pkw bleiben im Schüler-Quick-Start ausgeblendet.","video":{"src":"videos/erklaervideo_lkw_kauf_fiktiv_v2.mp4","titel":"Lkw-Kauf","dauer":"0:57","vorschaubild":"videos/erklaervideo_lkw_kauf_fiktiv_v2.jpg"}},{"nr":33,"id":"qs-33","titel":"Materialverbrauch","stufe":"vertiefung","faelle":["E16-01","E16-03","E16-04","E16-05","E16-06","E16-07","E16-08"],"kapitel":[16],"gedanke":"Verpackung, Reinigung, Heizöl und Büromaterial gehen sofort in den Aufwand; nur was unverändert weiterverkauft wird, steht auf 5000.","video":{"src":"videos/erklaervideo_sonstiges_material_kauf_fiktiv_v2.mp4","titel":"Kauf sonstiges Material","dauer":"2:34","vorschaubild":"videos/erklaervideo_sonstiges_material_kauf_fiktiv_v2.jpg"}},{"nr":34,"id":"qs-34","titel":"Bestandsveränderung","stufe":"vertiefung","faelle":["E17-01","E17-02","E17-03","E17-04","E17-05","E17-06","E17-07","E17-08"],"kapitel":[17],"gedanke":"Gebucht wird nur die Differenz zwischen Endbestand und Anfangsbestand, nicht der ganze Endbestand.","video":{"src":"videos/erklaervideo_sonstiges_material_inventur_fiktiv_v2.mp4","titel":"Inventur und Bestandsveränderung","dauer":"2:23","vorschaubild":"videos/erklaervideo_sonstiges_material_inventur_fiktiv_v2.jpg"}}];
+const QS_STUFEN = [{"id":"einstieg","titel":"Einstieg","reihenfolge":0,"leitidee":"Vorweg die Grundlagen der doppelten Buchführung: Beleg, Konto, Soll und Haben. Danach kannst du den ersten Einkauf buchen."},{"id":"kern","titel":"Kern","reihenfolge":1,"leitidee":"Dann üben: der Warenkreislauf von Einkauf und Verkauf bis zur Zahlung ohne Skonto, inklusive der ersten Umkehrungen und der typischen Bezugskosten."},{"id":"aufbau","titel":"Aufbau","reihenfolge":2,"leitidee":"Danach: Zahlungswege und Nachlässe mit eigenem Konto (Karten, Skonto, Mahnungen) sowie der Barverkehr mit der Bank."},{"id":"vertiefung","titel":"Vertiefung","reihenfolge":3,"leitidee":"Zuletzt: Periodenabschluss, Steuern, Anlagevermögen, sonstiges Material und Inventur."}];
+const QS_KACHELN = [{"nr":0,"id":"qs-00","titel":"So funktioniert Buchen","stufe":"einstieg","typ":"auswahl","uebungen":5,"faelle":[],"kapitel":[],"gedanke":"Beleg, Konto, Soll und Haben, Kontenklassen und Vorsteuer: das Grundwissen, bevor du den ersten Einkauf buchst.","video":null},{"nr":1,"id":"qs-01","titel":"Wareneinkauf","stufe":"kern","faelle":["E1-01","E1-02","E1-03","E1-08","E1-09","E1-10","E1-12"],"kapitel":[1],"gedanke":"Handelsware kommt hinein: immer 5000 und Vorsteuer, Ziel und bar ändern nur die Zahlungsseite.","video":{"src":"videos/erklaervideo_wareneinkauf_fiktiv_v2.mp4","titel":"Wareneinkauf","dauer":"3:09","vorschaubild":"videos/erklaervideo_wareneinkauf_fiktiv_v2.jpg"}},{"nr":2,"id":"qs-02","titel":"Rücksendung Einkauf","stufe":"kern","faelle":["E1-04","E1-06"],"kapitel":[1],"gedanke":"Der Einkaufssatz kehrt sich um: Lieferant, 5000 und Vorsteuer gehen zurück.","video":{"src":"videos/erklaervideo_einkauf_ruecksendung_zahlung_fiktiv_v2.mp4","titel":"Einkauf: Rücksendung und Zahlung","dauer":"1:30","vorschaubild":"videos/erklaervideo_einkauf_ruecksendung_zahlung_fiktiv_v2.jpg"}},{"nr":3,"id":"qs-03","titel":"Warenverkauf","stufe":"kern","faelle":["E2-01","E2-02","E2-03","E2-04","E2-09","E2-10","E2-12"],"kapitel":[2],"gedanke":"Handelsware geht hinaus: immer 4000 und Umsatzsteuer; die Tageslosung ist der gesammelte Barverkauf.","video":{"src":"videos/erklaervideo_warenverkauf_fiktiv_v2.mp4","titel":"Warenverkauf","dauer":"2:49","vorschaubild":"videos/erklaervideo_warenverkauf_fiktiv_v2.jpg"}},{"nr":4,"id":"qs-04","titel":"Rücksendung Verkauf","stufe":"kern","faelle":["E2-05","E2-06","E2-11"],"kapitel":[2],"gedanke":"Der Verkaufssatz kehrt sich um, weil die Ware vom Kunden zurückkommt.","video":{"src":"videos/erklaervideo_verkauf_ruecksendung_privatentnahme_fiktiv_v2.mp4","titel":"Verkauf: Rücksendung und Privatentnahme","dauer":"1:49","vorschaubild":"videos/erklaervideo_verkauf_ruecksendung_privatentnahme_fiktiv_v2.jpg"}},{"nr":5,"id":"qs-05","titel":"Privatentnahme Waren","stufe":"kern","faelle":["E2-07","E2-08"],"kapitel":[2],"gedanke":"Der Inhaber entnimmt Ware: 9600 gegen 4900 und Umsatzsteuer, nicht gegen 4000.","video":{"src":"videos/erklaervideo_verkauf_ruecksendung_privatentnahme_fiktiv_v2.mp4","titel":"Verkauf: Rücksendung und Privatentnahme","dauer":"1:49","vorschaubild":"videos/erklaervideo_verkauf_ruecksendung_privatentnahme_fiktiv_v2.jpg"}},{"nr":6,"id":"qs-06","titel":"Bezugskosten","stufe":"kern","faelle":["E3-01","E3-02","E3-03","E3-04","E3-05","E3-06","E3-07","E3-08","E3-09","E3-10","E3-11"],"kapitel":[3],"gedanke":"Fracht beim Einkauf erhöht 5000 und die Vorsteuer, unabhängig davon ob sie auf der Warenrechnung steht oder gesondert kommt.","video":{"src":"videos/erklaervideo_bezugskosten_fiktiv_v2.mp4","titel":"Bezugskosten","dauer":"3:55","vorschaubild":"videos/erklaervideo_bezugskosten_fiktiv_v2.jpg"}},{"nr":7,"id":"qs-07","titel":"Ausgangsfrachten","stufe":"kern","faelle":["E4-01","E4-02","E4-03","E4-08","E4-09","E4-11"],"kapitel":[4],"gedanke":"Fracht beim Verkauf ist Aufwand 7300 mit Vorsteuer, nicht Wareneinsatz.","video":{"src":"videos/erklaervideo_ausgangsfrachten_fiktiv_v2.mp4","titel":"Versandkosten: Ausgangsfrachten","dauer":"2:17","vorschaubild":"videos/erklaervideo_ausgangsfrachten_fiktiv_v2.jpg"}},{"nr":8,"id":"qs-08","titel":"Paketgebühren","stufe":"kern","faelle":["E4-04","E4-05","E4-06","E4-07","E4-10"],"kapitel":[4],"gedanke":"Beim Universaldienstbetreiber entscheidet das Gewicht über 20 % mit Vorsteuer oder 0 % ohne Vorsteuer.","video":{"src":"videos/erklaervideo_paketgebuehren_fiktiv_v2.mp4","titel":"Versandkosten: Paketgebühren","dauer":"1:45","vorschaubild":"videos/erklaervideo_paketgebuehren_fiktiv_v2.jpg"}},{"nr":9,"id":"qs-09","titel":"Sofortrabatt","stufe":"kern","faelle":["E5-01","E5-02","E5-03","E5-04","E5-11","E5-12"],"kapitel":[5],"gedanke":"Es wird nur der Nettobetrag nach Abzug des Sofortrabatts gebucht, kein eigenes Rabattkonto.","video":{"src":"videos/erklaervideo_sofortrabatt_fiktiv_v2.mp4","titel":"Rabatte: Sofortrabatt","dauer":"1:58","vorschaubild":"videos/erklaervideo_sofortrabatt_fiktiv_v2.jpg"}},{"nr":10,"id":"qs-10","titel":"Lieferantenrabatt","stufe":"kern","faelle":["E5-05","E5-06","E5-10","E5-13"],"kapitel":[5],"gedanke":"Nachträglicher Nachlass, die Ware bleibt: 5000 und Vorsteuer mindern sich.","video":{"src":"videos/erklaervideo_lieferantenrabatt_fiktiv_v2.mp4","titel":"Rabatte: Lieferantenrabatt","dauer":"1:15","vorschaubild":"videos/erklaervideo_lieferantenrabatt_fiktiv_v2.jpg"}},{"nr":11,"id":"qs-11","titel":"Kunden-Nachlässe","stufe":"kern","faelle":["E5-07","E5-08","E5-09","E5-14"],"kapitel":[5],"gedanke":"Bleibt die Ware beim Kunden, berichtigt 4400 den Erlös; kommt sie zurück, kehrt 4000 den Verkauf um.","video":{"src":"videos/erklaervideo_kunden_nachlaesse_fiktiv_v2.mp4","titel":"Rabatte: Nachlass an Kunden","dauer":"1:42","vorschaubild":"videos/erklaervideo_kunden_nachlaesse_fiktiv_v2.jpg"}},{"nr":12,"id":"qs-12","titel":"Zahlung Lieferant","stufe":"kern","faelle":["E1-05","E1-07","E1-11","E3-12","E4-12","E6-01","E6-03","E6-06","E6-08","E6-10","E16-02"],"kapitel":[1,3,4,6,16],"gedanke":"Die offene Lieferantenverbindlichkeit geht ohne Abzug gegen die Bank.","video":{"src":"videos/erklaervideo_bankueberweisung_fiktiv_v2.mp4","titel":"Zahlung per Banküberweisung","dauer":"1:52","vorschaubild":"videos/erklaervideo_bankueberweisung_fiktiv_v2.jpg"}},{"nr":13,"id":"qs-13","titel":"Zahlung Kunde","stufe":"kern","faelle":["E2-13","E6-02","E6-04","E6-05","E6-07","E6-09","E6-11"],"kapitel":[2,6],"gedanke":"Die offene Kundenforderung geht ohne Abzug auf die Bank.","video":{"src":"videos/erklaervideo_bankueberweisung_fiktiv_v2.mp4","titel":"Zahlung per Banküberweisung","dauer":"1:52","vorschaubild":"videos/erklaervideo_bankueberweisung_fiktiv_v2.jpg"}},{"nr":14,"id":"qs-14","titel":"Kartenzahlung Kunden","stufe":"aufbau","faelle":["E7-01","E7-03","E7-09","E7-10"],"kapitel":[7],"gedanke":"Der Kundenumsatz steht zuerst auf 2880 (Kreditkarte) oder 2885 (Debitkarte), noch nicht auf der Bank.","video":{"src":"videos/erklaervideo_kartenzahlung_kunde_fiktiv_v2.mp4","titel":"Kartenzahlung: Kunde zahlt mit Karte","dauer":"2:57","vorschaubild":"videos/erklaervideo_kartenzahlung_kunde_fiktiv_v2.jpg"}},{"nr":15,"id":"qs-15","titel":"Kartengutschrift","stufe":"aufbau","faelle":["E7-02","E7-04","E7-05","E7-11","E7-12","E7-13"],"kapitel":[7],"gedanke":"Das Geld kommt auf die Bank: mit Gebühr im selben Satz, ohne Gebühr oder mit späterer Abbuchung der Debitgebühren (7792 plus Vorsteuer).","video":{"src":"videos/erklaervideo_kartenzahlung_kunde_fiktiv_v2.mp4","titel":"Kartenzahlung: Kunde zahlt mit Karte","dauer":"2:57","vorschaubild":"videos/erklaervideo_kartenzahlung_kunde_fiktiv_v2.jpg"}},{"nr":16,"id":"qs-16","titel":"Firmenkarte","stufe":"aufbau","faelle":["E7-06","E7-07","E7-08","E7-14","E7-15"],"kapitel":[7],"gedanke":"Der Einkauf steht im Haben auf 3180 (Kredit) oder 3190 (Debitkarte), nie auf der Kassa; später gleicht die Bank die Verbindlichkeit aus.","video":{"src":"videos/erklaervideo_kartenzahlung_firmenkarte_fiktiv_v2.mp4","titel":"Kartenzahlung: Firmenkarte","dauer":"2:00","vorschaubild":"videos/erklaervideo_kartenzahlung_firmenkarte_fiktiv_v2.jpg"}},{"nr":17,"id":"qs-17","titel":"Lieferantenskonto","stufe":"aufbau","faelle":["E8-01","E8-02","E8-03","E8-04","E8-05","E8-06","E8-07","E8-09","E8-11","E8-13"],"kapitel":[8],"gedanke":"Bei pünktlicher Zahlung mindern 5880 und die Vorsteuerkorrektur die Zahlung; nach der Frist geht der volle Betrag an die Bank.","video":{"src":"videos/erklaervideo_lieferantenskonto_fiktiv_v2.mp4","titel":"Lieferantenskonto","dauer":"3:11","vorschaubild":"videos/erklaervideo_lieferantenskonto_fiktiv_v2.jpg"}},{"nr":18,"id":"qs-18","titel":"Kundenskonto","stufe":"aufbau","faelle":["E9-01","E9-02","E9-03","E9-04","E9-05","E9-06","E9-07","E9-09","E9-11","E9-13"],"kapitel":[9],"gedanke":"Der Kunde zieht Skonto: 4410 und Umsatzsteuerkorrektur; zahlt er zu spät, kommt der volle Betrag.","video":{"src":"videos/erklaervideo_kundenskonto_fiktiv_v2.mp4","titel":"Kundenskonto","dauer":"1:23","vorschaubild":"videos/erklaervideo_kundenskonto_fiktiv_v2.jpg"}},{"nr":19,"id":"qs-19","titel":"Mahnspesen","stufe":"aufbau","faelle":["E10-01","E10-02","E10-05","E10-08"],"kapitel":[10],"gedanke":"Nur Mahnspesen, ohne Umsatzsteuer: an den Kunden über 4890, vom Lieferanten über 8321.","video":{"src":"videos/erklaervideo_verzugszinsen_mahnspesen_fiktiv_v2.mp4","titel":"Verzugszinsen und Mahnspesen","dauer":"3:48","vorschaubild":"videos/erklaervideo_verzugszinsen_mahnspesen_fiktiv_v2.jpg"}},{"nr":20,"id":"qs-20","titel":"Verzugszinsen","stufe":"aufbau","faelle":["E10-03","E10-04","E10-06","E10-11","E10-07","E10-09","E10-10"],"kapitel":[10],"gedanke":"Nur Verzugszinsen, ohne Umsatzsteuer: an den Kunden über 8055, vom Lieferanten über 8320.","video":{"src":"videos/erklaervideo_verzugszinsen_mahnspesen_fiktiv_v2.mp4","titel":"Verzugszinsen und Mahnspesen","dauer":"3:48","vorschaubild":"videos/erklaervideo_verzugszinsen_mahnspesen_fiktiv_v2.jpg"}},{"nr":22,"id":"qs-22","titel":"Bareinzahlung","stufe":"aufbau","faelle":["E11-01","E11-02","E11-05","E11-07","E11-08","E11-10"],"kapitel":[11],"gedanke":"Bargeld wandert über 2870 von der Kassa zur Bank; Kassen- und Bankbeleg sind zwei Buchungen desselben Weges.","video":{"src":"videos/erklaervideo_bareinzahlung_fiktiv_v2.mp4","titel":"Barverkehr: Bareinzahlung","dauer":"3:04","vorschaubild":"videos/erklaervideo_bareinzahlung_fiktiv_v2.jpg"}},{"nr":23,"id":"qs-23","titel":"Barbehebung","stufe":"aufbau","faelle":["E11-03","E11-04","E11-06","E11-09","E11-11"],"kapitel":[11],"gedanke":"Bargeld wandert über 2870 von der Bank in die Kassa; wieder sind beide Belege zu buchen.","video":{"src":"videos/erklaervideo_barbehebung_fiktiv_v2.mp4","titel":"Barverkehr: Barbehebung","dauer":"1:38","vorschaubild":"videos/erklaervideo_barbehebung_fiktiv_v2.jpg"}},{"nr":24,"id":"qs-24","titel":"Habenzinsen","stufe":"vertiefung","faelle":["E12-01","E12-02","E12-05","E12-06","E12-08","E12-09"],"kapitel":[12],"gedanke":"Habenzinsen werden brutto auf 8050 gebucht, die KESt privat auf 9600, nie als Aufwand.","video":{"src":"videos/erklaervideo_bankabschluss_habenzinsen_kest_fiktiv_v2.mp4","titel":"Bankabschluss: Habenzinsen und KESt","dauer":"2:17","vorschaubild":"videos/erklaervideo_bankabschluss_habenzinsen_kest_fiktiv_v2.jpg"}},{"nr":25,"id":"qs-25","titel":"Bankaufwand","stufe":"vertiefung","faelle":["E12-03","E12-04","E12-07","E12-10","E12-11","E12-12"],"kapitel":[12],"gedanke":"Sollzinsen stehen auf 8310, Bankspesen auf 7790, beide ohne Vorsteuer.","video":{"src":"videos/erklaervideo_bankabschluss_sollzinsen_spesen_fiktiv_v2.mp4","titel":"Bankabschluss: Sollzinsen und Spesen","dauer":"2:29","vorschaubild":"videos/erklaervideo_bankabschluss_sollzinsen_spesen_fiktiv_v2.jpg"}},{"nr":26,"id":"qs-26","titel":"Betriebssteuern","stufe":"vertiefung","faelle":["E13-01","E13-02","E13-07","E13-09","E13-12"],"kapitel":[13],"gedanke":"Grundsteuer (7100) und Kammerumlage (7780) sind Betriebsaufwand.","video":{"src":"videos/erklaervideo_betriebssteuern_fiktiv_v2.mp4","titel":"Steuern: Betriebssteuern","dauer":"1:45","vorschaubild":"videos/erklaervideo_betriebssteuern_fiktiv_v2.jpg"}},{"nr":27,"id":"qs-27","titel":"Privatsteuern","stufe":"vertiefung","faelle":["E13-03","E13-08","E13-11"],"kapitel":[13],"gedanke":"Die Einkommensteuer des Inhabers geht auf 9600, sie darf den Gewinn nicht mindern.","video":{"src":"videos/erklaervideo_privatsteuern_zahllast_fiktiv_v2.mp4","titel":"Steuern: Privatsteuern und USt-Zahllast","dauer":"1:34","vorschaubild":"videos/erklaervideo_privatsteuern_zahllast_fiktiv_v2.jpg"}},{"nr":28,"id":"qs-28","titel":"USt-Zahllast","stufe":"vertiefung","faelle":["E13-04","E13-10"],"kapitel":[13],"gedanke":"Die Zahllast auf 3520 wird an das Finanzamt überwiesen und schließt den Steuerkreislauf aus 2500 und 3500.","video":{"src":"videos/erklaervideo_privatsteuern_zahllast_fiktiv_v2.mp4","titel":"Steuern: Privatsteuern und USt-Zahllast","dauer":"1:34","vorschaubild":"videos/erklaervideo_privatsteuern_zahllast_fiktiv_v2.jpg"}},{"nr":29,"id":"qs-29","titel":"Grundstückkauf","stufe":"vertiefung","faelle":["E13-05","E13-06"],"kapitel":[13],"gedanke":"Kaufpreis und Grunderwerbsteuer stehen gemeinsam auf 0200, die GrESt ist keine Steueraufwandbuchung.","video":{"src":"videos/erklaervideo_grundstueckkauf_fiktiv_v2.mp4","titel":"Steuern: Grundstückkauf","dauer":"1:32","vorschaubild":"videos/erklaervideo_grundstueckkauf_fiktiv_v2.jpg"}},{"nr":30,"id":"qs-30","titel":"Pkw-Kosten","stufe":"vertiefung","faelle":["E14-01","E14-02","E14-06","E14-07","E14-09","E14-12"],"kapitel":[14],"gedanke":"Pkw-Betriebskosten (Benzin oder Diesel) stehen brutto auf 7320, ohne Vorsteuer, Zahlung oft über die Firmen-Debitkarte 3190 oder die Bank.","video":{"src":"videos/erklaervideo_kfz_betriebskosten_pkw_fiktiv_v2.mp4","titel":"Kfz-Betriebskosten: Pkw","dauer":"2:00","vorschaubild":"videos/erklaervideo_kfz_betriebskosten_pkw_fiktiv_v2.jpg"}},{"nr":31,"id":"qs-31","titel":"Lkw-Kosten","stufe":"vertiefung","faelle":["E14-04","E14-05","E14-08","E14-10","E14-11","E14-13"],"kapitel":[14],"gedanke":"Lkw-Betriebskosten stehen auf 7330; Tanken und Service haben Vorsteuer, die Versicherung mit motorbezogener Versicherungssteuer nicht.","video":{"src":"videos/erklaervideo_kfz_betriebskosten_lkw_fiktiv_v2.mp4","titel":"Kfz-Betriebskosten: Lkw","dauer":"1:21","vorschaubild":"videos/erklaervideo_kfz_betriebskosten_lkw_fiktiv_v2.jpg"}},{"nr":32,"id":"qs-32","titel":"Lkw-Kauf","stufe":"vertiefung","faelle":["E15-04","E15-11"],"kapitel":[15],"gedanke":"Der Lkw kommt mit Vorsteuer auf 0640; Pkw mit NoVA und Elektro-Pkw bleiben im Schüler-Quick-Start ausgeblendet.","video":{"src":"videos/erklaervideo_lkw_kauf_fiktiv_v2.mp4","titel":"Lkw-Kauf","dauer":"0:57","vorschaubild":"videos/erklaervideo_lkw_kauf_fiktiv_v2.jpg"}},{"nr":33,"id":"qs-33","titel":"Materialverbrauch","stufe":"vertiefung","faelle":["E16-01","E16-03","E16-04","E16-05","E16-06","E16-07","E16-08"],"kapitel":[16],"gedanke":"Verpackung, Reinigung, Heizöl und Büromaterial gehen sofort in den Aufwand; nur was unverändert weiterverkauft wird, steht auf 5000.","video":{"src":"videos/erklaervideo_sonstiges_material_kauf_fiktiv_v2.mp4","titel":"Kauf sonstiges Material","dauer":"2:34","vorschaubild":"videos/erklaervideo_sonstiges_material_kauf_fiktiv_v2.jpg"}},{"nr":34,"id":"qs-34","titel":"Bestandsveränderung","stufe":"vertiefung","faelle":["E17-01","E17-02","E17-03","E17-04","E17-05","E17-06","E17-07","E17-08"],"kapitel":[17],"gedanke":"Gebucht wird nur die Differenz zwischen Endbestand und Anfangsbestand, nicht der ganze Endbestand.","video":{"src":"videos/erklaervideo_sonstiges_material_inventur_fiktiv_v2.mp4","titel":"Inventur und Bestandsveränderung","dauer":"2:23","vorschaubild":"videos/erklaervideo_sonstiges_material_inventur_fiktiv_v2.jpg"}}];
 const QS_GESPERRT = ["E14-03","E15-01","E15-02","E15-03","E15-05","E15-06","E15-07","E15-08","E15-09","E15-10"];
 const QS_AUSGELASSEN = ["E8-08","E8-10","E8-12","E9-08","E9-10","E9-12"];
 function qsKachel(id) { return QS_KACHELN.find(k => k.id === id); }
@@ -4390,6 +4436,7 @@ function oeffneKachelVideo(btn) {
   const dauer = v.dauer ? `<span class="viddauer">${esc(v.dauer)}</span>` : "";
   m.innerHTML = `<div class="vidbox" role="dialog" aria-modal="true" aria-label="${esc(titel)}">
     <div class="vidkopf"><b>${esc(titel)}</b>${dauer}<button type="button" class="vidzu" id="vidzu" aria-label="Video schließen">Schließen ✕</button></div>
+    ${kiStimmeHtml()}
     <div class="vidbuehne"><video id="vid" controls preload="none" playsinline${v.vorschaubild ? ` poster="${esc(v.vorschaubild)}"` : ""} src="${esc(v.src)}">Dein Browser kann dieses Video nicht abspielen.</video>
       <div class="vidende" id="vidende" hidden>
         <div class="vetitel">Fertig angeschaut!</div>
@@ -4416,7 +4463,7 @@ function qsVideoKnoepfeBinden(wurzel) {
 function qsThemenKats() {
   return QS_KACHELN.map(k => ({
     id: k.id, gruppe: "thema", titel: k.titel, stufe: k.stufe, kapitel: k.kapitel || [],
-    nMax: (k.faelle || []).length, video: k.video || null,
+    nMax: k.typ === "auswahl" ? (k.uebungen || 5) : (k.faelle || []).length, video: k.video || null,
     filter: a => (k.faelle || []).indexOf(a.id) >= 0
   }));
 }
@@ -4648,6 +4695,7 @@ function lsMaxZahl(themenIds) {
   (themenIds || []).forEach(id => {
     const kat = (typeof bmKategorien === "function" ? bmKategorien() : []).find(k => k.id === id);
     if (!kat) return;
+    if (id === "qs-00") { for (let u = 1; u <= 5; u++) used.add("Q0-" + u); return; }
     let list = typeof bmPool === "function" ? bmPool(kat) : [];
     if (S.lehrerModus === "lzk") list = list.filter(a => a.beleg || a.zusatzbeleg);
     list.forEach(a => { if (a && a.id) used.add(a.id); });
@@ -5103,6 +5151,13 @@ function qsKeinKachelAutofokus() {
 }
 function renderThemenwahl() {
   if (!S.lehrerModus) S.lehrerModus = "solo";
+  // Gemeinsam üben, Eigenes Tempo, Lernzielkontrolle: zuerst eine eigene Klasse wählen (läuft schon eine Stunde, gilt deren Klasse)
+  if (S.lehrerModus !== "solo" && S.lsKlasse === undefined) {
+    const ls = window.LIVE && LIVE.sitzung;
+    // Seite neu geladen, Stunde dieses Modus läuft schon mit einer Klasse: diese Klasse gilt weiter
+    if (ls && ls.code && ls.klasse && (ls.modus === S.lehrerModus || (S.lehrerModus === "live" && ls.modus === "live"))) S.lsKlasse = { id: ls.klasse.id, name: ls.klasse.name };
+    else return lsKlassenwahlStart(S.lehrerModus);
+  }
   lsSetHubClass(true);
   S.lehrerScreen = "themen";
   S.bmModus = "mit";
@@ -5113,7 +5168,10 @@ function renderThemenwahl() {
   const plan = lsMischPlan(lsThemenGewaehlt(), zahl);
   const solo = S.lehrerModus === "solo";
   const sitz = (window.LIVE && LIVE.sitzung) ? LIVE.sitzung : null;
-  const codeHtml = solo ? "" : `<aside class="ls-code-karte" id="ls-live-code">${
+  const kl = solo ? null : lsKlasseDerStunde(sitz);
+  const codeHtml = solo ? "" : kl && kl.status !== "nicht_unterstuetzt" && kl.status !== "fehler" ? lsKlassenKarteHtml(kl) : `<aside class="ls-code-karte" id="ls-live-code">${kl ? `<div class="lk-klein">Klasse</div><p class="ls-klasse-name" id="ls-klasse-name">${esc(kl.name)}</p>
+         <p class="ls-mini-hinweis" id="ls-klasse-alt">Dein Lizenzserver kann die Stunde noch nicht an die Klasse binden. Gib den Code unten an der Tafel bekannt.</p>
+         <button type="button" class="linkbtn" id="ls-klasse-wechseln">Klasse wechseln</button>` : ""}${
     sitz && sitz.code
       ? `<div class="lk-klein">Klassencode</div><div class="lk-code">${esc(sitz.code)}</div>
          <p class="ls-mini-hinweis">Die Klasse kann sich schon einklinken. Themen sind noch wählbar.</p>`
@@ -5129,7 +5187,7 @@ function renderThemenwahl() {
       return `<div class="ls-thema${an ? " an" : ""}">
         <button type="button" class="ls-thema-wahl" data-thema="${esc(k.id)}" aria-pressed="${an ? "true" : "false"}">
           <h3>${esc(k.titel)}</h3>
-          <p>${nMax} Aufgabe${nMax === 1 ? "" : "n"}</p>
+          <p>${k.typ === "auswahl" || k.id === "qs-00" ? nMax + " Übungen" : nMax + " Aufgabe" + (nMax === 1 ? "" : "n")}</p>
         </button>
         ${typeof qsVideoBtnHtml === "function" ? qsVideoBtnHtml(kachel || k, "ls-video") : ""}
       </div>`;
@@ -5199,6 +5257,10 @@ function renderThemenwahl() {
   if (plus) plus.onclick = () => lsSetzeZahl(lsGewuenschteZahl() + 1);
   const losB = document.getElementById("ls-los");
   if (losB) losB.onclick = () => lsStarteMitThemen();
+  const persB = document.getElementById("ls-person");
+  if (persB) persB.onclick = () => { if (window.LIVE && typeof LIVE.personZeigen === "function") LIVE.personZeigen(); };
+  const kwB = document.getElementById("ls-klasse-wechseln");
+  if (kwB) kwB.onclick = () => lsKlassenwahlStart(S.lehrerModus, true);
   if (!solo && window.LIVE && typeof LIVE.lobbyStarten === "function" && !(sitz && sitz.code)) {
     LIVE.lobbyStarten({ modus: S.lehrerModus === "live" ? "live" : S.lehrerModus, titel: lsThemenTitel() || lsModusTitel() })
       .then(function () { if (S.lehrerScreen === "themen") renderThemenwahl(); });
@@ -6000,6 +6062,7 @@ function renderLehrerHub() {
     const run = () => {
       S.lehrerModus = modus;
       S.lehrerScreen = "themen";
+      S.lsKlasse = undefined;   // neue Stunde: Klasse wird im nächsten Schritt gewählt (nicht bei „Lehrgerät solo“)
       S.lehrerKlasseId = null;
       S.lehrerZahl = null;
       S.lsZeigeGratulation = false;
@@ -6194,6 +6257,7 @@ function lzkThemenListe() {
   };
 }
 function lsStarteLzk(item) {
+  if (S.lsKlasse === undefined || S.lehrerModus !== "lzk") { S.lsKlasse = undefined; return lsKlassenwahlStart("lzk", false, () => lsStarteLzk(item)), true; }
   const go = () => {
     const plan = lzkPlan(item.kat, 3);
     if (!plan.length || typeof LIVE !== "object" || typeof LIVE.starten !== "function") return false;
@@ -6209,6 +6273,151 @@ function renderLzkThemenwahl() {
   S.lehrerModus = "lzk";
   S.lehrerScreen = "themen";
   return renderThemenwahl();
+}
+
+/* ===== Klassenwahl vor „Gemeinsam üben“, „Im eigenen Tempo üben“ und „Lernzielkontrolle“ (klassenwahl.js) =====
+   Die Lehrkraft wählt eine IHRER Klassen von der Lizenzseite (strikt getrennt: der Lizenzserver liefert nur die Klassen des eigenen Zugangs).
+   Genau eine Klasse: vorausgewählt, wechselbar. Keine Klasse: eigener Bildschirm mit „Klasse anlegen“ oder „Solo starten“ (gleichwertig).
+   „Lehrgerät solo“ startet ohne Klasse. Keine deaktivierten Knöpfe: Fehlt eine Auswahl, sagt eine Meldung, was zu tun ist. */
+function lsKlasseDerStunde(sitz) {
+  if (sitz && sitz.klasse) return sitz.klasse;
+  return S.lsKlasse ? { id: S.lsKlasse.id, name: S.lsKlasse.name, status: "binde" } : null;
+}
+function lsKlassenKarteHtml(kl) {
+  const code = window.LS_KW ? LS_KW.klassencode(S.lsKlasse && S.lsKlasse.id === kl.id ? S.lsKlasse : kl) : "";
+  return `<aside class="ls-code-karte" id="ls-live-code"><div class="lk-klein">Klasse</div><p class="ls-klasse-name" id="ls-klasse-name">${esc(kl.name)}</p>
+    <p class="ls-mini-hinweis" id="ls-klasse-hinweis">Nur Geräte dieser Klasse machen mit. Sie sehen die Stunde auf ihrer Startseite, ohne Code.</p>
+    ${code ? `<p class="ls-mini-hinweis" id="ls-klasse-code">Neues Gerät in der Klasse? Klassencode <b>${esc(code)}</b> einmal eingeben.</p>` : ""}
+    <p class="ls-mini-hinweis" role="status" id="ls-klasse-status">${kl.status === "gebunden" ? "Die Klasse ist verbunden." : "Die Klasse wird verbunden …"}</p>
+    ${window.LIVE && LIVE.sitzung && LIVE.sitzung.code ? `<button type="button" class="ls-person-knopf" id="ls-person">Person der Klasse hinzufügen</button>` : ""}
+    <button type="button" class="linkbtn" id="ls-klasse-wechseln">Klasse wechseln</button></aside>`;
+}
+function lsKlassenwahlStart(modus, wechseln, danach) {
+  S.lehrerModus = modus;
+  S.lehrerScreen = "klassenwahl";
+  const vorher = S.lsKlasse && S.lsKlasse.id;
+  S.lsKw = { modus, status: "laden", klassen: [], wahl: vorher || null, msg: "", bad: false, form: false, danach: danach || null, wechseln: !!wechseln };
+  renderKlassenwahl();
+  const kw = S.lsKw;
+  const fertig = r => {
+    if (S.lsKw !== kw) return;
+    kw.status = r.status; kw.klassen = r.klassen || []; kw.grund = r.grund || "";
+    if (kw.status === "ok" && kw.klassen.length === 1 && !kw.wahl) kw.wahl = kw.klassen[0].id;   // genau eine Klasse: vorausgewählt
+    if (kw.wahl && !kw.klassen.some(k => k.id === kw.wahl)) kw.wahl = null;
+    if (S.lehrerScreen === "klassenwahl") renderKlassenwahl(true);
+  };
+  if (window.LS_KW) LS_KW.klassen().then(fertig, () => fertig({ status: "offline" }));
+  else fertig({ status: "offline" });
+}
+function lsKlasseGewaehlt(k) {
+  const kw = S.lsKw || {};
+  S.lsKlasse = k ? { id: k.id, name: k.name, hinweis: k.hinweis || "" } : null;
+  if (k && window.LIVE && typeof LIVE.klasseSetzen === "function") LIVE.klasseSetzen(S.lsKlasse);   // laufende Lobby: an die neue Klasse binden
+  S.lsKw = null;
+  if (typeof kw.danach === "function") return kw.danach();
+  S.lehrerScreen = "themen";
+  renderStart();
+}
+function lsSoloStatt() {
+  const kw = S.lsKw || {};
+  S.lsKw = null; S.lsKlasse = null;
+  S.lehrerModus = "solo"; S.lehrerScreen = "themen"; S.lehrerZahl = null;
+  if (kw.wechseln && window.LIVE && LIVE.sitzung && typeof LIVE.stoppen === "function") { try { LIVE.stoppen(); } catch (e) { } }
+  renderStart();
+}
+function renderKlassenwahl(fokusKopf) {
+  const kw = S.lsKw || { modus: S.lehrerModus, status: "laden", klassen: [] };
+  lsSetHubClass(true);
+  S.lehrerScreen = "klassenwahl";
+  const titel = lsModusTitel(kw.modus);
+  if (typeof bmChromeMitteSetzen === "function") bmChromeMitteSetzen(`
+      <div class="bm-wahl-aktionen">
+        <span class="bm-titel">${esc(titel)} · Klasse wählen</span>
+        <button type="button" class="linkbtn" id="ls-zur-uebersicht">Zur Startseite</button>
+      </div>`);
+  const zurueck = encodeURIComponent(kw.modus);
+  const msg = `<p class="ls-kw-msg${kw.bad ? " bad" : ""}" id="ls-kw-msg" role="${kw.bad ? "alert" : "status"}">${esc(kw.msg || "")}</p>`;
+  let inhalt;
+  if (kw.status === "laden") {
+    inhalt = `<h1 class="ls-kw-h1" tabindex="-1">${esc(titel)}: Klasse wählen</h1><p class="ls-lead" role="status" id="ls-kw-laden">Deine Klassen werden geladen …</p>`;
+  } else if (kw.form) {
+    inhalt = `<h1 class="ls-kw-h1" tabindex="-1">Klasse anlegen</h1>
+      <p class="ls-lead">Danach geht es weiter mit „${esc(titel)}“ und dieser Klasse.</p>
+      <form class="ls-kw-form" id="ls-kw-form" novalidate autocomplete="off">
+        <label for="ls-kw-name">Name der Klasse</label>
+        <input id="ls-kw-name" maxlength="40" spellcheck="false" aria-describedby="ls-kw-msg ls-kw-name-hinweis" value="${esc(kw.name || "")}">
+        <p class="ls-mini-hinweis" id="ls-kw-name-hinweis">Zum Beispiel 2AK. Bitte keine Namen von Schülerinnen und Schülern.</p>
+        ${msg}
+        <div class="ls-kw-zeile"><button type="submit" class="btn primary" id="ls-kw-anlegen-ok">Klasse anlegen</button>
+          <button type="button" class="btn" id="ls-kw-form-zurueck">Zurück</button></div>
+      </form>`;
+  } else if (kw.status === "ok" && kw.klassen.length) {
+    const opts = kw.klassen.map(k => `<label class="ls-kw-option"><input type="radio" name="ls-kw-klasse" value="${k.id}"${kw.wahl === k.id ? " checked" : ""}>
+        <span class="ls-kw-name">${esc(k.name)}</span><span class="ls-kw-meta">${k.belegt === 1 ? "1 Gerät" : `${k.belegt} Geräte`}</span></label>`).join("");
+    inhalt = `<h1 class="ls-kw-h1" tabindex="-1">${esc(titel)}: Klasse wählen</h1>
+      <p class="ls-lead">Es machen nur die Schülergeräte der gewählten Klasse mit.</p>
+      <fieldset class="ls-kw-liste" id="ls-kw-liste"><legend>Welche Klasse macht mit?</legend>${opts}</fieldset>
+      ${msg}
+      <div class="ls-kw-zeile"><button type="button" class="btn primary" id="ls-kw-weiter">Weiter</button>
+        <button type="button" class="btn" id="ls-kw-neu">Neue Klasse anlegen</button></div>`;
+  } else if (kw.status === "offline") {
+    inhalt = `<h1 class="ls-kw-h1" tabindex="-1">${esc(titel)}: Klasse wählen</h1>
+      <p class="ls-lead" id="ls-kw-offline">Deine Klassen konnten nicht geladen werden. Es gibt gerade keine Verbindung zum Lizenzserver.</p>
+      <div class="ls-kw-zwei" id="ls-kw-zwei">
+        <button type="button" class="ls-karte" id="ls-kw-nochmal"><h2>Nochmal versuchen</h2><p class="ls-erkl">Klassen neu laden.</p></button>
+        <button type="button" class="ls-karte ls-quick" id="ls-kw-solo"><h2>Solo starten</h2><p class="ls-erkl">Lehrgerät solo: nur dieses Gerät, ohne Schülergeräte.</p></button>
+      </div>`;
+  } else {
+    // keine Klasse (oder auf diesem Gerät nicht mit dem Lehrkraft-Zugang angemeldet): zwei gleichwertige Wege
+    const ab = kw.status === "abgemeldet";
+    const anlegen = ab
+      ? `<a class="ls-karte" id="ls-kw-anlegen" href="lehrkraft.html?zurueck=${zurueck}"><h2>Klasse anlegen</h2><p class="ls-erkl">Auf der Lizenzseite mit deinem Lehrkraft-Code anmelden und eine Klasse anlegen. Danach geht es hier weiter.</p></a>`
+      : `<button type="button" class="ls-karte" id="ls-kw-anlegen"><h2>Klasse anlegen</h2><p class="ls-erkl">Klasse anlegen und danach mit „${esc(titel)}“ weitermachen.</p></button>`;
+    inhalt = `<h1 class="ls-kw-h1" tabindex="-1">Du hast noch keine Klasse</h1>
+      <p class="ls-lead" id="ls-kw-leer">${ab ? "Auf diesem Gerät bist du noch nicht mit deinem Lehrkraft-Zugang angemeldet. " : ""}Bei „${esc(titel)}“ machen nur die Schülergeräte einer Klasse mit.</p>
+      <div class="ls-kw-zwei" id="ls-kw-zwei">
+        ${anlegen}
+        <button type="button" class="ls-karte" id="ls-kw-solo"><h2>Solo starten</h2><p class="ls-erkl">Lehrgerät solo: nur dieses Gerät, Tafel oder Beamer, ohne Schülergeräte.</p></button>
+      </div>`;
+  }
+  app().innerHTML = `<div id="lehrerstart" class="ls-kw-schirm"><div id="startkarte" class="ls-kw" data-kw-status="${esc(kw.status)}">${inhalt}</div></div>`;
+  const zur = document.getElementById("ls-zur-uebersicht");
+  if (zur) zur.onclick = () => { S.lsKw = null; S.lehrerScreen = "hub"; renderStart(); };
+  const $kw = id => document.getElementById(id);
+  const neuZeichnen = (fokusId) => { renderKlassenwahl(); const f = fokusId && $kw(fokusId); if (f) f.focus(); };
+  app().querySelectorAll('input[name="ls-kw-klasse"]').forEach(r => { r.onchange = () => { kw.wahl = +r.value; kw.msg = ""; kw.bad = false; const m = $kw("ls-kw-msg"); if (m) { m.textContent = ""; m.className = "ls-kw-msg"; m.setAttribute("role", "status"); } }; });
+  if ($kw("ls-kw-weiter")) $kw("ls-kw-weiter").onclick = () => {
+    const k = kw.klassen.find(x => x.id === kw.wahl);
+    if (!k) { kw.msg = "Bitte wähle zuerst eine Klasse."; kw.bad = true; renderKlassenwahl(); const r = app().querySelector('input[name="ls-kw-klasse"]'); if (r) r.focus(); return; }
+    lsKlasseGewaehlt(k);
+  };
+  const zumForm = () => { kw.form = true; kw.msg = ""; kw.bad = false; neuZeichnen("ls-kw-name"); };
+  if ($kw("ls-kw-neu")) $kw("ls-kw-neu").onclick = zumForm;
+  if ($kw("ls-kw-anlegen") && $kw("ls-kw-anlegen").tagName === "BUTTON") $kw("ls-kw-anlegen").onclick = zumForm;
+  if ($kw("ls-kw-solo")) $kw("ls-kw-solo").onclick = lsSoloStatt;
+  if ($kw("ls-kw-nochmal")) $kw("ls-kw-nochmal").onclick = () => lsKlassenwahlStart(kw.modus, kw.wechseln, kw.danach);
+  if ($kw("ls-kw-form-zurueck")) $kw("ls-kw-form-zurueck").onclick = () => { kw.form = false; kw.msg = ""; kw.bad = false; neuZeichnen(kw.klassen.length ? "ls-kw-neu" : "ls-kw-anlegen"); };
+  const form = $kw("ls-kw-form");
+  if (form) form.onsubmit = async ev => {
+    ev.preventDefault();
+    const name = String($kw("ls-kw-name").value || "").replace(/\s+/g, " ").trim();
+    kw.name = name;
+    if (!name) { kw.msg = "Bitte gib einen Namen für die Klasse ein."; kw.bad = true; return neuZeichnen("ls-kw-name"); }
+    if (kw.laeuft) return;
+    kw.laeuft = true; kw.msg = "Einen Moment …"; kw.bad = false; renderKlassenwahl();
+    const r = window.LS_KW ? await LS_KW.anlegen(name) : { ok: false, fehler: "nicht_verfuegbar" };
+    kw.laeuft = false;
+    if (S.lsKw !== kw) return;
+    if (r.ok) { r.klasse.neuCode = r.code; return lsKlasseGewaehlt(r.klasse); }
+    kw.bad = true;
+    kw.msg = r.fehler === "zu_viele_klassen" ? `Es gibt schon die höchste Zahl an Klassen (${r.max_klassen || ""}). Bitte lösche auf der Lizenzseite eine alte Klasse.`.replace(" ()", "")
+      : r.fehler === "name" ? "Dieser Name geht nicht (1 bis 40 Zeichen)."
+      : r.fehler === "nicht_verfuegbar" ? "Keine Verbindung zum Lizenzserver. Bitte versuche es gleich noch einmal."
+      : "Das hat nicht geklappt. Bitte melde dich auf der Lizenzseite neu an.";
+    neuZeichnen("ls-kw-name");
+  };
+  if (typeof bmChromeAktualisieren === "function") bmChromeAktualisieren();
+  if (fokusKopf !== false) { const h = app().querySelector(".ls-kw-h1"); if (h && (fokusKopf || document.activeElement === document.body || !app().contains(document.activeElement))) h.focus(); }
 }
 
 function renderKlassenScreen() {
@@ -6287,6 +6496,7 @@ function renderKlassenScreen() {
     const go = () => {
       S.lehrerModus = modus === "live" ? "live" : modus;
       S.lehrerScreen = "themen";
+      S.lsKlasse = undefined;
       S.lehrerZahl = null;
       if (info && info.katId && !(S.lehrerThemen && S.lehrerThemen.length)) S.lehrerThemen = [info.katId];
       renderStart();
@@ -6307,12 +6517,20 @@ function renderKlassenScreen() {
 }
 
 
+/* Rückweg von der Lizenzseite (beamer.html?lsmodus=live|tempo|lzk): direkt zur Klassenwahl des Modus */
+window.addEventListener("load", () => {
+  let m = "";
+  try { const u = new URL(location.href); m = u.searchParams.get("lsmodus") || ""; if (m) { u.searchParams.delete("lsmodus"); history.replaceState({}, "", u.pathname + u.search + u.hash); } } catch (e) { m = ""; }
+  if (!["live", "tempo", "lzk"].includes(m)) return;
+  setTimeout(() => { if (document.body.classList.contains("ls-hub") && (!S.lehrerScreen || S.lehrerScreen === "hub")) { S.lsKlasse = undefined; lsKlassenwahlStart(m); } }, 0);
+});
 renderStart = function () {
   const sc = S.lehrerScreen || "hub";
   if (sc === "themen") return renderThemenwahl();
   if (sc === "lzk-themen") return renderLzkThemenwahl();
   if (sc === "gratulation") { S.lsZeigeGratulation = true; S.lehrerScreen = "hub"; return renderLehrerHub(); }
   if (sc === "klasse") return renderKlassenScreen();
+  if (sc === "klassenwahl") return renderKlassenwahl();
   if (sc === "liste") return renderKlassenListe();
   if (sc === "anlegen") return renderKlasseAnlegen();
   return renderLehrerHub();
@@ -6651,7 +6869,7 @@ drawAufgabe = function () {
     ? weiterAktionen()
     : `<button class="btn tippbtn" data-tipp ${c.tipps >= 3 ? "disabled" : ""} aria-label="Tipp anzeigen">${BULB}<span>${c.tipps === 0 ? "Tipp" : c.tipps < 3 ? "Tipp " + (c.tipps + 1) : "Tipps"}</span></button><button class="btn primary" id="pruefen" ${bereit() ? "" : "disabled"}>Prüfen</button>`;
   const vids = videosDerEinheit(a.einheit);
-  const videoBtns = vids.map((V, i) => `<button type="button" class="btn btn-video" data-video="${esc(V.datei)}" data-vor="${V.vorEinheit}">${vids.length > 1 ? "Video " + (i + 1) : "Video"}</button>`).join("");
+  const videoBtns = vids.map((V, i) => `<button type="button" class="btn btn-video" data-video="${esc(V.datei)}" data-vor="${V.vorEinheit}" aria-label="${vids.length > 1 ? "Video " + (i + 1) : "Video"}: ${esc(V.titel || "Erklärvideo")}${V.dauer ? " (" + esc(V.dauer) + ")" : ""}" title="${esc(V.titel || "Erklärvideo")}">${vids.length > 1 ? "Video " + (i + 1) : "Video"}</button>`).join("");
 
   const neben = !!(mit && satzLage() === "rechts");
   if (typeof bmChromeMitteSetzen === "function") bmChromeMitteSetzen(`
@@ -11241,6 +11459,55 @@ if (_hubClassChrome) lsSetHubClass = function (an) {
   return r;
 };
 
+
+/* ===== Startlektion qs-00 (startlektion.js): eigener Aufgabentyp ohne Buchungszeilen, nur im Modus „Lehrgerät solo“ ===== */
+function qs0Host() {
+  return { S, app, esc, punkteTxt, BULB, FLAMME, HAKEN, LOB, beamer: true,
+    weiter: () => { S.idx++; if (S.idx < S.queue.length) renderAufgabe(); else { S.cur = null; renderAuswertung(); } },
+    beenden: () => { if (S.ergebnisse.length === 0 || confirm("Übung beenden und Auswertung anzeigen?")) { S.cur = null; renderAuswertung(); } },
+    geheZu: i => { if (i >= 0 && i < S.queue.length) { S.idx = i; renderAufgabe(); } } };
+}
+const _renderAufgabeQs0 = renderAufgabe;
+renderAufgabe = function () {
+  const a = AUFG[S.queue[S.idx]];
+  if (a && a.typ === "qs0" && typeof QS0 === "object") { S.cur = QS0.neu(a); window.scrollTo(0, 0); drawAufgabe(); return; }
+  return _renderAufgabeQs0.apply(this, arguments);
+};
+const _drawAufgabeQs0 = drawAufgabe;
+drawAufgabe = function () {
+  if (S.cur && S.cur.qs0 && typeof QS0 === "object") {
+    // Obere Leiste: passender Titel statt der Themenwahl von vorher (Navigation steht in der Leiste der Startlektion)
+    if (typeof bmChromeMitteSetzen === "function") bmChromeMitteSetzen(`<span class="bm-titel">Startlektion · So funktioniert Buchen</span>`);
+    QS0.zeige(qs0Host()); if (typeof applyZoom === "function") requestAnimationFrame(applyZoom); return;
+  }
+  return _drawAufgabeQs0.apply(this, arguments);
+};
+const _starteFestQs0 = starteFest;
+starteFest = function (ids) {
+  (ids || []).forEach(function (id) { if (typeof QS0 === "object") QS0.sichern(id, AUFG); });
+  return _starteFestQs0.apply(this, arguments);
+};
+const _lsMischPlanQs0 = lsMischPlan;
+lsMischPlan = function (themenIds, n) {
+  n = lsClampZahl(n || lsStandardZahl());
+  const ids = themenIds || [];
+  if (ids.indexOf("qs-00") < 0 || typeof QS0 !== "object") return _lsMischPlanQs0.call(this, themenIds, n);
+  const rest = ids.filter(x => x !== "qs-00");
+  const n0 = rest.length ? Math.min(5, Math.ceil(n / 2)) : n;
+  const nRest = n - n0;
+  return QS0.plan(n0).concat(rest.length && nRest > 0 ? _lsMischPlanQs0.call(this, rest, nRest) : []);
+};
+const _lsStarteMitThemenQs0 = lsStarteMitThemen;
+lsStarteMitThemen = function (zahl) {
+  if (lsThemenGewaehlt().indexOf("qs-00") >= 0 && S.lehrerModus && S.lehrerModus !== "solo") {
+    S.lsLosHinweis = "Die Startlektion läuft vorerst nur im Modus „Lehrgerät solo“. Wähle sie dort oder nimm das Thema ab.";
+    const h = document.getElementById("ls-los-hinweis");
+    if (h) { h.hidden = false; h.textContent = S.lsLosHinweis; }
+    return;
+  }
+  return _lsStarteMitThemenQs0.apply(this, arguments);
+};
+
 init();
 if (typeof bmChromeAktualisieren === "function") bmChromeAktualisieren();
 
@@ -11274,7 +11541,35 @@ if (typeof bmChromeAktualisieren === "function") bmChromeAktualisieren();
   const srv = p => C.server.replace(/\/+$/, "") + "/" + p;
   let sitz = null, daten = null, timer = null, fehlerMsg = "", ansicht = "lobby", wahlFaelle = [], bekannt = null, statFall = "";
   try { sitz = JSON.parse(sessionStorage.getItem(KEY)); } catch (x) { sitz = null; }
-  const merken = () => { try { sitz ? sessionStorage.setItem(KEY, JSON.stringify(sitz)) : sessionStorage.removeItem(KEY); } catch (x) { } };
+  const merkenRoh = () => { try { sitz ? sessionStorage.setItem(KEY, JSON.stringify(sitz)) : sessionStorage.removeItem(KEY); } catch (x) { } };
+  const merken = () => { merkenRoh(); klasseBinden(); };
+  /* Live-Stunde an die gewählte Klasse binden (klassenwahl.js, Lizenzserver Update 7). Nur Schülergeräte dieser Klasse bekommen die Stunde
+     beim Check-in angeboten; Code und QR-Code werden dann nicht gezeigt. Server ohne Update 7: Code und QR-Code wie bisher. */
+  let gebunden = (sitz && sitz.klasse && sitz.klasse.status === "gebunden") ? { id: sitz.klasse.id, code: sitz.code } : null, bindet = false;
+  const klasseOk = () => !!(sitz && sitz.klasse && sitz.klasse.status !== "nicht_unterstuetzt" && sitz.klasse.status !== "fehler");
+  function klasseBinden() {
+    if (!window.LS_KW) return;
+    if (gebunden && (!sitz || sitz.code !== gebunden.code || !sitz.klasse || sitz.klasse.id !== gebunden.id)) { LS_KW.binden(gebunden.id, null); gebunden = null; }
+    if (!sitz || !sitz.code) return;
+    if (!sitz.klasse && typeof S === "object" && S.lsKlasse && S.lsKlasse.id) { sitz.klasse = { id: S.lsKlasse.id, name: S.lsKlasse.name, status: "binde" }; merkenRoh(); }
+    if (!sitz.klasse || sitz.klasse.status !== "binde" || bindet) return;
+    bindet = true;
+    const s = sitz, k = s.klasse;
+    LS_KW.binden(k.id, s.code).then(st => {
+      bindet = false;
+      if (sitz !== s || s.klasse !== k) { if (st === "gebunden") LS_KW.binden(k.id, null); return klasseBinden(); }
+      k.status = st; merkenRoh();
+      if (st === "gebunden") gebunden = { id: k.id, code: s.code };
+      if (typeof S === "object" && S.lehrerScreen === "themen" && typeof renderThemenwahl === "function" && document.getElementById("ls-live-code")) renderThemenwahl();
+      if (!ov().hidden) render();
+    });
+  }
+  function klasseSetzen(k) {
+    if (!sitz || !sitz.code || !k) return;
+    if (sitz.klasse && sitz.klasse.id === k.id) return;
+    sitz.klasse = { id: k.id, name: k.name, status: "binde" };
+    merken();
+  }
 
   function ov() {
     let o = document.getElementById("lkov");
@@ -11483,7 +11778,8 @@ if (typeof bmChromeAktualisieren === "function") bmChromeAktualisieren();
     const endeKnopf = daten && daten.offen === false ? "" : `<button type="button" class="lk-b" id="lkende">${e(endeText)}</button>`;
     const stand = daten && daten.offen === false ? `<span class="lk-kopf-stand" id="lkstand">${e(standText)}</span>` : "";
     const codeImKopf = !!(opt.code && !opt.keinKopfCode);
-    const codeHtml = codeImKopf ? `<div class="lk-kopf-code"><span class="lk-code-label">Klassencode</span><strong class="lk-kopf-codewert">${e(opt.code)}</strong></div>` : "";
+    const codeHtml = !codeImKopf ? "" : klasseOk() ? `<div class="lk-kopf-code"><span class="lk-code-label">Klasse</span><strong class="lk-kopf-codewert">${e(sitz.klasse.name)}</strong></div>`
+      : `<div class="lk-kopf-code"><span class="lk-code-label">Klassencode</span><strong class="lk-kopf-codewert">${e(opt.code)}</strong></div>`;
     const hinweis = opt.hinweis ? `<span class="lk-hint">${e(opt.hinweis)}</span>` : "";
     const zusatzRoh = String(opt.titelZusatz || "").trim(), titelRoh = String(titel || "").trim();
     const modusNamen = ["gemeinsam üben", "lernzielkontrolle", "im eigenen tempo", "im eigenen tempo üben", "lehrgerät solo", "übung"];
@@ -11496,6 +11792,7 @@ if (typeof bmChromeAktualisieren === "function") bmChromeAktualisieren();
   function binden(o) {
     const k = (id, f) => { const b = o.querySelector(id); if (b) b.onclick = f; };
     k("#lkzu", schliessen);
+    o.querySelectorAll("[data-lkperson]").forEach(x => { x.onclick = zeigePerson; });
     k("#lktabknopf", () => { ansicht = "tabelle"; render(); });
     k("#lkstunde", () => { ansicht = "stundenstatistik"; render(); });
     k("#lkzurloes", () => { ansicht = "statistik"; render(); });
@@ -11534,8 +11831,8 @@ if (typeof bmChromeAktualisieren === "function") bmChromeAktualisieren();
     if (ansicht === "stundenstatistik" && daten) return renderStundenStatistik(o);
     const url = schuelerUrl(sitz.code);
     o.innerHTML = kopf("Gemeinsam üben", daten ? `${(daten.faelle || []).length} von ${plan().length} Fällen` : "verbinde …", { titelZusatz: sitz.titel, keinKopfCode: true }) + `
-      <div class="lk-lobby" id="lklobby"><div class="lk-karte" id="lkcodekarte"><div class="lk-klein" style="text-align:center">Klassencode</div><div class="lk-code" id="lkcode">${e(sitz.code)}</div>
-          ${sitz.qr ? `<img class="lk-qr" id="lkqr" alt="QR-Code zum Buchungstrainer mit Klassencode ${e(sitz.code)}" src="${sitz.qr}">` : ""}<div class="lk-url">${e(url)}</div></div>
+      <div class="lk-lobby" id="lklobby">${klasseOk() ? klassenKarte() : `<div class="lk-karte" id="lkcodekarte"><div class="lk-klein" style="text-align:center">Klassencode</div><div class="lk-code" id="lkcode">${e(sitz.code)}</div>
+          ${sitz.qr ? `<img class="lk-qr" id="lkqr" alt="QR-Code zum Buchungstrainer mit Klassencode ${e(sitz.code)}" src="${sitz.qr}">` : ""}<div class="lk-url">${e(url)}</div></div>`}
         <div><div class="lk-dabei" id="lkdabei">${tn.length ? `${tn.length} ${tn.length === 1 ? "ist" : "sind"} dabei` : "Warte auf die Klasse …"}</div>
           <div class="lk-chips" id="lkchips">${tn.map(n => `<span class="lk-chip ${bekannt && !bekannt.has(n) ? "neu" : ""}"><span class="emo" aria-hidden="true">${emoji(n)}</span>${e(n)}</span>`).join("")}</div>
           <div class="lk-weiter">${weiterKnopf(true)}</div><div class="lk-msg" id="lkmsg">${e(fehlerMsg)}</div></div></div>`;
@@ -11609,8 +11906,16 @@ if (typeof bmChromeAktualisieren === "function") bmChromeAktualisieren();
     o.innerHTML = kopf("Tabelle", `${tn.length} dabei`, { code: sitz.code, hinweis: "nur für dich, nicht für den Beamer" }) + t + `<div class="lk-msg" id="lkmsg" style="margin:0 22px">${e(fehlerMsg)}</div>`;
     binden(o);
   }
+  function klassenKarte() {
+    const kc = window.LS_KW ? LS_KW.klassencode(typeof S === "object" && S.lsKlasse && S.lsKlasse.id === sitz.klasse.id ? S.lsKlasse : sitz.klasse) : "";
+    return `<div class="lk-karte" id="lkklassenkarte"><div class="lk-klein" style="text-align:center">Klasse</div><div class="lk-code" id="lkklasse">${e(sitz.klasse.name)}</div>
+      <p class="lk-klein" style="text-align:center" id="lkklassehinweis">Nur Geräte dieser Klasse machen mit. Sie sehen die Stunde auf ihrer Startseite. Es ist kein Code nötig.</p>
+      ${kc ? `<p class="lk-klein" style="text-align:center" id="lkklassecode">Neues Gerät? Einmal den Klassencode <b>${e(kc)}</b> eingeben.</p>` : ""}
+      <p style="text-align:center;margin:10px 0 0"><button type="button" class="lk-b" id="lkperson" data-lkperson="1">Person der Klasse hinzufügen</button></p></div>`;
+  }
   function codeLeisteHtml() {
     if (!sitz || !sitz.code) return "";
+    if (klasseOk()) return `<span class="lk-code-leiste"><span class="lk-code-oben"><span class="lk-code-label">Klasse</span><strong class="lk-code-wert" id="lkbarcode">${e(sitz.klasse.name)}</strong></span><button type="button" class="lk-b" id="lkpersonbar" data-lkperson="1">Person der Klasse hinzufügen</button></span>`;
     if (!sitz.qr) {
       try { sitz.qr = qrBild(schuelerUrl(sitz.code)); } catch (x) { sitz.qr = ""; }
     }
@@ -11625,9 +11930,15 @@ if (typeof bmChromeAktualisieren === "function") bmChromeAktualisieren();
   function bindQrKlein(root) {
     const b = (root || document).querySelector("#lkqrklein");
     if (b) b.onclick = zeigeQrGross;
+    (root || document).querySelectorAll("[data-lkperson]").forEach(x => { x.onclick = zeigePerson; });
   }
-  function zeigeQrGross() {
-    if (!sitz || !sitz.code) return;
+  /* „Person der Klasse hinzufügen“ (nur Lehrkraft, beamer.html): In einer an eine Klasse gebundenen Stunde sind Live-Code und QR-Code
+     standardmäßig verborgen. Erst dieser Knopf zeigt sie, damit sich auch eine Person ohne Klassencode (neu, zu Gast) einklinken kann. */
+  const PERSON = { person: true };
+  function zeigePerson() { zeigeQrGross(PERSON); }
+  function zeigeQrGross(modus) {
+    const person = modus === PERSON;
+    if (!sitz || !sitz.code || (klasseOk() && !person)) return;
     if (!sitz.qr) {
       try { sitz.qr = qrBild(schuelerUrl(sitz.code)); } catch (x) { sitz.qr = ""; }
     }
@@ -11636,13 +11947,14 @@ if (typeof bmChromeAktualisieren === "function") bmChromeAktualisieren();
       o = document.createElement("div");
       o.id = "lkqrov";
       o.setAttribute("role", "dialog");
-      o.setAttribute("aria-label", "Klassencode und QR-Code zum Einstieg");
       document.body.appendChild(o);
     }
+    o.setAttribute("aria-label", person ? "Person der Klasse hinzufügen: Live-Code und QR-Code" : "Klassencode und QR-Code zum Einstieg");
     const url = schuelerUrl(sitz.code);
     o.hidden = false;
     o.innerHTML = `<div class="lkqr-box">
-      <p class="lk-code-label">Klassencode</p>
+      ${person ? `<h2 class="lkqr-titel" style="margin:0 0 6px;font-size:20px">Person der Klasse hinzufügen</h2><p class="lkqr-url" style="margin:0 0 8px">Für Personen ohne Klassencode (neu in der Klasse, zu Gast): Code eingeben oder QR-Code scannen.</p>` : ""}
+      <p class="lk-code-label">${person ? "Live-Code" : "Klassencode"}</p>
       <div class="lk-code-wert">${e(sitz.code)}</div>
       ${sitz.qr ? `<img alt="QR-Code zum Buchungstrainer mit Klassencode ${e(sitz.code)}" src="${sitz.qr}">` : ""}
       <p class="lkqr-url">${e(url)}</p>
@@ -11736,6 +12048,7 @@ if (typeof bmChromeAktualisieren === "function") bmChromeAktualisieren();
         try { lsStundeBeenden(sitz && sitz.plan); } catch (x) { }
       }
       if (was === "ende") {
+        if (gebunden && window.LS_KW) { LS_KW.binden(gebunden.id, null); gebunden = null; if (sitz && sitz.klasse) { sitz.klasse.status = "geloest"; merkenRoh(); } }
         try { lsMerkeLetzteStunde({ ids: (sitz && sitz.plan) || [], modus: (sitz && (sitz.lzk ? "lzk" : sitz.modus)) || "live", titel: sitz && sitz.titel }); } catch (x) {}
         S.stundeOffen = false;
         stopp(); ov().hidden = true; setzeLeisteSichtbar(false);
@@ -11809,7 +12122,7 @@ if (typeof bmChromeAktualisieren === "function") bmChromeAktualisieren();
       const sum = tn.reduce((s, n) => s + lzkPunkte(n, faelle, z), 0);
       schnittTxt = (Math.round(sum / tn.length * 10) / 10).toFixed(1).replace(".", ",") + " / " + maxP;
     }
-    let tabelle = `<p class="lk-klein" id="lkleer">Noch niemand dabei. Die Schüler öffnen den Buchungstrainer (QR-Code oder Klassencode) und geben einen Nickname ein. Je Fall 3 Punkte, Tipp und falscher Versuch kosten 1 Punkt. Keine Musterlösung.</p>`;
+    let tabelle = `<p class="lk-klein" id="lkleer">Noch niemand dabei. ${klasseOk() ? `Die Geräte der Klasse ${e(sitz.klasse.name)} sehen die Stunde auf ihrer Startseite und geben einen Nickname ein.` : "Die Schüler öffnen den Buchungstrainer (QR-Code oder Klassencode) und geben einen Nickname ein."} Je Fall 3 Punkte, Tipp und falscher Versuch kosten 1 Punkt. Keine Musterlösung.</p>`;
     if (tn.length) {
       tabelle = `<table class="lk-schueler" id="lklzk-tab"><thead><tr><th>Nickname</th><th>Punkte</th>`
         + faelle.map((f, i) => `<th title="${e(f)}">Fall ${i + 1}<div class="lk-klein">${e(f)}</div></th>`).join("")
@@ -11956,7 +12269,7 @@ if (typeof bmChromeAktualisieren === "function") bmChromeAktualisieren();
     const offen = !(daten && daten.offen === false);
     const detail = sitz.detailName ? (by[sitz.detailName] || { name: sitz.detailName }) : null;
     const z = zellen(daten || {});
-    let tabelle = `<p class="lk-klein" id="lkleer">Noch niemand dabei. Die Schüler öffnen den Buchungstrainer (QR-Code oder Klassencode) und geben einen Nickname ein. Alle beginnen mit demselben ersten Beleg, danach zufällige Reihenfolge.</p>`;
+    let tabelle = `<p class="lk-klein" id="lkleer">Noch niemand dabei. ${klasseOk() ? `Die Geräte der Klasse ${e(sitz.klasse.name)} sehen die Stunde auf ihrer Startseite und geben einen Nickname ein.` : "Die Schüler öffnen den Buchungstrainer (QR-Code oder Klassencode) und geben einen Nickname ein."} Alle beginnen mit demselben ersten Beleg, danach zufällige Reihenfolge.</p>`;
     if (tn.length) {
       tabelle = `<table class="lk-schueler" id="lktempo-tab"><thead><tr><th>Nickname</th><th>Erledigt</th><th>Fehlerquote</th><th>Aktueller Beleg</th></tr></thead><tbody>`
         + tn.map(n => {
@@ -12037,6 +12350,7 @@ if (typeof bmChromeAktualisieren === "function") bmChromeAktualisieren();
     if (!sitz || !sitz.code) {
       return "<span class=\"lang\">Klassencode</span><span class=\"kurz\">Klassencode</span>";
     }
+    if (klasseOk()) return "<span class=\"lk-code-oben\"><span class=\"lk-code-label\">Klasse</span><strong class=\"lk-code-wert\" id=\"bmlive-code\">" + e(sitz.klasse.name) + "</strong></span>";
     if (!sitz.qr) {
       try { sitz.qr = qrBild(schuelerUrl(sitz.code)); } catch (x) { sitz.qr = ""; }
     }
@@ -12110,7 +12424,7 @@ if (typeof bmChromeAktualisieren === "function") bmChromeAktualisieren();
     poll();
   }
 
-  global.LIVE = { oeffnen, schliessen, starten, lobbyStarten, planSetzen, stoppen, uebernehmen, fallStat, fallWert, stundeWert, topFehler, fehlerSaetze, fehlerSatz, svgStapel, konfetti, hinweis: toast, get sitzung() { return sitz; }, get daten() { return daten; }, get ansicht() { return ansicht; } };
+  global.LIVE = { personZeigen: zeigePerson, klasseSetzen, oeffnen, schliessen, starten, lobbyStarten, planSetzen, stoppen, uebernehmen, fallStat, fallWert, stundeWert, topFehler, fehlerSaetze, fehlerSatz, svgStapel, konfetti, hinweis: toast, get sitzung() { return sitz; }, get daten() { return daten; }, get ansicht() { return ansicht; } };
   if (typeof lsTabWaechter === "function") try { lsTabWaechter(); } catch (e) {}
 })(window);
 </script>

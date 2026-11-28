@@ -1,0 +1,58 @@
+{
+  "entwurf": true,
+  "lehrer_login_aktiv": false,
+  "stand": null,
+  "name": "Stefan Masar",
+  "email": "kontakt@profmasar.at",
+  "strasse": null,
+  "plz_ort": "1130 Wien",
+  "land": "Österreich",
+  "rechtsform": null,
+  "telefon": null,
+  "support_telefon": null,
+  "support_zeiten": null,
+  "unternehmensgegenstand": null,
+  "gewerbe": {
+    "kein_gewerbe_neue_selbststaendigkeit": null,
+    "wortlaut": null,
+    "standort": null,
+    "behoerde": null,
+    "kammer": null,
+    "berufsbezeichnung": null
+  },
+  "uid": null,
+  "kleinunternehmer": null,
+  "preise_hinweis": null,
+  "firmenbuch": {
+    "eingetragen": null,
+    "firma": null,
+    "rechtsform": null,
+    "sitz": null,
+    "nummer": null,
+    "gericht": null
+  },
+  "alleininhaber_bestaetigt": null,
+  "richtung_bestaetigt": null,
+  "barrierefreiheit_url": "barrierefreiheit.html",
+  "lizenzbedingungen_url": null,
+  "loeschfristen": {
+    "serverprotokolle": null,
+    "support_lizenz": null
+  },
+  "hoster_a": {
+    "name": "World4You Internet Services GmbH",
+    "sitz": "Wolfgang-Pauli-Straße 2, BT3, 4020 Linz",
+    "land": "Österreich",
+    "rechenzentrum": null,
+    "unterauftragsverarbeiter": null
+  },
+  "hoster_b": {
+    "name": "GitHub Pages (GitHub B.V., Prins Bernhardplein 200, 1097 JB Amsterdam, Niederlande, und GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA)",
+    "sitz": "Amsterdam, Niederlande, und San Francisco, USA",
+    "land": "Niederlande / USA"
+  },
+  "steuerberatung": null,
+  "sprachdienst": null,
+  "drittland_absatz_zeigen": true,
+  "zahlungsweg": null
+}

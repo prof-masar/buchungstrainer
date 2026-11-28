@@ -1,6 +1,12 @@
 {
-  "hinweis": "Erklärvideos je Quick-Start-Kachel, passend zu den 33 Kacheln aus QuickStart_Themen_v2. Dateien liegen unter videos/erklaervideo_*_fiktiv_v2.mp4 (mit passendem Vorschaubild .jpg). Ein Film kann mehreren Kacheln zugeordnet sein. Das Feld video ist {\"src\":\"videos/erklaervideo_….mp4\",\"titel\":\"…\",\"dauer\":\"3:09\",\"vorschaubild\":\"videos/….jpg\"}. Das Video „Kfz-Kauf“ (kacheln leer) steht nur in CONFIG.erklaervideos für die Einheitenansicht E15, nicht auf einer Kachel. Keine alten Einheiten-Videos und keine Aufnahmen mit echten Firmen verwenden. Ist video null, zeigt die App keinen Knopf, keinen Platzhalter und keinen Hinweis „kommt bald“.",
+  "hinweis": "Erklärvideos je Quick-Start-Kachel, passend zu den 34 Kacheln aus QuickStart_Themen_v2 (qs-00 „So funktioniert Buchen“ plus 33 Übungskacheln). Dateien liegen unter videos/erklaervideo_*_fiktiv_v2.mp4 (mit passendem Vorschaubild .jpg). Ein Film kann mehreren Kacheln zugeordnet sein. Das Feld video ist {\"src\":\"videos/erklaervideo_….mp4\",\"titel\":\"…\",\"dauer\":\"3:09\",\"vorschaubild\":\"videos/….jpg\"}. Das Video „Kfz-Kauf“ (kacheln leer) steht nur in CONFIG.erklaervideos für die Einheitenansicht E15, nicht auf einer Kachel. Keine alten Einheiten-Videos und keine Aufnahmen mit echten Firmen verwenden. Ist video null, zeigt die App keinen Knopf, keinen Platzhalter und keinen Hinweis „kommt bald“. Platzhalter qs-00 (Startlektion): video ist null, bis das Startvideo da ist. Danach nur den Eintrag füllen, z. B. {\"src\":\"videos/erklaervideo_startlektion_fiktiv_v2.mp4\",\"titel\":\"So funktioniert Buchen\",\"dauer\":\"2:30\",\"vorschaubild\":\"videos/erklaervideo_startlektion_fiktiv_v2.jpg\"}: der Video-Knopf erscheint dann auf der Kachel in Schüler- und Lehreransicht, ohne Änderung am Code.",
   "kacheln": [
+    {
+      "nr": 0,
+      "id": "qs-00",
+      "titel": "So funktioniert Buchen",
+      "video": null
+    },
     {
       "nr": 1,
       "id": "qs-01",
