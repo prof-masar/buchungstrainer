@@ -586,6 +586,12 @@ body.qs-start-sicht > .sticky{position:relative;z-index:20;flex:0 0 auto;backgro
 .qs-kachel.zu .qs-zu svg{flex:none;width:14px;height:14px}
 .thf .fgdemo{margin:0 0 8px}
 .qs-kachel p{margin:4px 0 0;font-size:13px;color:#5d6778}
+.qs-kachel p.qs-fort{display:flex;align-items:center;flex-wrap:wrap;gap:2px 8px;margin:3px 0 0;color:#4a5465}
+.qs-fort .sterne{margin:0;gap:1px;color:#8a5a00}
+.qs-fort .sterne .stern{width:16px;height:16px}
+.qs-fort .sterne .stern:not(.an){color:#566070}
+.mpunkte{margin-top:2px;color:#4a5465}
+.nur-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .qs-video{appearance:none;border:1px solid var(--accent,#2f6f73);background:#fff;color:var(--accent,#2f6f73);border-radius:8px;padding:3px 8px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;line-height:1.2;align-self:end}
 
 .viddauer{color:#cfd6dc;font-weight:500;font-size:0.9rem;margin-right:auto}
@@ -1627,7 +1633,7 @@ function qsStufenHtml() {
       return `<div class="qs-kachel${an ? " an" : ""}">
         <button type="button" class="qs-kachel-wahl" data-qs="${esc(k.id)}" aria-pressed="${an ? "true" : "false"}" title="${esc(k.gedanke || k.titel)}">
           <h3>${esc(k.titel)}</h3>
-          <p>${zahlInfo(k)}</p>
+          <p>${zahlInfo(k)}</p>${MOT.themaHtml(k)}
         </button>
         ${qsVideoBtnHtml(k, "qs-video")}
       </div>`;
@@ -1651,7 +1657,7 @@ function qsStufenHtml() {
       return `<div class="qs-kachel${an ? " an" : ""}">
         <button type="button" class="qs-kachel-wahl" data-qs="${esc(k.id)}" aria-pressed="${an ? "true" : "false"}" title="${esc(k.gedanke || k.titel)}">
           <h3>${esc(k.titel)}</h3>
-          <p>${zahlInfo(k)}</p>
+          <p>${zahlInfo(k)}</p>${MOT.themaHtml(k)}
         </button>
         ${qsVideoBtnHtml(k, "qs-video")}
       </div>`;
@@ -1699,9 +1705,11 @@ function aktualisiereStartAuswahl() {
 /* Testumgebung (konfig.js testmodus:true): klar beschrifteter Hinweis mit Testcodes oben auf der Startseite */
 const testHinweis = () => (typeof LZ === "object" && LZ.test && window.BT_TESTSERVER) ? window.BT_TESTSERVER.bannerHtml(true) : "";
 const testHinweisBinden = () => { if (typeof LZ === "object" && LZ.test && window.BT_TESTSERVER) window.BT_TESTSERVER.bannerBinden(); };
-function renderStart() {
-  window.scrollTo(0, 0);
-  const sc = document.querySelector(".qs-scroll"); if (sc) sc.scrollTop = 0;
+function renderStart(opt) {
+  // Scrollposition bleibt, wenn die Startseite nur neu gezeichnet wird (Thema wählen, Fallzahl, Code-Antwort).
+  // Nach oben nur, wenn man von einer anderen Seite kommt oder zwischen Themen- und Einheitenansicht wechselt.
+  const warStart = !!(app() && app().classList.contains("qs-start") && document.getElementById("start")) && !(opt && opt.oben);
+  if (!warStart) { window.scrollTo(0, 0); const sc = document.querySelector(".qs-scroll"); if (sc) sc.scrollTop = 0; }
   if (typeof qsStartLeisteWeg === "function") qsStartLeisteWeg();
   speichereAuswahl();
   if (typeof KL === "object" && KL.imTempo && KL.imTempo()) {
@@ -1754,12 +1762,16 @@ function renderStart() {
     qsStartLeisteWeg();
     app().innerHTML = h;
     app().querySelectorAll("[data-qs]").forEach(b => {
-      b.onclick = () => { S.qsHinweis = ""; qsThemaKlick(b.dataset.qs); renderStart(); };
+      b.onclick = ev => {
+        const id = b.dataset.qs, tastatur = ev && ev.detail === 0;   // detail 0 = Enter/Leertaste
+        S.qsHinweis = ""; qsThemaKlick(id); renderStart();
+        if (tastatur) { const n = app().querySelector(`[data-qs="${id}"]`); if (n) { try { n.focus({ preventScroll: true }); } catch (e) { n.focus(); } } }
+      };
     });
     app().querySelectorAll("[data-qs-zu]").forEach(b => { b.onclick = () => FG.zuKlick(); });
     qsVideoKnoepfeBinden(app());
     const nachE = document.getElementById("qs-nach-einheiten");
-    if (nachE) nachE.onclick = () => { S.startAnsicht = "einheiten"; renderStart(); };
+    if (nachE) nachE.onclick = () => { S.startAnsicht = "einheiten"; renderStart({ oben: true }); };
     const zahlFeld = document.getElementById("qs-zahl-wert");
     if (zahlFeld) {
       zahlFeld.addEventListener("input", () => {
@@ -1841,7 +1853,7 @@ function renderStart() {
   testHinweisBinden();
   app().querySelectorAll(".vidthumb").forEach(vk => vk.onclick = ev => { ev.preventDefault(); ev.stopPropagation(); oeffneVideo(vk); });
   const nachT = document.getElementById("qs-nach-themen");
-  if (nachT) nachT.onclick = () => { S.startAnsicht = "themen"; renderStart(); };
+  if (nachT) nachT.onclick = () => { S.startAnsicht = "themen"; renderStart({ oben: true }); };
   $("#start").onclick = () => {
     const ids = DATA.aufgaben.filter(a => S.auswahl.has(a.einheit)).map(a => a.id);
     if (!ids.length) {
@@ -2832,6 +2844,14 @@ const MOT = (() => {
     const best = M.einheiten[nr] || { sterne: 0, punkte: 0 };
     return { n, punkte: Math.max(p, best.punkte || 0), prozent: n ? Math.floor(Math.max(p, best.punkte || 0) / n * 100) : 0, sterne: Math.max(st, best.sterne || 0) };
   }
+  /* Fortschritt je Thema (Kachel der Themenwahl): gleiche Regel wie bei den Einheiten, 60 / 80 / 100 % der Punkte der Aufgaben des Themas */
+  function thema(k) {
+    const ids = (k && k.faelle || []).filter(id => AUFG[id]), n = ids.length;
+    const p = ids.reduce((s, id) => s + (M.punkte[id] || 0), 0), richtig = ids.filter(id => (M.punkte[id] || 0) > 0).length;
+    return { n, richtig, punkte: p, sterne: !n ? 0 : p * 100 >= 100 * n ? 3 : p * 100 >= 80 * n ? 2 : p * 100 >= 60 * n ? 1 : 0 };
+  }
+  const punkteTxtM = p => Number.isInteger(p) ? String(p) : String(p).replace(".", ",");
+  function gesamtPunkte() { return Object.values(M.punkte).reduce((s, p) => s + (+p || 0), 0); }
   function aktualisiereEinheiten() {
     EINHEITEN.forEach(e => { const x = einheit(e.nr), b = M.einheiten[e.nr] || {};
       if (x.sterne > (b.sterne || 0) || x.punkte > (b.punkte || 0)) M.einheiten[e.nr] = { sterne: Math.max(x.sterne, b.sterne || 0), punkte: Math.max(x.punkte, b.punkte || 0) }; });
@@ -2884,6 +2904,11 @@ const MOT = (() => {
 
   /* ---------- Anzeige ---------- */
   const STERN = on => `<svg class="stern ${on ? "an" : ""}" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2 6.4 20.2l1.1-6.3L2.9 9.5l6.3-.9z" fill="${on ? "currentColor" : "none"}" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+  function themaHtml(k) {
+    if (!k || k.typ === "auswahl") return "";
+    const x = thema(k); if (!x.n || !x.richtig) return "";
+    return `<p class="qs-fort" data-fort="${esc(k.id)}" data-sterne="${x.sterne}"><span class="sterne" aria-hidden="true">${[1, 2, 3].map(i => STERN(i <= x.sterne)).join("")}</span><span>${x.richtig} von ${x.n} richtig<span class="nur-sr">, ${x.sterne} von 3 Sternen</span></span></p>`;
+  }
   function sterneHtml(nr) { const x = einheit(nr); return `<span class="sterne" data-sterne="${x.sterne}" role="img" aria-label="${x.sterne} von 3 Sternen" title="${x.sterne} von 3 Sternen · 1 Stern ab 60 %, 2 ab 80 %, 3 bei 100 %">${[1, 2, 3].map(i => STERN(i <= x.sterne)).join("")}</span>`; }
   const ICON = {
     ohnetipp: `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2 6.4 20.2l1.1-6.3L2.9 9.5l6.3-.9z" fill="currentColor"/></svg>`,
@@ -2913,6 +2938,7 @@ const MOT = (() => {
     return `<div class="card motiv" id="motiv">
       <div class="mtop">${ringHtml(n)}
         <div class="mtxt"><div class="mh">Tagesziel</div><div class="small">${n >= ZIEL ? `Geschafft: ${n} richtige Buchungen heute!` : `${n} von ${ZIEL} richtigen Buchungen heute`}</div>
+        ${gesamtPunkte() > 0 ? `<div class="small mpunkte" id="mpunkte">${punkteTxtM(gesamtPunkte())} ${gesamtPunkte() === 1 ? "Punkt" : "Punkte"} gesammelt</div>` : ""}
         ${folgeHtml}</div></div>
       ${rangHtml}
       ${abzHtml}
@@ -2969,7 +2995,7 @@ const MOT = (() => {
   }
   function bind() { document.querySelectorAll("#teilen").forEach(b => b.onclick = karte); }
   function loeschen() { try { localStorage.removeItem(KEY); } catch (e) { } M = leer(); }
-  return { ZIEL, RAENGE, ABZ, SKONTO, heute, einheit, stand, rangIndex, abzeichen, tagHeute, folge, buchung, schnappschuss, sterneHtml, startHtml, neuHtml, ergebnis, teilbar, karte, bind, loeschen, get M() { return M; } };
+  return { ZIEL, RAENGE, ABZ, SKONTO, heute, einheit, stand, rangIndex, abzeichen, tagHeute, folge, buchung, schnappschuss, sterneHtml, themaHtml, thema, gesamtPunkte, startHtml, neuHtml, ergebnis, teilbar, karte, bind, loeschen, get M() { return M; } };
 })();
 
 
