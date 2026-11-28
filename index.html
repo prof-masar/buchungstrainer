@@ -178,6 +178,18 @@ details.tipp[open] summary::after{transform:rotate(-135deg)}
 #konfetti i{position:absolute;top:-14px;width:8px;height:12px;border-radius:2px;opacity:.9;animation:fall 1.8s ease-in forwards}
 @keyframes fall{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(var(--dx),105vh) rotate(var(--rot));opacity:.7}}
 @media (prefers-reduced-motion:reduce){.msg.ok .pop,.meilenstein{animation:none}#konfetti{display:none}}
+/* Tagesziel-Meldung (nur in der Sitzung, verschwindet von selbst) */
+.zieltoast{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(20,30,50,.32)}
+.zieltoast-box{display:flex;align-items:center;gap:12px;max-width:min(92vw,440px);padding:18px 16px 18px 22px;border-radius:16px;background:#1d4a4d;color:#fff;box-shadow:0 12px 40px rgba(15,30,40,.35);animation:zielpop .45s cubic-bezier(.2,1.4,.4,1) both}
+.zieltoast-txt{margin:0;font-weight:700;font-size:1.2rem;line-height:1.35;color:#fff}
+.zieltoast-zu{box-sizing:border-box;flex:0 0 44px;width:44px;height:44px;min-width:44px;min-height:44px;margin:0;padding:0;border:2px solid #fff;border-radius:10px;background:#1d4a4d;color:#fff;font-size:1.4rem;line-height:1;cursor:pointer}
+.zieltoast-zu:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@keyframes zielpop{0%{transform:scale(.86);opacity:0}100%{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.zieltoast-box{animation:none}}
+html.bf-ruhig .zieltoast-box{animation:none}
+html.bf-kontrast .zieltoast-box{background:#000;color:#fff;border:2px solid #fff}
+html.bf-kontrast .zieltoast-zu{background:#000}
+
 
 /* v8: Feedback-Fenster */
 body.fb-offen{overflow:hidden}
@@ -631,7 +643,7 @@ body.qs-start-sicht > .sticky{position:relative;z-index:20;flex:0 0 auto;backgro
 @media (max-width:480px){.qs-grid{grid-template-columns:1fr}.qs-stufe-titel{font-size:1.2rem}}
 .qs-stufe-titel{font-size:1.2rem}}
 </style>
-<link rel="stylesheet" href="bf.css?v=2026112822">
+<link rel="stylesheet" href="bf.css?v=2026112823">
 </head>
 <body>
 <a class="bf-skip" href="#app">Zum Inhalt springen</a>
@@ -642,11 +654,11 @@ body.qs-start-sicht > .sticky{position:relative;z-index:20;flex:0 0 auto;backgro
 <div class="sheet-bg" id="sheetbg"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
 <div class="vidmodal" id="vidmodal"></div>
-<script src="konfig.js?v=2026112822"></script>
-<script src="bf.js?v=2026112822"></script>
-<script src="bema-gen.js?v=2026112822"></script>
-<script src="startlektion.js?v=2026112822"></script>
-<script src="lizenz-test.js?v=2026112822"></script>
+<script src="konfig.js?v=2026112823"></script>
+<script src="bf.js?v=2026112823"></script>
+<script src="bema-gen.js?v=2026112823"></script>
+<script src="startlektion.js?v=2026112823"></script>
+<script src="lizenz-test.js?v=2026112823"></script>
 <script>
 /* =====================================================================
    CONFIG – hier anpassen (z. B. beim Kopieren für eine Parallelklasse)
@@ -1738,7 +1750,7 @@ function renderStart(opt) {
     const maxTxt = vorrat > 0
       ? `<p class="qs-zahl-max">1 bis ${QS_ZAHL_MAX} Fälle. Mehr als im Thema: ähnliche Fälle werden gemischt.</p>`
       : `<p class="qs-zahl-max">Zuerst ein Thema wählen. Mehr als im Thema: ähnliche Fälle werden gemischt.</p>`;
-    let h = testHinweis() + (typeof LZ === "object" && LZ.lernHtml ? LZ.lernHtml() : "") + (typeof FG === "object" ? FG.htmlOben() : "") + (typeof KL === "object" ? KL.htmlOben() : "") + MOT.startHtml() + `<div class="qs-kopf">
+    let h = testHinweis() + (typeof LZ === "object" && LZ.lernHtml ? LZ.lernHtml() : "") + (typeof FG === "object" ? FG.htmlOben() : "") + (typeof KL === "object" ? KL.htmlOben() : "") + `<div class="qs-kopf">
       <div class="qs-kopf-titel">
         <h2>Was möchtest du üben?</h2>
         ${typeof FG === "object" && (FG.begrenzt() || FG.demo()) ? "" : `<div class="row-btns qs-wechsel"><button type="button" class="linkbtn" id="qs-nach-einheiten">Nach Einheiten</button></div>`}
@@ -1809,7 +1821,7 @@ function renderStart(opt) {
     qsStartLeisteSetzen();
     return;
   }
-  let h = testHinweis() + (typeof LZ === "object" && LZ.lernHtml ? LZ.lernHtml() : "") + (typeof FG === "object" ? FG.htmlOben() : "") + (typeof KL === "object" ? KL.htmlOben() : "") + MOT.startHtml() + `<h2>Was möchtest du üben?</h2>
+  let h = testHinweis() + (typeof LZ === "object" && LZ.lernHtml ? LZ.lernHtml() : "") + (typeof FG === "object" ? FG.htmlOben() : "") + (typeof KL === "object" ? KL.htmlOben() : "") + `<h2>Was möchtest du üben?</h2>
     <div class="row-btns" style="margin:-2px 0 4px"><button type="button" class="linkbtn" id="qs-nach-themen">Zu den Themen</button><button type="button" class="linkbtn js-alle">Alle auswählen</button><button type="button" class="linkbtn js-keine">Keine</button></div>`;
   EINHEITEN.forEach(e => {
     const auf = DATA.aufgaben.filter(a => a.einheit === e.nr);
@@ -2253,6 +2265,7 @@ function pruefen() {
   }
   drawAufgabe();
   const fb = $("#fb"); if (fb) fb.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (c.zielNeu && typeof MOT.zielFeiern === "function") MOT.zielFeiern();
   if (c.meilenstein || c.zielNeu) konfetti();
 }
 const LOB = ["Super!", "Richtig gebucht!", "Stark, weiter so!", "Sehr gut!", "Genau so!", "Sauber gebucht!", "Perfekt!", "Gut gemacht!"];
@@ -2333,7 +2346,6 @@ function feedbackHtml() {
     const punkt = c.wiederholt ? "Im zweiten Versuch: ½ Punkt." : c.tippsWertung ? "Mit Tipp gelöst: ½ Punkt. Beim nächsten Mal schaffst du es allein." : "1 Punkt.";
     return `<div class="msg ok" id="ergebnis" data-ok="true"><span class="lobzeile">${HAKEN}<span><b>${esc(c.lob || "Richtig gebucht!")}</b> ${esc(punkt)}</span></span></div>
     ${c.ok && c.meilenstein ? `<div class="meilenstein" id="meilenstein">${FLAMME}<span>${esc(meilensteinText(c.meilenstein))}</span></div>` : ""}
-    ${c.ok && c.zielNeu ? `<div class="meilenstein ziel" id="zielneu">${FLAMME}<span>Tagesziel geschafft: ${MOT.ZIEL} richtige Buchungen heute!</span></div>` : ""}
     <div class="loesung"><div style="font-weight:700;margin-bottom:6px">Lösung</div>${loesungHtml(c.a, c.res && c.res.order)}</div>
     ${c.a.erklaerung ? `<div class="erkl"><b>Erklärung:</b> ${esc(c.a.erklaerung)}</div>` : ""}`;
   }
@@ -2836,19 +2848,28 @@ const MOT = (() => {
   function speichern() { if (!CONFIG.fortschrittSpeichern) return; try { localStorage.setItem(KEY, JSON.stringify({ v: M.v, punkte: M.punkte, einheiten: M.einheiten })); } catch (e) { } }
   let M = null; M = laden();
 
-  /* Sterne: 60 / 80 / 100 % der Punkte einer Einheit (richtig = 1, mit Tipp = ½), je Aufgabe zählt das beste Ergebnis */
+  /* Sterne nach Anteil der verschiedenen Aufgaben, die mindestens einmal richtig waren (auch mit Tipp).
+     1 Stern ab der ersten richtigen Aufgabe, 2 ab zwei Drittel, 3 wenn alle richtig. So passen Sterne und „x von n richtig“ zusammen. */
+  function sterneVonRichtig(richtig, n) {
+    if (!n || richtig <= 0) return 0;
+    if (richtig >= n) return 3;
+    if (richtig * 3 >= 2 * n) return 2;
+    return 1;
+  }
   function einheit(nr) {
     const auf = DATA.aufgaben.filter(a => a.einheit === nr);
     const p = auf.reduce((s, a) => s + (M.punkte[a.id] || 0), 0), n = auf.length;
-    const st = !n ? 0 : p * 100 >= 100 * n ? 3 : p * 100 >= 80 * n ? 2 : p * 100 >= 60 * n ? 1 : 0;
+    const richtig = auf.filter(a => (M.punkte[a.id] || 0) > 0).length;
+    const st = sterneVonRichtig(richtig, n);
     const best = M.einheiten[nr] || { sterne: 0, punkte: 0 };
-    return { n, punkte: Math.max(p, best.punkte || 0), prozent: n ? Math.floor(Math.max(p, best.punkte || 0) / n * 100) : 0, sterne: Math.max(st, best.sterne || 0) };
+    const punkte = Math.max(p, best.punkte || 0);
+    return { n, richtig, punkte, prozent: n ? Math.floor(punkte / n * 100) : 0, sterne: Math.max(st, best.sterne || 0), voll: n > 0 && punkte >= n };
   }
-  /* Fortschritt je Thema (Kachel der Themenwahl): gleiche Regel wie bei den Einheiten, 60 / 80 / 100 % der Punkte der Aufgaben des Themas */
+  /* Fortschritt je Thema (Kachel): dieselbe Sterne-Regel wie bei den Einheiten, passend zu „x von n richtig“. */
   function thema(k) {
     const ids = (k && k.faelle || []).filter(id => AUFG[id]), n = ids.length;
     const p = ids.reduce((s, id) => s + (M.punkte[id] || 0), 0), richtig = ids.filter(id => (M.punkte[id] || 0) > 0).length;
-    return { n, richtig, punkte: p, sterne: !n ? 0 : p * 100 >= 100 * n ? 3 : p * 100 >= 80 * n ? 2 : p * 100 >= 60 * n ? 1 : 0 };
+    return { n, richtig, punkte: p, sterne: sterneVonRichtig(richtig, n) };
   }
   const punkteTxtM = p => Number.isInteger(p) ? String(p) : String(p).replace(".", ",");
   function gesamtPunkte() { return Object.values(M.punkte).reduce((s, p) => s + (+p || 0), 0); }
@@ -2862,7 +2883,7 @@ const MOT = (() => {
   function stand() {
     const E = EINHEITEN.map(e => einheit(e.nr));
     return { richtig: Object.values(M.punkte).filter(p => p > 0).length, e1: E.filter(x => x.sterne >= 1).length, e2: E.filter(x => x.sterne >= 2).length, e3: E.filter(x => x.sterne >= 3).length, alle: E.length,
-             skonto: SKONTO.length > 0 && SKONTO.every(nr => einheit(nr).sterne >= 3), serie: M.besteSerie };
+             voll: E.filter(x => x.voll).length, skonto: SKONTO.length > 0 && SKONTO.every(nr => einheit(nr).voll), serie: M.besteSerie };
   }
   const mehr = (n, eins, viele) => n === 1 ? eins : viele;
   const RAENGE = [
@@ -2873,7 +2894,7 @@ const MOT = (() => {
     { id: "buchungsmeister", name: "Buchungsmeister", bed: "alle Einheiten mit mindestens 1 Stern", ok: s => s.e1 >= s.alle, fehlt: s => `Noch ${s.alle - s.e1} ${mehr(s.alle - s.e1, "Einheit", "Einheiten")} mit mindestens 1 Stern.` }
   ];
   const ABZ = [
-    { id: "ohnetipp", name: "Ohne Tipp", bed: "eine Einheit zu 100 % (alles richtig, ohne Tipp)", kurz: "1 Einheit zu 100 %", ok: s => s.e3 >= 1 },
+    { id: "ohnetipp", name: "Ohne Tipp", bed: "eine Einheit zu 100 % (alles richtig, ohne Tipp)", kurz: "1 Einheit zu 100 %", ok: s => s.voll >= 1 },
     { id: "skonto", name: "Skonto-König", bed: `Einheit ${SKONTO.join(" und ")} (Skonto) mit 3 Sternen`, kurz: `E${SKONTO.join(" + E")} mit 3 Sternen`, ok: s => s.skonto },
     { id: "serienheld", name: "Serienheld", bed: "10 richtig in Folge ohne Tipp", kurz: "10 in Folge ohne Tipp", ok: s => s.serie >= 10 }
   ];
@@ -2909,7 +2930,7 @@ const MOT = (() => {
     const x = thema(k); if (!x.n || !x.richtig) return "";
     return `<p class="qs-fort" data-fort="${esc(k.id)}" data-sterne="${x.sterne}"><span class="sterne" aria-hidden="true">${[1, 2, 3].map(i => STERN(i <= x.sterne)).join("")}</span><span>${x.richtig} von ${x.n} richtig<span class="nur-sr">, ${x.sterne} von 3 Sternen</span></span></p>`;
   }
-  function sterneHtml(nr) { const x = einheit(nr); return `<span class="sterne" data-sterne="${x.sterne}" role="img" aria-label="${x.sterne} von 3 Sternen" title="${x.sterne} von 3 Sternen · 1 Stern ab 60 %, 2 ab 80 %, 3 bei 100 %">${[1, 2, 3].map(i => STERN(i <= x.sterne)).join("")}</span>`; }
+  function sterneHtml(nr) { const x = einheit(nr); return `<span class="sterne" data-sterne="${x.sterne}" role="img" aria-label="${x.sterne} von 3 Sternen" title="${x.sterne} von 3 Sternen · 1 Stern ab der ersten richtigen Aufgabe, 2 ab zwei Drittel, 3 wenn alle richtig">${[1, 2, 3].map(i => STERN(i <= x.sterne)).join("")}</span>`; }
   const ICON = {
     ohnetipp: `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2 6.4 20.2l1.1-6.3L2.9 9.5l6.3-.9z" fill="currentColor"/></svg>`,
     skonto: `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 18L18 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="7.5" cy="7.5" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="16.5" cy="16.5" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>`,
@@ -2922,29 +2943,7 @@ const MOT = (() => {
       <span class="rzahl">${n >= ZIEL ? "✓" : `${n}<small>/${ZIEL}</small>`}</span></div>`;
   }
   function teilbar() { const s = stand(); return s.e3 >= 1 || tagHeute() >= ZIEL; }
-  function startHtml() {
-    const s = stand(), ri = rangIndex(s), bz = abzeichen(s), n = tagHeute(), f = folge();
-    const nx = RAENGE[ri + 1];
-    const pfad = RAENGE.map((r, i) => `<li class="stufe ${i < ri ? "erreicht" : i === ri ? "erreicht aktuell" : "offen"}" data-rang="${r.id}" title="${esc(r.name)}: ${esc(r.bed)}"${i === ri ? ' aria-current="step"' : ""}>
-        <span class="pkt">${i <= ri ? "✓" : i + 1}</span><span class="pn">${esc(r.name).replace("meister", "&shy;meister").replace("profi", "&shy;profi")}</span></li>`).join("");
-    const fuell = ri < 0 ? 0 : ri / (RAENGE.length - 1) * 100;
-    const folgeHtml = f ? `<div class="folge" id="folge" data-folge="${f}">${FLAMME}<span>${f} ${f === 1 ? "Tag" : "Tage"} in Folge</span></div>` : "";
-    const rangHtml = `<div class="rang" id="rang" data-rang="${ri >= 0 ? RAENGE[ri].id : ""}">
-        <div class="mh">Dein Rang: <b>${ri >= 0 ? esc(RAENGE[ri].name) : "noch keiner"}</b></div>
-        <ol class="pfad" style="--fuell:${fuell}%" aria-label="Rang-Pfad">${pfad}</ol>
-        <div class="small muted" id="naechst">${nx ? `Nächster Rang: <b>${esc(nx.name)}</b> – ${esc(nx.fehlt(s))}` : "Höchster Rang erreicht. Gratuliere!"}</div>
-      </div>`;
-    const abzHtml = bz.length ? `<div class="abz" id="abz" aria-label="Abzeichen">${bz.map(id => { const b = ABZ.find(x => x.id === id); return `<span class="badge an" data-abz="${b.id}" title="${esc(b.bed)}">${ICON[b.id]}<span><b>${esc(b.name)}</b><small>erreicht</small></span></span>`; }).join("")}</div>` : "";
-    return `<div class="card motiv" id="motiv">
-      <div class="mtop">${ringHtml(n)}
-        <div class="mtxt"><div class="mh">Tagesziel</div><div class="small">${n >= ZIEL ? `Geschafft: ${n} richtige Buchungen heute!` : `${n} von ${ZIEL} richtigen Buchungen heute`}</div>
-        ${gesamtPunkte() > 0 ? `<div class="small mpunkte" id="mpunkte">${punkteTxtM(gesamtPunkte())} ${gesamtPunkte() === 1 ? "Punkt" : "Punkte"} gesammelt</div>` : ""}
-        ${folgeHtml}</div></div>
-      ${rangHtml}
-      ${abzHtml}
-      ${teilbar() ? `<button class="btn teilbtn" id="teilen" type="button">Ergebnis-Karte zeigen</button>` : ""}
-    </div>`;
-  }
+  function startHtml() { return ""; }   // Karte auf der Startseite entfernt: Tagesziel steht nach dem Neuladen wieder bei 0.
   function neuHtml(vorher) {
     if (!vorher) return "";
     const nach = schnappschuss(), z = [];
@@ -2957,7 +2956,7 @@ const MOT = (() => {
 
   /* ---------- Ergebnis-Karte (kein Name, keine Geräte-ID, nichts wird gesendet) ---------- */
   function ergebnis() {
-    const h = heute(), voll = EINHEITEN.filter(e => einheit(e.nr).sterne >= 3), ziel = tagHeute() >= ZIEL;
+    const h = heute(), voll = EINHEITEN.filter(e => einheit(e.nr).voll), ziel = tagHeute() >= ZIEL;
     const code = "BT-" + h.slice(8, 10) + h.slice(5, 7) + (voll.length ? "-" + voll.map(e => "E" + e.nr).join("-") + "-100" : "") + (ziel ? "-T" + ZIEL : "");
     const zeilen = voll.map(e => `Einheit ${e.nr} (${e.titel}): 100 % ohne Tipp`).concat(ziel ? [`Tagesziel: ${ZIEL} Buchungen`] : []);
     return { datum: datumAT(h), code, zeilen, text: `Buchungstrainer – ${datumAT(h)}\n${zeilen.join("\n")}\nCode: ${code}` };
@@ -2993,9 +2992,29 @@ const MOT = (() => {
       b.textContent = ok ? "Kopiert ✓" : "Bitte Text oben markieren und kopieren"; b.dataset.kopiert = String(ok); if (!ok) { const t = $("#tktext"); t.focus(); t.select(); } };
     setTimeout(() => { const b = $("#tkkopie"); if (b) b.focus(); }, 30);
   }
+  let zielTimer = null, zielEsc = null;
+  function zielZu() {
+    const el = document.getElementById("zieltoast"); if (el) el.remove();
+    if (zielTimer) { clearTimeout(zielTimer); zielTimer = null; }
+    if (zielEsc) { document.removeEventListener("keydown", zielEsc); zielEsc = null; }
+  }
+  function zielFeiern() {
+    zielZu();
+    const el = document.createElement("div"); el.id = "zieltoast"; el.className = "zieltoast";
+    el.setAttribute("role", "status"); el.setAttribute("aria-live", "polite");
+    el.innerHTML = `<div class="zieltoast-box">
+      <p class="zieltoast-txt" id="zieltoast-txt">Tagesziel geschafft – super!</p>
+      <button type="button" class="zieltoast-zu" id="zieltoast-zu" aria-label="Meldung schließen">×</button>
+    </div>`;
+    document.body.appendChild(el);
+    const zu = document.getElementById("zieltoast-zu"); if (zu) zu.onclick = zielZu;
+    zielEsc = ev => { if (ev.key === "Escape") { ev.preventDefault(); zielZu(); } };
+    document.addEventListener("keydown", zielEsc);
+    zielTimer = setTimeout(zielZu, 5000);
+  }
   function bind() { document.querySelectorAll("#teilen").forEach(b => b.onclick = karte); }
   function loeschen() { try { localStorage.removeItem(KEY); } catch (e) { } M = leer(); }
-  return { ZIEL, RAENGE, ABZ, SKONTO, heute, einheit, stand, rangIndex, abzeichen, tagHeute, folge, buchung, schnappschuss, sterneHtml, themaHtml, thema, gesamtPunkte, startHtml, neuHtml, ergebnis, teilbar, karte, bind, loeschen, get M() { return M; } };
+  return { ZIEL, RAENGE, ABZ, SKONTO, heute, einheit, stand, rangIndex, abzeichen, tagHeute, folge, buchung, schnappschuss, sterneHtml, themaHtml, thema, sterneVonRichtig, gesamtPunkte, startHtml, neuHtml, zielFeiern, zielZu, ergebnis, teilbar, karte, bind, loeschen, get M() { return M; } };
 })();
 
 
