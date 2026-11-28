@@ -1,0 +1,368 @@
+{
+  "hinweis": "Erklärvideos je Quick-Start-Kachel, passend zu den 33 Kacheln aus QuickStart_Themen_v2. Dateien liegen unter videos/erklaervideo_*_fiktiv_v2.mp4 (mit passendem Vorschaubild .jpg). Ein Film kann mehreren Kacheln zugeordnet sein. Das Feld video ist {\"src\":\"videos/erklaervideo_….mp4\",\"titel\":\"…\",\"dauer\":\"3:09\",\"vorschaubild\":\"videos/….jpg\"}. Das Video „Kfz-Kauf“ (kacheln leer) steht nur in CONFIG.erklaervideos für die Einheitenansicht E15, nicht auf einer Kachel. Keine alten Einheiten-Videos und keine Aufnahmen mit echten Firmen verwenden. Ist video null, zeigt die App keinen Knopf, keinen Platzhalter und keinen Hinweis „kommt bald“.",
+  "kacheln": [
+    {
+      "nr": 1,
+      "id": "qs-01",
+      "titel": "Wareneinkauf",
+      "video": {
+        "src": "videos/erklaervideo_wareneinkauf_fiktiv_v2.mp4",
+        "titel": "Wareneinkauf",
+        "dauer": "3:09",
+        "vorschaubild": "videos/erklaervideo_wareneinkauf_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 2,
+      "id": "qs-02",
+      "titel": "Rücksendung Einkauf",
+      "video": {
+        "src": "videos/erklaervideo_einkauf_ruecksendung_zahlung_fiktiv_v2.mp4",
+        "titel": "Einkauf: Rücksendung und Zahlung",
+        "dauer": "1:30",
+        "vorschaubild": "videos/erklaervideo_einkauf_ruecksendung_zahlung_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 3,
+      "id": "qs-03",
+      "titel": "Warenverkauf",
+      "video": {
+        "src": "videos/erklaervideo_warenverkauf_fiktiv_v2.mp4",
+        "titel": "Warenverkauf",
+        "dauer": "2:49",
+        "vorschaubild": "videos/erklaervideo_warenverkauf_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 4,
+      "id": "qs-04",
+      "titel": "Rücksendung Verkauf",
+      "video": {
+        "src": "videos/erklaervideo_verkauf_ruecksendung_privatentnahme_fiktiv_v2.mp4",
+        "titel": "Verkauf: Rücksendung und Privatentnahme",
+        "dauer": "1:49",
+        "vorschaubild": "videos/erklaervideo_verkauf_ruecksendung_privatentnahme_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 5,
+      "id": "qs-05",
+      "titel": "Privatentnahme Waren",
+      "video": {
+        "src": "videos/erklaervideo_verkauf_ruecksendung_privatentnahme_fiktiv_v2.mp4",
+        "titel": "Verkauf: Rücksendung und Privatentnahme",
+        "dauer": "1:49",
+        "vorschaubild": "videos/erklaervideo_verkauf_ruecksendung_privatentnahme_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 6,
+      "id": "qs-06",
+      "titel": "Bezugskosten",
+      "video": {
+        "src": "videos/erklaervideo_bezugskosten_fiktiv_v2.mp4",
+        "titel": "Bezugskosten",
+        "dauer": "3:55",
+        "vorschaubild": "videos/erklaervideo_bezugskosten_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 7,
+      "id": "qs-07",
+      "titel": "Ausgangsfrachten",
+      "video": {
+        "src": "videos/erklaervideo_ausgangsfrachten_fiktiv_v2.mp4",
+        "titel": "Versandkosten: Ausgangsfrachten",
+        "dauer": "2:17",
+        "vorschaubild": "videos/erklaervideo_ausgangsfrachten_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 8,
+      "id": "qs-08",
+      "titel": "Paketgebühren",
+      "video": {
+        "src": "videos/erklaervideo_paketgebuehren_fiktiv_v2.mp4",
+        "titel": "Versandkosten: Paketgebühren",
+        "dauer": "1:45",
+        "vorschaubild": "videos/erklaervideo_paketgebuehren_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 9,
+      "id": "qs-09",
+      "titel": "Sofortrabatt",
+      "video": {
+        "src": "videos/erklaervideo_sofortrabatt_fiktiv_v2.mp4",
+        "titel": "Rabatte: Sofortrabatt",
+        "dauer": "1:58",
+        "vorschaubild": "videos/erklaervideo_sofortrabatt_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 10,
+      "id": "qs-10",
+      "titel": "Lieferantenrabatt",
+      "video": {
+        "src": "videos/erklaervideo_lieferantenrabatt_fiktiv_v2.mp4",
+        "titel": "Rabatte: Lieferantenrabatt",
+        "dauer": "1:15",
+        "vorschaubild": "videos/erklaervideo_lieferantenrabatt_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 11,
+      "id": "qs-11",
+      "titel": "Kunden-Nachlässe",
+      "video": {
+        "src": "videos/erklaervideo_kunden_nachlaesse_fiktiv_v2.mp4",
+        "titel": "Rabatte: Nachlass an Kunden",
+        "dauer": "1:42",
+        "vorschaubild": "videos/erklaervideo_kunden_nachlaesse_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 12,
+      "id": "qs-12",
+      "titel": "Zahlung Lieferant",
+      "video": {
+        "src": "videos/erklaervideo_bankueberweisung_fiktiv_v2.mp4",
+        "titel": "Zahlung per Banküberweisung",
+        "dauer": "1:52",
+        "vorschaubild": "videos/erklaervideo_bankueberweisung_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 13,
+      "id": "qs-13",
+      "titel": "Zahlung Kunde",
+      "video": {
+        "src": "videos/erklaervideo_bankueberweisung_fiktiv_v2.mp4",
+        "titel": "Zahlung per Banküberweisung",
+        "dauer": "1:52",
+        "vorschaubild": "videos/erklaervideo_bankueberweisung_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 14,
+      "id": "qs-14",
+      "titel": "Kartenzahlung Kunden",
+      "video": {
+        "src": "videos/erklaervideo_kartenzahlung_kunde_fiktiv_v2.mp4",
+        "titel": "Kartenzahlung: Kunde zahlt mit Karte",
+        "dauer": "2:57",
+        "vorschaubild": "videos/erklaervideo_kartenzahlung_kunde_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 15,
+      "id": "qs-15",
+      "titel": "Kartengutschrift",
+      "video": {
+        "src": "videos/erklaervideo_kartenzahlung_kunde_fiktiv_v2.mp4",
+        "titel": "Kartenzahlung: Kunde zahlt mit Karte",
+        "dauer": "2:57",
+        "vorschaubild": "videos/erklaervideo_kartenzahlung_kunde_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 16,
+      "id": "qs-16",
+      "titel": "Firmenkarte",
+      "video": {
+        "src": "videos/erklaervideo_kartenzahlung_firmenkarte_fiktiv_v2.mp4",
+        "titel": "Kartenzahlung: Firmenkarte",
+        "dauer": "2:00",
+        "vorschaubild": "videos/erklaervideo_kartenzahlung_firmenkarte_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 17,
+      "id": "qs-17",
+      "titel": "Lieferantenskonto",
+      "video": {
+        "src": "videos/erklaervideo_lieferantenskonto_fiktiv_v2.mp4",
+        "titel": "Lieferantenskonto",
+        "dauer": "3:11",
+        "vorschaubild": "videos/erklaervideo_lieferantenskonto_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 18,
+      "id": "qs-18",
+      "titel": "Kundenskonto",
+      "video": {
+        "src": "videos/erklaervideo_kundenskonto_fiktiv_v2.mp4",
+        "titel": "Kundenskonto",
+        "dauer": "1:23",
+        "vorschaubild": "videos/erklaervideo_kundenskonto_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 19,
+      "id": "qs-19",
+      "titel": "Mahnspesen",
+      "video": {
+        "src": "videos/erklaervideo_verzugszinsen_mahnspesen_fiktiv_v2.mp4",
+        "titel": "Verzugszinsen und Mahnspesen",
+        "dauer": "3:48",
+        "vorschaubild": "videos/erklaervideo_verzugszinsen_mahnspesen_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 20,
+      "id": "qs-20",
+      "titel": "Verzugszinsen",
+      "video": {
+        "src": "videos/erklaervideo_verzugszinsen_mahnspesen_fiktiv_v2.mp4",
+        "titel": "Verzugszinsen und Mahnspesen",
+        "dauer": "3:48",
+        "vorschaubild": "videos/erklaervideo_verzugszinsen_mahnspesen_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 22,
+      "id": "qs-22",
+      "titel": "Bareinzahlung",
+      "video": {
+        "src": "videos/erklaervideo_bareinzahlung_fiktiv_v2.mp4",
+        "titel": "Barverkehr: Bareinzahlung",
+        "dauer": "3:04",
+        "vorschaubild": "videos/erklaervideo_bareinzahlung_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 23,
+      "id": "qs-23",
+      "titel": "Barbehebung",
+      "video": {
+        "src": "videos/erklaervideo_barbehebung_fiktiv_v2.mp4",
+        "titel": "Barverkehr: Barbehebung",
+        "dauer": "1:38",
+        "vorschaubild": "videos/erklaervideo_barbehebung_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 24,
+      "id": "qs-24",
+      "titel": "Habenzinsen",
+      "video": {
+        "src": "videos/erklaervideo_bankabschluss_habenzinsen_kest_fiktiv_v2.mp4",
+        "titel": "Bankabschluss: Habenzinsen und KESt",
+        "dauer": "2:17",
+        "vorschaubild": "videos/erklaervideo_bankabschluss_habenzinsen_kest_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 25,
+      "id": "qs-25",
+      "titel": "Bankaufwand",
+      "video": {
+        "src": "videos/erklaervideo_bankabschluss_sollzinsen_spesen_fiktiv_v2.mp4",
+        "titel": "Bankabschluss: Sollzinsen und Spesen",
+        "dauer": "2:29",
+        "vorschaubild": "videos/erklaervideo_bankabschluss_sollzinsen_spesen_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 26,
+      "id": "qs-26",
+      "titel": "Betriebssteuern",
+      "video": {
+        "src": "videos/erklaervideo_betriebssteuern_fiktiv_v2.mp4",
+        "titel": "Steuern: Betriebssteuern",
+        "dauer": "1:45",
+        "vorschaubild": "videos/erklaervideo_betriebssteuern_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 27,
+      "id": "qs-27",
+      "titel": "Privatsteuern",
+      "video": {
+        "src": "videos/erklaervideo_privatsteuern_zahllast_fiktiv_v2.mp4",
+        "titel": "Steuern: Privatsteuern und USt-Zahllast",
+        "dauer": "1:34",
+        "vorschaubild": "videos/erklaervideo_privatsteuern_zahllast_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 28,
+      "id": "qs-28",
+      "titel": "USt-Zahllast",
+      "video": {
+        "src": "videos/erklaervideo_privatsteuern_zahllast_fiktiv_v2.mp4",
+        "titel": "Steuern: Privatsteuern und USt-Zahllast",
+        "dauer": "1:34",
+        "vorschaubild": "videos/erklaervideo_privatsteuern_zahllast_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 29,
+      "id": "qs-29",
+      "titel": "Grundstückkauf",
+      "video": {
+        "src": "videos/erklaervideo_grundstueckkauf_fiktiv_v2.mp4",
+        "titel": "Steuern: Grundstückkauf",
+        "dauer": "1:32",
+        "vorschaubild": "videos/erklaervideo_grundstueckkauf_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 30,
+      "id": "qs-30",
+      "titel": "Pkw-Kosten",
+      "video": {
+        "src": "videos/erklaervideo_kfz_betriebskosten_pkw_fiktiv_v2.mp4",
+        "titel": "Kfz-Betriebskosten: Pkw",
+        "dauer": "2:00",
+        "vorschaubild": "videos/erklaervideo_kfz_betriebskosten_pkw_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 31,
+      "id": "qs-31",
+      "titel": "Lkw-Kosten",
+      "video": {
+        "src": "videos/erklaervideo_kfz_betriebskosten_lkw_fiktiv_v2.mp4",
+        "titel": "Kfz-Betriebskosten: Lkw",
+        "dauer": "1:21",
+        "vorschaubild": "videos/erklaervideo_kfz_betriebskosten_lkw_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 32,
+      "id": "qs-32",
+      "titel": "Lkw-Kauf",
+      "video": {
+        "src": "videos/erklaervideo_lkw_kauf_fiktiv_v2.mp4",
+        "titel": "Lkw-Kauf",
+        "dauer": "0:57",
+        "vorschaubild": "videos/erklaervideo_lkw_kauf_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 33,
+      "id": "qs-33",
+      "titel": "Materialverbrauch",
+      "video": {
+        "src": "videos/erklaervideo_sonstiges_material_kauf_fiktiv_v2.mp4",
+        "titel": "Kauf sonstiges Material",
+        "dauer": "2:34",
+        "vorschaubild": "videos/erklaervideo_sonstiges_material_kauf_fiktiv_v2.jpg"
+      }
+    },
+    {
+      "nr": 34,
+      "id": "qs-34",
+      "titel": "Bestandsveränderung",
+      "video": {
+        "src": "videos/erklaervideo_sonstiges_material_inventur_fiktiv_v2.mp4",
+        "titel": "Inventur und Bestandsveränderung",
+        "dauer": "2:23",
+        "vorschaubild": "videos/erklaervideo_sonstiges_material_inventur_fiktiv_v2.jpg"
+      }
+    }
+  ]
+}
